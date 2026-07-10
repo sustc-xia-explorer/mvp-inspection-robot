@@ -7,6 +7,7 @@ BOM:
 | Computer    | M20         |
 | Vehicle     | FW-mini     |
 | Lidar       | TM-16       |
+| IMU         | WT901WIFI   |
 
 ## 2.Enviroment:
   (1) Ubuntu 20.04
