@@ -4,7 +4,7 @@ BOM:
 
 |  Material   |    Spec     |
 | ----------- | ----------- |
-| Computer    | M20         |
+| Computer    | MS-01       |
 | Vehicle     | FW-mini     |
 | Lidar       | TM-16       |
 | IMU         | WT901WIFI   |
