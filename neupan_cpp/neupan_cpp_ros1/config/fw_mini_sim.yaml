@@ -1,0 +1,40 @@
+# Visualization profile, separate from the unmodified fw_mini.yaml baseline.
+# Same measured footprint and trained fw_mini.bin; different control costs.
+receding: 15
+step_time: 0.1
+ref_speed: 0.15
+collision_threshold: 0.03
+robot:
+  kinematics: diff
+  length: 0.495
+  width: 0.36
+  wheelbase: 0.0
+  max_speed:
+  - 0.2
+  - 0.4
+  max_acce:
+  - 0.3
+  - 0.6
+ipath:
+  curve_style: line
+  loop: false
+  arrive_threshold: 0.1
+  close_threshold: 0.0  # search the nearest forward point; no early exit inside a radius
+  ind_range: 30
+  arrive_index_threshold: 1
+pan:
+  iter_num: 2
+  dune_max_num: 100
+  nrmp_max_num: 10
+  iter_threshold: 0.1
+adjust:
+  q_s:
+  - 6.0
+  - 6.0
+  - 0.5
+  p_u: 1.0
+  eta: 1.0
+  d_max: 0.15
+  d_min: 0.05
+  ro_obs: 200.0
+  bk: 0.0

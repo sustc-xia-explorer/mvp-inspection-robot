@@ -1,0 +1,48 @@
+<launch>
+  <arg name="sim_env_config" default="scenario_corridor.yaml" />
+  <arg name="scenario_file" default="$(find neupan_cpp_ros1)/config/$(arg sim_env_config)" />
+  <arg name="config_file" default="$(find neupan_cpp_ros1)/config/fw_mini_sim.yaml" />
+  <arg name="dune_checkpoint" default="$(find neupan_cpp_ros1)/models/fw_mini.bin" />
+  <arg name="use_rviz" default="true" />
+  <arg name="auto_goal" default="false" />
+  <arg name="output" default="$(env HOME)/neupan_sim_results/rviz_corridor" />
+  <!-- All command and input topics are confined to the virtual robot. -->
+  <group ns="neupan_sim">
+    <node pkg="neupan_cpp_ros1" type="rviz_sim.py" name="world" output="screen" required="true">
+      <param name="scenario_file" value="$(arg scenario_file)" />
+      <param name="config_file" value="$(arg config_file)" />
+      <param name="dune_checkpoint" value="$(arg dune_checkpoint)" />
+      <param name="auto_goal" value="$(arg auto_goal)" />
+      <param name="output" value="$(arg output)" />
+    </node>
+    <node pkg="neupan_cpp_ros1" type="neupan_node" name="planner" output="screen" required="true">
+      <param name="config_file" value="$(arg config_file)" />
+      <param name="dune_checkpoint" value="$(arg dune_checkpoint)" />
+      <param name="map_frame" value="neupan_sim/map" />
+      <param name="base_frame" value="neupan_sim/base_link" />
+      <param name="lidar_frame" value="neupan_sim/laser" />
+      <param name="control_rate" value="10.0" />
+      <param name="scan_timeout" value="0.5" />
+      <param name="pose_timeout" value="0.5" />
+      <param name="solver_fail_grace" value="0" />
+      <param name="scan_range_min" value="0.1" />
+      <param name="scan_range_max" value="5.0" />
+      <param name="marker_z" value="0.1" />
+      <remap from="/scan" to="scan" />
+      <remap from="/initial_path" to="initial_path" />
+      <remap from="/neupan_waypoints" to="waypoints" />
+      <remap from="/neupan_goal" to="direct_goal_unused" />
+      <remap from="/neupan_cmd_vel" to="cmd_vel" />
+      <remap from="/neupan_arrive" to="neupan_arrive" />
+      <remap from="/neupan_diagnostics" to="diagnostics" />
+      <remap from="/neupan_plan" to="neupan_plan" />
+      <remap from="/neupan_ref_state" to="neupan_ref_state" />
+      <remap from="/neupan_initial_path" to="neupan_initial_path" />
+      <remap from="/dune_point_markers" to="dune_points" />
+      <remap from="/nrmp_point_markers" to="nrmp_points" />
+      <remap from="/robot_marker" to="planner_robot" />
+    </node>
+  </group>
+  <node if="$(arg use_rviz)" pkg="rviz" type="rviz" name="neupan_sim_rviz"
+        args="-d $(find neupan_cpp_ros1)/rviz/fw_mini_sim.rviz" output="screen" />
+</launch>

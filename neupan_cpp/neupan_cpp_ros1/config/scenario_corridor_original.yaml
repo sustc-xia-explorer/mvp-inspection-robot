@@ -1,0 +1,15 @@
+# Exact obstacle geometry from the user's earlier ROS2 corridor map.
+# Conservative FW-mini inflation can legitimately reject narrow passages.
+map_file: maps/corridor_ros2_original.yaml
+initial_pose: [-4.0, 0.0, 0.0]
+default_goal: [4.4, -0.5]
+resolution: 0.05
+safety_margin: 0.04
+update_rate: 50.0
+command_timeout: 0.5
+sensor:
+  offset: [0.15, 0.0, 0.0]
+  beams: 360
+  rate: 10.0
+  range_min: 0.10
+  range_max: 5.0

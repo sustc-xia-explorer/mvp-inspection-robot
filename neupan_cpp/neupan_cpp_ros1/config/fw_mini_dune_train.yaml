@@ -1,0 +1,20 @@
+# Run with the existing Python NeuPAN training environment on the development PC.
+# Include protruding equipment in length/width before training and export.
+device: cpu
+robot:
+  kinematics: diff
+  length: 0.495
+  width: 0.360
+  wheelbase: 0.0
+train:
+  direct_train: true
+  model_name: fw_mini
+  data_size: 100000
+  data_range: [-5, -5, 5, 5]
+  batch_size: 256
+  epoch: 5000
+  valid_freq: 250
+  save_freq: 500
+  lr: 5.0e-5
+  lr_decay: 0.5
+  decay_freq: 1500

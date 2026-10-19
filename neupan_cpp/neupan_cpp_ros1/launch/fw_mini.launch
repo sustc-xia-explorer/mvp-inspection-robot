@@ -1,0 +1,16 @@
+<launch>
+  <!-- Supply a model trained for the measured installed robot footprint. -->
+  <arg name="dune_checkpoint" />
+  <arg name="config_file" default="$(find neupan_cpp_ros1)/config/fw_mini.yaml" />
+  <arg name="map_frame" default="map" />
+  <arg name="base_frame" default="base_link" />
+  <arg name="scan_topic" default="/scan" />
+  <include file="$(find neupan_cpp_ros1)/launch/neupan_cpp_ros1.launch">
+    <arg name="config_file" value="$(arg config_file)" />
+    <arg name="dune_checkpoint" value="$(arg dune_checkpoint)" />
+    <arg name="map_frame" value="$(arg map_frame)" />
+    <arg name="base_frame" value="$(arg base_frame)" />
+    <arg name="lidar_frame" value="$(arg base_frame)" />
+    <arg name="scan_topic" value="$(arg scan_topic)" />
+  </include>
+</launch>

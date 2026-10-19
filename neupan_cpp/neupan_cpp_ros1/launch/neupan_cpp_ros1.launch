@@ -1,0 +1,26 @@
+<launch>
+  <!-- Bundled-model interface demo, not FW-mini geometry. -->
+  <arg name="config_file" default="$(find neupan_cpp_ros1)/config/smoke.yaml" />
+  <arg name="dune_checkpoint" default="$(find neupan_cpp_ros1)/models/diff_default.bin" />
+  <arg name="map_frame" default="map" />
+  <arg name="base_frame" default="base_link" />
+  <arg name="lidar_frame" default="base_link" />
+  <arg name="scan_topic" default="/scan" />
+  <arg name="cmd_topic" default="/neupan_cmd_vel" />
+  <arg name="control_rate" default="10.0" />
+  <node pkg="neupan_cpp_ros1" type="neupan_node" name="neupan_node" output="screen">
+    <param name="config_file" value="$(arg config_file)" />
+    <param name="dune_checkpoint" value="$(arg dune_checkpoint)" />
+    <param name="map_frame" value="$(arg map_frame)" />
+    <param name="base_frame" value="$(arg base_frame)" />
+    <param name="lidar_frame" value="$(arg lidar_frame)" />
+    <param name="control_rate" value="$(arg control_rate)" />
+    <param name="scan_timeout" value="0.5" />
+    <param name="pose_timeout" value="0.5" />
+    <param name="solver_fail_grace" value="0" />
+    <param name="scan_range_min" value="0.1" />
+    <param name="scan_range_max" value="5.0" />
+    <remap from="/scan" to="$(arg scan_topic)" />
+    <remap from="/neupan_cmd_vel" to="$(arg cmd_topic)" />
+  </node>
+</launch>

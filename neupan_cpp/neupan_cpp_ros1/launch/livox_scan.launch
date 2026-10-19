@@ -1,0 +1,23 @@
+<launch>
+  <!-- Requires calibrated cloud->target TF and a ground-aligned target frame. -->
+  <arg name="cloud_topic" default="/cloud_registered_body" />
+  <arg name="target_frame" default="base_link" />
+  <arg name="min_height" default="0.10" />
+  <arg name="max_height" default="1.00" />
+  <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node"
+        name="neupan_cloud_to_scan" output="screen">
+    <remap from="cloud_in" to="$(arg cloud_topic)" />
+    <remap from="scan" to="/scan" />
+    <param name="target_frame" value="$(arg target_frame)" />
+    <param name="transform_tolerance" value="0.05" />
+    <param name="min_height" value="$(arg min_height)" />
+    <param name="max_height" value="$(arg max_height)" />
+    <param name="angle_min" value="-3.1415926" />
+    <param name="angle_max" value="3.1415926" />
+    <param name="angle_increment" value="0.008726646" />
+    <param name="scan_time" value="0.1" />
+    <param name="range_min" value="0.5" />
+    <param name="range_max" value="5.0" />
+    <param name="use_inf" value="true" />
+  </node>
+</launch>

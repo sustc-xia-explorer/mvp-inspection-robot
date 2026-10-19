@@ -1,0 +1,17 @@
+<!--yhs-->
+<launch>
+  <rosparam file="$(find neupan_cpp_ros1)/config/planner.yaml" command="load" />
+  <rosparam file="$(find neupan_cpp_ros1)/config/sentry_diff.yaml" command="load" />
+  
+  <arg name="ultrasonic_number_value" default="0 1 2 3 4 5 6 7" />
+
+  <node pkg="neupan_cpp_ros1" type="neupan_node" name="neupan_node"
+    output="screen">
+    <param name="ultrasonic_number" value="$(arg ultrasonic_number_value)" />
+  </node>
+
+  <node pkg="neupan_cpp_ros1" type="astar_global_node" name="astar_global_node"
+    output="screen">
+  </node>
+
+</launch>
