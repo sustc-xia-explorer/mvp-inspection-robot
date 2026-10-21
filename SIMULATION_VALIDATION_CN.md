@@ -2,7 +2,7 @@
 
 先验证移植数值，再验证闭环行为，最后验证真实传感器/坐标系和底盘。通过数值测试不代表路径能收敛，虚拟车通过也不代表真实四轮转向底盘已验证。
 
-需要在 RViz 点选终点、观察 FW-mini 连续绕障时，使用 [交互仿真说明](RVIZ_SIMULATION_CN.md)。本次工控机拷回结果的逐项结论见 [工控机结果分析](IPC_RESULTS_ANALYSIS_CN.md)。交互仿真使用单独的控制参数，原回归基线保留。
+需要在 RViz 点选终点、观察 FW-mini 连续绕障时，使用 [交互仿真说明](RVIZ_SIMULATION_CN.md)。工控机拷回结果的逐项结论见 [工控机结果分析](IPC_RESULTS_ANALYSIS_CN.md)。2026-10-21 后两个规划入口统一默认加载 `fw_mini_balanced.yaml`，开发机通过 7/7 原场景、14/14 扩展场景及完整走廊，详见 [调参报告](PARAMETER_TUNING_CN.md)。本页的 `fw_mini.yaml` / Python 对照和第 8 节失败结果属于保留的原基线。
 
 ## 1. 原 test 目录可以用到哪里
 
