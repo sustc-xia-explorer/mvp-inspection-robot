@@ -20,7 +20,7 @@ def main():
     from simulation_test import CoreBackend, clean_json, path_error, plot_case
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--scenario', type=Path, default=root/'neupan_cpp_ros1/config/scenario_corridor.yaml')
-    parser.add_argument('--config', type=Path, default=root/'neupan_cpp_ros1/config/fw_mini_sim.yaml')
+    parser.add_argument('--config', type=Path, default=root/'neupan_cpp_ros1/config/fw_mini_balanced.yaml')
     parser.add_argument('--model', type=Path, default=root/'neupan_cpp_ros1/models/fw_mini.bin')
     parser.add_argument('--binary', type=Path, default=Path(os.environ.get('NEUPAN_BUILD_ROOT', Path.home()/'neupan_noetic_build'))/'libneupan/neupan_sim_backend')
     parser.add_argument('--goal', type=float, nargs=2)
