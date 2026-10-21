@@ -1,0 +1,668 @@
+{
+  "date": "2026-10-21",
+  "scope": "Latest IPC exports only; previous development runs excluded",
+  "config_sha256": "9497359156d09617341a203f32428934c57dacba24efc1791ed1de7a3c64b706",
+  "model_sha256": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8",
+  "runs": [
+    {
+      "directory": "balanced_core",
+      "metadata": {
+        "backend": "core",
+        "config": "/home/xxz/work/neupan_noetic_bundle/neupan_cpp/neupan_cpp_ros1/config/fw_mini_balanced.yaml",
+        "model": "/home/xxz/work/neupan_noetic_bundle/neupan_cpp/neupan_cpp_ros1/models/fw_mini.bin",
+        "checkpoint": null,
+        "binary": "/home/xxz/neupan_noetic_build/libneupan/neupan_sim_backend",
+        "cases": "all",
+        "output": "/home/xxz/neupan_sim_results/balanced_core",
+        "sensor": [
+          0.2,
+          0.05,
+          0.35
+        ],
+        "goal_tolerance": 0.15,
+        "max_cross_track": 0.35,
+        "rms_cross_track": 0.15,
+        "max_overshoot": 0.15,
+        "min_clearance": 0.03,
+        "timeout": null,
+        "dt": 0.1,
+        "config_sha256": "9497359156d09617341a203f32428934c57dacba24efc1791ed1de7a3c64b706",
+        "model_sha256": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8"
+      },
+      "summary": [
+        {
+          "case": "straight",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.021701731423412696,
+          "rms_cross_track": 0.0,
+          "max_cross_track": 0.0,
+          "max_overshoot": 0.0,
+          "min_clearance": null,
+          "simulated_seconds": 14.3,
+          "max_command_acceleration": 1.5000000000000002,
+          "max_command_angular_acceleration": 0.0,
+          "wall_seconds": 0.256457153998781,
+          "planner_mean_ms": 1.3819821888111878,
+          "planner_p95_ms": 3.509393
+        },
+        {
+          "case": "heading_north",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.02170173142342513,
+          "rms_cross_track": 7.551673785107306e-17,
+          "max_cross_track": 1.211358321185529e-16,
+          "max_overshoot": 0.0,
+          "min_clearance": null,
+          "simulated_seconds": 14.3,
+          "max_command_acceleration": 1.4999999999999993,
+          "max_command_angular_acceleration": 3.248708812234615e-11,
+          "wall_seconds": 0.19584202097030357,
+          "planner_mean_ms": 0.9420679510489506,
+          "planner_p95_ms": 2.113965
+        },
+        {
+          "case": "turn_left",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.027130488424862965,
+          "rms_cross_track": 0.021504471558779267,
+          "max_cross_track": 0.049590110870175064,
+          "max_overshoot": 0.0,
+          "min_clearance": null,
+          "simulated_seconds": 16.2,
+          "max_command_acceleration": 1.5000000000000002,
+          "max_command_angular_acceleration": 2.6236460810793405,
+          "wall_seconds": 0.21327729598851874,
+          "planner_mean_ms": 0.9015369753086413,
+          "planner_p95_ms": 3.29713
+        },
+        {
+          "case": "sparse_stop",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.021701731423404702,
+          "rms_cross_track": 0.0,
+          "max_cross_track": 0.0,
+          "max_overshoot": 0.0,
+          "min_clearance": null,
+          "simulated_seconds": 27.700000000000003,
+          "max_command_acceleration": 1.5000000000000002,
+          "max_command_angular_acceleration": 0.0,
+          "wall_seconds": 0.41401077795308083,
+          "planner_mean_ms": 1.0930614765342954,
+          "planner_p95_ms": 2.455524
+        },
+        {
+          "case": "corridor",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.028654638577922054,
+          "rms_cross_track": 1.3445422843841956e-16,
+          "max_cross_track": 4.440892098500626e-16,
+          "max_overshoot": 0.0,
+          "min_clearance": 0.35000000000000003,
+          "simulated_seconds": 20.900000000000002,
+          "max_command_acceleration": 1.5008030258177123,
+          "max_command_angular_acceleration": 0.0,
+          "wall_seconds": 2.8787392489612103,
+          "planner_mean_ms": 12.242202373205737,
+          "planner_p95_ms": 22.034328
+        },
+        {
+          "case": "detour",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.025827161330934288,
+          "rms_cross_track": 0.013571794444903642,
+          "max_cross_track": 0.02796255322565666,
+          "max_overshoot": 0.0,
+          "min_clearance": 0.5089343179694716,
+          "simulated_seconds": 41.5,
+          "max_command_acceleration": 1.5000000000000002,
+          "max_command_angular_acceleration": 2.1690804030745285,
+          "wall_seconds": 2.1228504960308783,
+          "planner_mean_ms": 4.498589322891567,
+          "planner_p95_ms": 8.168181
+        },
+        {
+          "case": "blocked_wall",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": false,
+          "collision": false,
+          "goal_error": 1.3576908198772635,
+          "rms_cross_track": 1.9811499650517077e-05,
+          "max_cross_track": 3.732235984885806e-05,
+          "max_overshoot": 0.0,
+          "min_clearance": 0.1101309477210168,
+          "simulated_seconds": 12.600000000000001,
+          "max_command_acceleration": 1.5000000000000002,
+          "max_command_angular_acceleration": 0.07549386984502078,
+          "wall_seconds": 1.5768866370199248,
+          "planner_mean_ms": 11.491972825396823,
+          "planner_p95_ms": 11.9813
+        }
+      ],
+      "status": "PASS",
+      "case_count": 7
+    },
+    {
+      "directory": "balanced_extended",
+      "metadata": {
+        "config": "/home/xxz/work/neupan_noetic_bundle/neupan_cpp/neupan_cpp_ros1/config/fw_mini_balanced.yaml",
+        "model": "/home/xxz/work/neupan_noetic_bundle/neupan_cpp/neupan_cpp_ros1/models/fw_mini.bin",
+        "binary": "/home/xxz/neupan_noetic_build/libneupan/neupan_sim_backend",
+        "output": "/home/xxz/neupan_sim_results/balanced_extended",
+        "cases": "all",
+        "sensor": [
+          0.2,
+          0.05,
+          0.35
+        ],
+        "goal_tolerance": 0.15,
+        "max_cross_track": 0.35,
+        "rms_cross_track": 0.15,
+        "max_overshoot": 0.15,
+        "min_clearance": 0.03,
+        "dt": 0.1,
+        "backend": "core",
+        "checkpoint": null,
+        "timeout": null,
+        "config_sha256": "9497359156d09617341a203f32428934c57dacba24efc1791ed1de7a3c64b706",
+        "model_sha256": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8",
+        "binary_sha256": "1a68da9cf63743f032d1b2951e0996ca14703242eadc99645eeeb5e70cf0de11"
+      },
+      "summary": [
+        {
+          "case": "angle_right120",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.027237852690989075,
+          "rms_cross_track": 0.02163978458661297,
+          "max_cross_track": 0.05083707318005309,
+          "max_overshoot": 0.0,
+          "min_clearance": null,
+          "simulated_seconds": 17.5,
+          "max_command_acceleration": 1.5000000000000002,
+          "max_command_angular_acceleration": 2.7531382890412726,
+          "wall_seconds": 0.3489509539795108,
+          "planner_mean_ms": 1.6053831942857155,
+          "planner_p95_ms": 5.894849
+        },
+        {
+          "case": "angle_right90",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.027130488424862965,
+          "rms_cross_track": 0.021504471558779267,
+          "max_cross_track": 0.049590110870175064,
+          "max_overshoot": 0.0,
+          "min_clearance": null,
+          "simulated_seconds": 16.2,
+          "max_command_acceleration": 1.5000000000000002,
+          "max_command_angular_acceleration": 2.6236460810793405,
+          "wall_seconds": 0.2100494069745764,
+          "planner_mean_ms": 0.9027700308641969,
+          "planner_p95_ms": 3.422617
+        },
+        {
+          "case": "angle_right60",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.02622815731299512,
+          "rms_cross_track": 0.015259035870409722,
+          "max_cross_track": 0.03579409270915196,
+          "max_overshoot": 0.0,
+          "min_clearance": null,
+          "simulated_seconds": 14.9,
+          "max_command_acceleration": 1.5000000000000002,
+          "max_command_angular_acceleration": 2.479120825299642,
+          "wall_seconds": 0.3157295940327458,
+          "planner_mean_ms": 1.6913149731543626,
+          "planner_p95_ms": 4.192958
+        },
+        {
+          "case": "angle_left60",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.02622815731299512,
+          "rms_cross_track": 0.015259035870409722,
+          "max_cross_track": 0.03579409270915196,
+          "max_overshoot": 0.0,
+          "min_clearance": null,
+          "simulated_seconds": 14.9,
+          "max_command_acceleration": 1.5000000000000002,
+          "max_command_angular_acceleration": 2.479120825299642,
+          "wall_seconds": 0.3132501369691454,
+          "planner_mean_ms": 1.6845420738255035,
+          "planner_p95_ms": 4.278016
+        },
+        {
+          "case": "angle_left120",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.027237852690989075,
+          "rms_cross_track": 0.02163978458661297,
+          "max_cross_track": 0.05083707318005309,
+          "max_overshoot": 0.0,
+          "min_clearance": null,
+          "simulated_seconds": 17.5,
+          "max_command_acceleration": 1.5000000000000002,
+          "max_command_angular_acceleration": 2.7531382890412726,
+          "wall_seconds": 0.35608826600946486,
+          "planner_mean_ms": 1.622204062857144,
+          "planner_p95_ms": 5.731
+        },
+        {
+          "case": "rotated_left90",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.02713285721367989,
+          "rms_cross_track": 0.021510422930149625,
+          "max_cross_track": 0.04959011087016951,
+          "max_overshoot": 0.0,
+          "min_clearance": null,
+          "simulated_seconds": 16.2,
+          "max_command_acceleration": 1.4999999999999993,
+          "max_command_angular_acceleration": 2.6236460810793805,
+          "wall_seconds": 0.16458301700185984,
+          "planner_mean_ms": 0.6238731111111108,
+          "planner_p95_ms": 1.741958
+        },
+        {
+          "case": "corridor_w086_yaw-5",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.02865463938579168,
+          "rms_cross_track": 0.0006558586315201057,
+          "max_cross_track": 0.0021190690970764774,
+          "max_overshoot": 0.0,
+          "min_clearance": 0.23033462881599914,
+          "simulated_seconds": 20.900000000000002,
+          "max_command_acceleration": 1.5008030243224093,
+          "max_command_angular_acceleration": 3.175946644521608,
+          "wall_seconds": 3.4260958079830743,
+          "planner_mean_ms": 14.787175110047842,
+          "planner_p95_ms": 21.757719
+        },
+        {
+          "case": "corridor_w086_yaw+5",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.02865463938306282,
+          "rms_cross_track": 0.0006558006798746951,
+          "max_cross_track": 0.0021188851715874058,
+          "max_overshoot": 0.0,
+          "min_clearance": 0.23033488093083063,
+          "simulated_seconds": 20.900000000000002,
+          "max_command_acceleration": 1.5008030242830412,
+          "max_command_angular_acceleration": 3.1764920556841405,
+          "wall_seconds": 2.6779788000276312,
+          "planner_mean_ms": 11.209817889952143,
+          "planner_p95_ms": 21.221966
+        },
+        {
+          "case": "corridor_w106_yaw-5",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.02865463938208755,
+          "rms_cross_track": 0.0006556516765507099,
+          "max_cross_track": 0.0021184121891475983,
+          "max_overshoot": 0.0,
+          "min_clearance": 0.330335531072778,
+          "simulated_seconds": 20.900000000000002,
+          "max_command_acceleration": 1.500803024283292,
+          "max_command_angular_acceleration": 3.1778997767878083,
+          "wall_seconds": 3.4457079070270993,
+          "planner_mean_ms": 14.946066191387558,
+          "planner_p95_ms": 21.940013
+        },
+        {
+          "case": "corridor_w106_yaw+5",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.028654639382610893,
+          "rms_cross_track": 0.0006556516779635321,
+          "max_cross_track": 0.0021184121891475983,
+          "max_overshoot": 0.0,
+          "min_clearance": 0.330335531072778,
+          "simulated_seconds": 20.900000000000002,
+          "max_command_acceleration": 1.5008030242867605,
+          "max_command_angular_acceleration": 3.1778997767878083,
+          "wall_seconds": 2.728213280963246,
+          "planner_mean_ms": 11.517130038277513,
+          "planner_p95_ms": 21.414277
+        },
+        {
+          "case": "corridor_w126_yaw-5",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.028654639378262882,
+          "rms_cross_track": 0.0006556516637247955,
+          "max_cross_track": 0.0021184121891475983,
+          "max_overshoot": 0.0,
+          "min_clearance": 0.430335531072778,
+          "simulated_seconds": 20.900000000000002,
+          "max_command_acceleration": 1.5008030242586703,
+          "max_command_angular_acceleration": 3.1778997767878083,
+          "wall_seconds": 3.316678436996881,
+          "planner_mean_ms": 14.325935516746412,
+          "planner_p95_ms": 21.749232
+        },
+        {
+          "case": "corridor_w126_yaw+5",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.02865463938208983,
+          "rms_cross_track": 0.0006556516765551775,
+          "max_cross_track": 0.0021184121891475983,
+          "max_overshoot": 0.0,
+          "min_clearance": 0.430335531072778,
+          "simulated_seconds": 20.900000000000002,
+          "max_command_acceleration": 1.5008030242833128,
+          "max_command_angular_acceleration": 3.1778997767878083,
+          "wall_seconds": 3.133868528995663,
+          "planner_mean_ms": 13.439518980861248,
+          "planner_p95_ms": 22.003365
+        },
+        {
+          "case": "corridor_offset-05cm",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.028654638577921165,
+          "rms_cross_track": 1.4310934189897947e-16,
+          "max_cross_track": 4.440892098500626e-16,
+          "max_overshoot": 0.0,
+          "min_clearance": 0.30000000000000004,
+          "simulated_seconds": 20.900000000000002,
+          "max_command_acceleration": 1.5008030258177067,
+          "max_command_angular_acceleration": 0.0,
+          "wall_seconds": 2.5179502029786818,
+          "planner_mean_ms": 10.440249459330142,
+          "planner_p95_ms": 11.37963
+        },
+        {
+          "case": "corridor_offset+05cm",
+          "backend": "core",
+          "passed": true,
+          "reasons": [],
+          "arrived": true,
+          "collision": false,
+          "goal_error": 0.028654638577921165,
+          "rms_cross_track": 1.4310934189897947e-16,
+          "max_cross_track": 4.440892098500626e-16,
+          "max_overshoot": 0.0,
+          "min_clearance": 0.30000000000000004,
+          "simulated_seconds": 20.900000000000002,
+          "max_command_acceleration": 1.5008030258177067,
+          "max_command_angular_acceleration": 0.0,
+          "wall_seconds": 2.5269493790110573,
+          "planner_mean_ms": 10.478792578947374,
+          "planner_p95_ms": 11.484438
+        }
+      ],
+      "status": "PASS",
+      "case_count": 14
+    },
+    {
+      "directory": "balanced_corridor",
+      "metadata": {
+        "config_sha256": "9497359156d09617341a203f32428934c57dacba24efc1791ed1de7a3c64b706",
+        "model_sha256": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8",
+        "scenario": "/home/xxz/work/neupan_noetic_bundle/neupan_cpp/neupan_cpp_ros1/config/scenario_corridor.yaml",
+        "goal": [
+          4.4,
+          -0.5
+        ]
+      },
+      "summary": {
+        "passed": true,
+        "arrived": true,
+        "collision": false,
+        "min_clearance": 0.17139630189946803,
+        "goal_error": 0.01985637371161029,
+        "final_pose": [
+          4.380189355388846,
+          -0.5013468248088262,
+          0.05901906136570212
+        ],
+        "simulated_seconds": 77.30000000000001,
+        "wall_seconds": 20.960549141978845
+      },
+      "status": "PASS",
+      "core_planner_ms": {
+        "mean": 18.408103915912037,
+        "p95": 24.658106,
+        "max": 29.928137
+      }
+    },
+    {
+      "directory": "rviz_corridor_20261021_211007",
+      "metadata": {
+        "backend": "ros_rviz",
+        "model": "/home/xxz/neupan_noetic_ws/src/neupan_cpp_ros1/models/fw_mini.bin",
+        "model_sha256": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8",
+        "config_sha256": "9497359156d09617341a203f32428934c57dacba24efc1791ed1de7a3c64b706",
+        "scenario_file": "/home/xxz/neupan_noetic_ws/src/neupan_cpp_ros1/config/scenario_corridor.yaml",
+        "output": "/home/xxz/neupan_sim_results/rviz_corridor_20261021_211007",
+        "command_topic": "/neupan_sim/cmd_vel"
+      },
+      "summary": {
+        "collision_count": 0,
+        "min_true_clearance": 0.17164897863921813,
+        "goals": [
+          {
+            "goal": [
+              2.998967170715332,
+              -0.8446457386016846
+            ],
+            "wall_seconds": 10.301246318034828,
+            "status": "arrived",
+            "final_pose": [
+              2.99635369512093,
+              -0.823506484290244,
+              -1.3982878543077943
+            ],
+            "goal_error": 0.021300195480940868,
+            "arrived_wall_seconds": 80.04793261602754
+          },
+          {
+            "goal": [
+              -1.8716301918029785,
+              0.7279648780822754
+            ],
+            "wall_seconds": 1106.512456622033,
+            "status": "arrived",
+            "final_pose": [
+              -1.8579330336307633,
+              0.7105216546464125,
+              2.2746483045107664
+            ],
+            "goal_error": 0.022178326939336926,
+            "arrived_wall_seconds": 1163.6559434540104
+          }
+        ],
+        "final_pose": [
+          -1.8579330336307633,
+          0.7105216546464125,
+          2.2746483045107664
+        ],
+        "arrived": true,
+        "note": "Ideal diff plant. Collision is latched and requires a pose reset."
+      },
+      "status": "PASS",
+      "goal_elapsed_seconds": [
+        69.74668629799271,
+        57.1434868319775
+      ],
+      "rows": 15564,
+      "last_logged_wall_seconds": 1729.0181964430376,
+      "last_command": {
+        "raw_v": 0.0,
+        "raw_w": 0.0,
+        "applied_v": 0.0,
+        "applied_w": 0.0
+      },
+      "last_goal_error_from_csv": 0.022178326939336926
+    },
+    {
+      "directory": "rviz_corridor_20261021_213926",
+      "metadata": {
+        "backend": "ros_rviz",
+        "model": "/home/xxz/neupan_noetic_ws/src/neupan_cpp_ros1/models/fw_mini.bin",
+        "model_sha256": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8",
+        "config_sha256": "9497359156d09617341a203f32428934c57dacba24efc1791ed1de7a3c64b706",
+        "scenario_file": "/home/xxz/neupan_noetic_ws/src/neupan_cpp_ros1/config/scenario_corridor.yaml",
+        "output": "/home/xxz/neupan_sim_results/rviz_corridor_20261021_213926",
+        "command_topic": "/neupan_sim/cmd_vel"
+      },
+      "summary": {
+        "collision_count": 0,
+        "min_true_clearance": 0.6080280668599859,
+        "goals": [
+          {
+            "goal": [
+              4.4,
+              -0.5
+            ],
+            "wall_seconds": 2.0011469459859654,
+            "status": "tracking"
+          }
+        ],
+        "final_pose": [
+          -3.9803815590240914,
+          -0.001481820258322294,
+          -0.15522716848179705
+        ],
+        "arrived": false,
+        "note": "Ideal diff plant. Collision is latched and requires a pose reset."
+      },
+      "status": "INCOMPLETE",
+      "goal_elapsed_seconds": [
+        null
+      ],
+      "rows": 22,
+      "last_logged_wall_seconds": 2.5356218550004996,
+      "last_command": {
+        "raw_v": 0.038069699882188154,
+        "raw_w": -0.4,
+        "applied_v": 0.038069699882188154,
+        "applied_w": -0.4
+      },
+      "last_goal_error_from_csv": 8.400149764473817
+    },
+    {
+      "directory": "rviz_corridor_20261021_213935",
+      "metadata": {
+        "backend": "ros_rviz",
+        "model": "/home/xxz/neupan_noetic_ws/src/neupan_cpp_ros1/models/fw_mini.bin",
+        "model_sha256": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8",
+        "config_sha256": "9497359156d09617341a203f32428934c57dacba24efc1791ed1de7a3c64b706",
+        "scenario_file": "/home/xxz/neupan_noetic_ws/src/neupan_cpp_ros1/config/scenario_corridor.yaml",
+        "output": "/home/xxz/neupan_sim_results/rviz_corridor_20261021_213935",
+        "command_topic": "/neupan_sim/cmd_vel"
+      },
+      "summary": {
+        "collision_count": 0,
+        "min_true_clearance": 0.17162523522129064,
+        "goals": [
+          {
+            "goal": [
+              4.4,
+              -0.5
+            ],
+            "wall_seconds": 2.001374242012389,
+            "status": "arrived",
+            "final_pose": [
+              4.382589760871039,
+              -0.5010810843322526,
+              0.05884464476204412
+            ],
+            "goal_error": 0.017443771663864637,
+            "arrived_wall_seconds": 78.75559066899586
+          }
+        ],
+        "final_pose": [
+          4.382589760871039,
+          -0.5010810843322526,
+          0.05884464476204412
+        ],
+        "arrived": true,
+        "note": "Ideal diff plant. Collision is latched and requires a pose reset."
+      },
+      "status": "PASS",
+      "goal_elapsed_seconds": [
+        76.75421642698348
+      ],
+      "rows": 791,
+      "last_logged_wall_seconds": 88.33299219299806,
+      "last_command": {
+        "raw_v": 0.0,
+        "raw_w": 0.0,
+        "applied_v": 0.0,
+        "applied_w": 0.0
+      },
+      "last_goal_error_from_csv": 0.017443771663864637
+    }
+  ]
+}
