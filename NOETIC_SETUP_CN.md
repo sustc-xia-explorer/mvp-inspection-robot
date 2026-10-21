@@ -164,10 +164,12 @@ rosrun neupan_cpp_ros1 smoke_test.py
 
 使用你已配置好的 Python NeuPAN 环境。先核实实际车体外轮廓：默认 0.495×0.360 m 只来自底盘手册；突出设备必须计入。`base_link` 暂按轮廓中心定义。
 
-同时修改以下两个配置的尺寸：
+如果安装外轮廓发生变化，统一修改训练和实际加载的规划配置尺寸；保留对照实验时也须使用匹配的模型：
 
 - `neupan_cpp_ros1/config/fw_mini_dune_train.yaml`
+- `neupan_cpp_ros1/config/fw_mini_balanced.yaml`（当前默认候选）
 - `neupan_cpp_ros1/config/fw_mini.yaml`
+- `neupan_cpp_ros1/config/fw_mini_sim.yaml`
 
 这里 `wheelbase: 0.0` 对应几何参考点约定，不能把物理轴距 0.35 m 直接填进来；本实现的该参数会平移 footprint。若 base_link 不在几何中心，需要统一训练和规划的参考点约定。
 
@@ -248,6 +250,8 @@ rosrun tf tf_echo camera_init base_link
 
 本步骤要求模型和 TF 已就绪，但不自动启动底盘驱动：
 
+当前默认加载 `config/fw_mini_balanced.yaml`，与 RViz 入口共用同一套候选参数。2026-10-21 的开发机调参结果为 7/7 原场景、14/14 扩展场景及完整四障碍走廊通过，实车验收仍待完成，详见 [调参报告](PARAMETER_TUNING_CN.md)。传入 `config_file:=...` 可显式选择旧基线或其他候选。
+
 ```bash
 source ~/neupan_noetic_build/activate.bash
 roslaunch neupan_cpp_ros1 fw_mini.launch \
@@ -266,7 +270,7 @@ rostopic echo /neupan_cmd_vel
 
 示例目标坐标只用于说明接口，运行前替换成当前地图中的有效目标。当前版本只有直线路径处理，不会仅凭目标点自动绕过墙体生成全局可行路径；复杂地图应提供经过全局规划的 `/initial_path`。
 
-`fw_mini.yaml` 起步值为参考速度 0.15 m/s、最大纵向速度 0.2 m/s、最大角速度 0.4 rad/s。需要在底盘模式二 CAN 控制验证后再调整；这些参数不构成已验证的车辆动力学模型。
+当前候选和保留的 `fw_mini.yaml` 均使用参考速度 0.15 m/s、最大纵向速度 0.2 m/s、最大角速度 0.4 rad/s。需要在底盘模式二 CAN 控制验证后再调整；这些参数不构成已验证的车辆动力学模型。
 
 ## 10. 底盘接入前的具体接口要求
 
