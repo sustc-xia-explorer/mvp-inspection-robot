@@ -4,6 +4,8 @@
 
 目前已完成独立 C++ 核心的 Eigen 3.3 兼容、ROS1 接口、FW-mini DUNE 训练/导出辅助工具、数值回归、虚拟闭环以及可在 RViz 点选终点的走廊绕障仿真。当前运动模型为 **diff，控制量为纵向速度 vx 与角速度 wz**；全向横移和实车完整闭环尚未完成。
 
+2026-10-21 调参后，仿真与实机规划入口统一默认加载 `config/fw_mini_balanced.yaml`。该候选在开发机通过原 7 场景、14 个扩展场景及完整四障碍走廊，到达门限保持 0.10 m；旧配置保留供对照。参数选择与完整数据见 [调参报告](PARAMETER_TUNING_CN.md)，该结果尚不代表实车闭环验收完成。
+
 本文以本目录的实际代码和验证记录为准。遗留 ROS2 源文件和旧启动文件是上游参考材料，不代表当前 ROS1 的安装入口或完成状态。
 
 
@@ -95,7 +97,8 @@ mvp-inspection-robot/
 │   │   └── livox_scan.launch         # PointCloud2 → LaserScan
 │   ├── config/
 │   │   ├── fw_mini.yaml              # 原 FW-mini 回归基线
-│   │   ├── fw_mini_sim.yaml          # 交互仿真控制参数
+│   │   ├── fw_mini_sim.yaml          # 旧交互仿真参数
+│   │   ├── fw_mini_balanced.yaml     # 当前仿真/实机入口统一候选
 │   │   ├── fw_mini_dune_train.yaml   # DUNE 训练配置
 │   │   ├── smoke.yaml               # 原默认模型的软件接口自检
 │   │   ├── scenario_corridor.yaml
@@ -282,26 +285,26 @@ FW-mini 初始矩形轮廓为长 0.495 m、宽 0.360 m，参考速度 0.15 m/s�
 
 这里 `wheelbase: 0.0` 参与轮廓参考点定义，不是底盘物理轴距参数，不能直接填入手册中的物理轴距。
 
-| 参数 | 回归基线 `fw_mini.yaml` | 交互仿真 `fw_mini_sim.yaml` |
-| --- | --- | --- |
-| 预测步数 / 步长 | 10 / 0.1 s | 15 / 0.1 s |
-| `q_s` | 1.0 | `[6, 6, 0.5]` |
-| `close_threshold` | 0.10 m | 0；在前向范围搜索最近点 |
-| `eta` | 15 | 1 |
-| `d_min` / `d_max` | 0.10 / 0.50 m | 0.05 / 0.15 m |
-| `ro_obs` | 10 | 200 |
-| `collision_threshold` | 0.03 m | 0.03 m |
-| 到达距离门限 | 0.10 m | 0.10 m |
+| 参数 | 原基线 `fw_mini.yaml` | 旧仿真 `fw_mini_sim.yaml` | 当前候选 `fw_mini_balanced.yaml` |
+| --- | --- | --- | --- |
+| 预测步数 / 步长 | 10 / 0.1 s | 15 / 0.1 s | 10 / 0.1 s |
+| `q_s` | 1.0 | `[6, 6, 0.5]` | `[4, 4, 1]` |
+| `close_threshold` / `ind_range` | 0.10 m / 10 | 0 / 30 | 0 / 30 |
+| `eta` | 15 | 1 | 1 |
+| `d_min` / `d_max` | 0.10 / 0.50 m | 0.05 / 0.15 m | 0.10 / 0.20 m |
+| `ro_obs` | 10 | 200 | 200 |
+| `collision_threshold` | 0.03 m | 0.03 m | 0.03 m |
+| 到达距离门限 | 0.10 m | 0.10 m | 0.10 m |
 
-这些是不同实验配置。新配置和路径平滑的收益不能归为单纯的 C++ 移植收益。当前两个 ROS1 规划入口的控制频率均为 10 Hz；修改 `step_time` 时须同步检查控制频率。
+旧配置保留用于实现对照，当前两个 ROS1 规划入口共用 balanced 候选。参数调整和路径平滑的收益不能归为单纯的 C++ 移植收益。两个入口的控制频率均为 10 Hz；修改 `step_time` 时须同步检查控制频率。
 
 交互仿真中相关距离的含义：
 
 | 判定或参数 | 当前值 | 含义 |
 | --- | --- | --- |
 | `collision_threshold` | 0.03 m | DUNE 估计的当前车体轮廓到最近障碍点距离低于此值时，规划器强制零速度 |
-| `adjust.d_min` | 0.05 m | 优化中的间距要求，存在松弛项，并非绝对硬保证 |
-| `adjust.d_max` | 0.15 m | 优化间距变量上限，不是停车距离 |
+| `adjust.d_min` | 0.10 m | 优化中的间距要求，存在松弛项，并非绝对硬保证 |
+| `adjust.d_max` | 0.20 m | 优化间距变量上限，不是停车距离 |
 | 场景 `safety_margin` | 0.04 m | A* 外接圆之外的额外余量，另有网格覆盖范围 |
 | 真实碰撞 | 间距 ≤ 0 m | 仿真独立计算的矩形车体碰撞判定 |
 
@@ -402,14 +405,18 @@ source ~/neupan_noetic_build/activate.bash
 rosrun neupan_cpp_ros1 simulation_test.py \
   --cases all --output ~/neupan_sim_results/ros_fw
 
-# 使用交互仿真参数做回归；原基线保留
+# 使用当前统一候选做回归；原基线保留
 python3 neupan_cpp_ros1/scripts/simulation_test.py \
   --backend core --cases all \
-  --config neupan_cpp_ros1/config/fw_mini_sim.yaml \
-  --output ~/neupan_sim_results/core_visual_profile
+  --config neupan_cpp_ros1/config/fw_mini_balanced.yaml \
+  --output ~/neupan_sim_results/core_balanced
+
+# 额外的 14 个转角/走廊变化场景，默认使用统一候选
+python3 tools/validate_balanced_profile.py \
+  --output ~/neupan_sim_results/balanced_extended
 ```
 
-默认使用 `fw_mini.yaml` 和 `fw_mini.bin`，可通过 `--config`、`--model`、`--binary` 覆盖。脚本打印实际输出目录，重名时自动追加时间戳，并逐行保存轨迹和打印进度。`--cases all` 遇到未通过项会返回非零退出码，这是实验结果，需要查看失败原因。
+`simulation_test.py` 默认仍使用 `fw_mini.yaml` 和 `fw_mini.bin`，以保持原回归基线；评估当前候选须像上面一样显式传入 balanced 配置。可通过 `--config`、`--model`、`--binary` 覆盖。脚本打印实际输出目录，重名时自动追加时间戳，并逐行保存轨迹和打印进度。`--cases all` 遇到未通过项会返回非零退出码，这是实验结果，需要查看失败原因。
 
 Python 对照需切换到 Python NeuPAN 环境，并保持同配置、同训练权重：
 
@@ -508,16 +515,21 @@ Twist 到 CAN 消息的实车转换、gear/控制权切换、真实反馈和驱�
 | 工控机 `ros_basic` | 3/3 | 直线、朝北、稀疏路径停车 |
 | 工控机无障碍 core / ros_basic 对照 | 状态/动作最大差约 3.75e-15 | 相同三场景逐帧比较 |
 | 原 FW-mini 基线 C++ / Python 七场景 | 均为 5/7 | 开发机，直角终点与窄走廊失败 |
-| 交互仿真参数七场景 | 6/7 | 开发机 C++ 核心，硬直角仍失败 |
+| 旧交互仿真参数七场景 | 6/7 | 开发机 C++ 核心，硬直角仍失败 |
+| 当前 balanced 候选七场景 | 7/7 | 开发机 C++ 核心，到达门限仍为 0.10 m |
+| 当前 balanced 候选扩展场景 | 14/14 | 左右转角、走廊宽度/朝向/偏置变化 |
+| 工控机 balanced 核心回归与扩展 | 7/7 + 14/14 | 与开发机同一参数和模型，见最新工控机报告 |
+| 工控机 balanced 完整四障碍 | 核心与 ROS1/RViz 均通过，无碰撞；ROS1 终点误差 1.74 cm、最小间距 17.16 cm | 完整退出汇总已保存，仍为理想虚拟底盘 |
+| 当前 balanced 候选完整走廊 | 77.3 s，终点误差 1.99 cm，最小真实间距 17.14 cm，无碰撞 | 开发机 C++ 核心；工控机完整接口结果另列 |
 | 加宽走廊、平滑路径、实际 FW-mini 模型 | 77.3 s 仿真时间，目标误差约 2.04 cm，最小真实间距约 16.4 cm，无碰撞 | 开发机 C++ 核心 |
 | 同一完整走廊 ROS1 闭环 | 约 78.5 s 墙钟，目标误差约 2.036 cm，最小真实间距约 16.404 cm，无碰撞 | Ubuntu 22.04 隔离 ROS1 1.15.14，关闭 RViz GUI |
-| 工控机完整 RViz 图形界面及实车循迹 | 待进一步确认/验收 | 不计入已通过项目 |
+| 工控机实车循迹 | 待进一步确认/验收 | 不计入已通过项目 |
 
 工控机若干 `core_fw` 完整运行只留下前四场景结果：三项通过、直角失败，走廊无完整轨迹/summary，后续场景未生成。它们不能当作“七场景已完成”。原始数据在开发机 `work/neupan_sim_results`，本 Git 模块只提供结果说明与生成工具。
 
 当前限制：
 
-1. **硬直角和大角度转弯尚未完成系统验收。** 原基线直角已转过 90°，但最后距目标约 13.6 cm，未进入 10 cm 到达门限；相同条件 Python 核心也如此。交互仿真参数直接跟踪该硬折线时会停在拐角附近，平滑绕障路径则已通过。不能概括为“所有 90° 都不能转”，也不能把平滑路径成功等同于硬转角问题已解决。
+1. **转角证据仍限于已测试条件。** 原基线与旧仿真参数的硬直角问题在 balanced 候选中已通过，左右 60°/90°/120°及旋转后的直角也已有开发机闭环证据。工控机核心及 ROS1 虚拟底盘也已复现。尚未覆盖任意转角、噪声、轮胎与执行延迟，实车验证仍待完成。
 2. **当前仅 diff、矩形轮廓、line 路径处理、loop=false。** 全向 vy、三自由度控制及其他曲线类型未完成移植。
 3. **实际连续指令的加速度边界尚待处理。** 当前 QP 约束预测序列相邻控制，没有把上周期实际执行控制作为首拍边界。已见原始指令变化超过配置 max_acce，现有场景 PASS 不包含这项验收。
 4. **原始窄口地图和动态障碍未验收。** 默认交互图已加宽，全局 A* 为静态地图规划；保守外接圆可能拒绝矩形实际可通过的姿态。
@@ -525,6 +537,8 @@ Twist 到 CAN 消息的实车转换、gear/控制权切换、真实反馈和驱�
 6. **轻量化加速倍数尚无完整同机证据。** 不以无障碍耗时、不同参数结果或单次 PASS 作为正式结论。
 
 具体记录见 [VALIDATION_CN.md](VALIDATION_CN.md) 和 [IPC_RESULTS_ANALYSIS_CN.md](IPC_RESULTS_ANALYSIS_CN.md)。
+
+balanced 参数的工控机完整复测与各入口配置清单见 [2026-10-21 工控机最新结果](IPC_RESULTS_20261021_CN.md)。
 
 ## 12. 轻量化实验方法
 
