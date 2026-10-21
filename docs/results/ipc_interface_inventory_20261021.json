@@ -1,0 +1,20 @@
+{
+  "shared_candidate": "fw_mini_balanced.yaml",
+  "formal_defaults": [
+    "neupan_cpp_ros1/launch/fw_mini.launch",
+    "neupan_cpp_ros1/launch/sim_complete.launch",
+    "tools/validate_rviz_sim.py",
+    "tools/validate_balanced_profile.py"
+  ],
+  "original_baseline_defaults": {
+    "neupan_cpp_ros1/scripts/simulation_test.py": "fw_mini.yaml (override --config)",
+    "tools/compare_simulations.py": "fw_mini.yaml (override --config; plotting/comparison only)"
+  },
+  "selftest": "neupan_cpp_ros1.launch and smoke_test.py use smoke.yaml / diff_default.bin; fw_mini.launch overrides these when including the generic launch",
+  "training": "fw_mini_dune_train.yaml, footprint matches current robot; independent training settings",
+  "outside_scope": [
+    "independent ROS2 Python configuration",
+    "pointcloud projection heights/ranges and calibrated TF",
+    "chassis CAN interface and command continuity"
+  ]
+}
