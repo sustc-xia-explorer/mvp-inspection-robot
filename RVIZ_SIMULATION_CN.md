@@ -2,13 +2,15 @@
 
 这套入口对应原来的 `ros2 launch neupan_ros2 sim_complete.launch.py sim_env_config:=scenario_corridor.yaml` 操作方式。规划器实际运行本仓库的 `neupan_cpp_ros1/neupan_node`，加载你的 `fw_mini.bin`；环境、扫描和理想 diff 虚拟底盘由 `scripts/rviz_sim.py` 提供。
 
+2026-10-21 调参后，`sim_complete.launch` 与实机入口 `fw_mini.launch` 已统一默认加载 `config/fw_mini_balanced.yaml`。该候选在开发机通过原 7 场景、14 个扩展场景及完整四障碍走廊；到达门限保持 0.10 m。原 `fw_mini.yaml`、`fw_mini_sim.yaml` 保留作对照，以下旧参数结果属于历史实验。新参数、结果与复现命令见 [调参报告](PARAMETER_TUNING_CN.md)。
+
 ## 更新工控机
 
-将 `neupan_rviz_simulation_update.tar.gz` 复制到工控机 `~/work/`。补充包不包含权重，也不覆盖 `config/fw_mini.yaml`，保留你已训练、导出的 FW-mini 模型。新增控制参数在 `config/fw_mini_sim.yaml`。
+在已有 ROS1 仿真代码目录中使用本次 `neupan_balanced_update.tar.gz`，解压方式见下方与 [调参报告](PARAMETER_TUNING_CN.md)。更新不包含权重、不覆盖原 `config/fw_mini.yaml`。不要在本次更新后再解压旧 `neupan_rviz_simulation_update.tar.gz`，否则会恢复旧 launch 默认值。
 
 ```bash
 cd ~/work/neupan_noetic_bundle/neupan_cpp
-tar -xzf ~/work/neupan_rviz_simulation_update.tar.gz -C .
+tar -xzf ~/work/neupan_balanced_update.tar.gz -C .
 sudo apt install ros-noetic-rviz python3-yaml
 bash tools/build_noetic.sh all
 source ~/neupan_noetic_build/activate.bash
@@ -67,14 +69,19 @@ roslaunch neupan_cpp_ros1 sim_complete.launch \
 | --- | --- |
 | `config/scenario_corridor.yaml` | 起点、默认终点、传感器外参、扫描频率与网格分辨率 |
 | `config/maps/corridor_fw_mini.yaml` | 墙体和内障碍的几何位置 |
-| `config/fw_mini_sim.yaml` | 交互仿真的控制参数 |
+| `config/fw_mini_balanced.yaml` | 当前仿真与实机入口共用的候选参数 |
+| `config/fw_mini_sim.yaml` | 旧交互仿真参数，保留作对照 |
 | `rviz/fw_mini_sim.rviz` | 显示项目、颜色和目标话题 |
 
-`fw_mini_sim.yaml` 与原回归基线 `fw_mini.yaml` 分开。新配置使用 15 步预测、相同 0.1 s 步长、位置/朝向权重 `[6,6,0.5]`、`d_min=0.05`、`d_max=0.15`、`eta=1`。控制频率为 10 Hz；修改步长时须同步调整 launch 的 `control_rate`。车体、DUNE 权重、最大速度仍使用 FW-mini 配置。
+当前 `fw_mini_balanced.yaml` 使用 10 步预测、0.1 s 步长、`q_s=[4,4,1]`、`d_min=0.10`、`d_max=0.20`、`eta=1`、`ro_obs=200`。控制频率为 10 Hz；修改步长时须同步调整 launch 的 `control_rate`。车体、DUNE 权重、最大速度仍使用相同 FW-mini 配置。
+
+以下为旧参数的对照记录：`fw_mini_sim.yaml` 使用 15 步预测、`q_s=[6,6,0.5]`、`d_min=0.05`、`d_max=0.15`、`eta=1`，与原回归基线 `fw_mini.yaml` 分开保存。
 
 `close_threshold=0` 使路径索引在前向搜索范围内查找最近点，关闭“找到半径内第一个点就提前退出”。本次平滑走廊路径在旧索引参数下会停滞，改为最近点搜索后通过。抵达距离仍是 0.10 m，没有扩大抵达阈值。
 
-新配置用于调试可行的仿真闭环。它改变了控制参数和参考路径，不能把它与旧基线的差异算作 C++ 移植本身的收益。7 场景回归中新配置通过 6 个，硬直角 `turn_left` 仍失败；平滑参考路径的成功不等于解决了所有转弯情形。
+旧交互配置改变了控制参数和参考路径，不能把它与原基线的差异算作 C++ 移植本身的收益。旧交互配置的 7 场景回归通过 6 个，硬直角 `turn_left` 失败；后续 balanced 候选在相同硬直角测试中通过，详见本页顶部的调参报告。
+
+2026-10-21 的门限实验曾单独将旧配置到达门限改为 0.20 m，外部终点验收仍保持 0.15 m：原始 `fw_mini.yaml` 从 5/7 提高到 6/7，新增通过的是终点误差约 0.139 m 的硬直角场景；旧 RViz 参数仍为 6/7，硬直角停在距目标约 0.982 m 处。该历史对照与后续 balanced 调参分开记录，详见 [到达门限对照](ARRIVAL_THRESHOLD_ANALYSIS_CN.md)。当前候选的到达门限仍是 0.10 m。
 
 ## 数据流和记录
 
@@ -106,6 +113,6 @@ python3 tools/validate_rviz_sim.py \
   --output ~/neupan_sim_results/rviz_core_check
 ```
 
-已在开发机用实际 FW-mini 权重完成加宽走廊核心闭环：77.3 s 仿真时间到达，终点误差 0.0204 m，最小真实车体间距 0.1640 m，无碰撞。开发机隔离 ROS1 1.15.14 环境还实际运行了同一个 launch（`use_rviz=false`），先检查首个障碍，再完成四处障碍全程：约 78.5 s 墙钟、终点误差 0.02036 m、最小真实间距 0.16404 m、无碰撞；同时检查无目标停车、障碍内目标拒绝、TF/扫描/轨迹、话题隔离和重设起点。完整测试结果保存在 `work/neupan_sim_results/rviz_ros_full_corridor_20261019/validation.json`，其中先完成目标再测试起点重设，故该次 `run/summary.json` 的最终位置已回到起点。开发机为 Ubuntu 22.04；工控机 Ubuntu 20.04/Noetic 与 RViz 图形界面的最终检查仍需执行上面的启动命令。
+旧配置已在开发机用实际 FW-mini 权重完成加宽走廊核心闭环：77.3 s 仿真时间到达，终点误差 0.0204 m，最小真实车体间距 0.1640 m，无碰撞。开发机隔离 ROS1 1.15.14 环境还实际运行了旧配置的同一个 launch（`use_rviz=false`），先检查首个障碍，再完成四处障碍全程：约 78.5 s 墙钟、终点误差 0.02036 m、最小真实间距 0.16404 m、无碰撞；同时检查无目标停车、障碍内目标拒绝、TF/扫描/轨迹、话题隔离和重设起点。完整测试结果保存在 `work/neupan_sim_results/rviz_ros_full_corridor_20261019/validation.json`，其中先完成目标再测试起点重设，故该次 `run/summary.json` 的最终位置已回到起点。后续 balanced 候选的开发机完整核心闭环终点误差为 0.01986 m、最小真实间距 0.17140 m。工控机随后已完成同参数的核心及 ROS1/RViz 全程，最新结果见下方链接；开发机与工控机证据分开记录。
 
-完整工控机原始结果分析见 `IPC_RESULTS_ANALYSIS_CN.md`。原基线的直角终点不收敛、未完成的障碍场景以及实际输出加速度问题仍应单独验收，当前结果不能作为实车已经可以直接循迹的结论。
+最新工控机 balanced 原 7 项、扩展 14 项、核心完整走廊及 ROS1/RViz 默认全程均已通过，ROS1 全程终点误差约 1.74 cm、最小真实间距约 17.16 cm，退出汇总完整，见 [工控机最新结果](IPC_RESULTS_20261021_CN.md)。本页前面 2026-10-19 的 ROS1 数值保留作旧配置历史记录。原始输出加速度和实车接口仍需单独验收。
