@@ -17,7 +17,7 @@ def main():
     spec = importlib.util.spec_from_file_location('rviz_sim', scripts/'rviz_sim.py')
     sim = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sim)
-    from simulation_test import CoreBackend, clean_json, path_error, plot_case
+    from simulation_test import CoreBackend, clean_json, path_error, plot_case, limit_command
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--scenario', type=Path, default=root/'neupan_cpp_ros1/config/scenario_corridor.yaml')
     parser.add_argument('--config', type=Path, default=root/'neupan_cpp_ros1/config/fw_mini_balanced.yaml')
@@ -42,6 +42,9 @@ def main():
     state, rows, settled = list(world.config['initial_pose']), [], 0.
     args.dt = float(world.planner['step_time'])
     backend = CoreBackend(args, scene, folder)
+    applied, max_rates, max_target_rates, last_target = (0., 0.), [0., 0.], [0., 0.], (0., 0.)
+    robot = world.robot
+    emergency_stops = 0
     minimum, arrived, collision, started = float('inf'), False, False, time.monotonic()
     with (folder/'trajectory.csv').open('w', newline='') as stream:
         writer = None
@@ -51,14 +54,29 @@ def main():
                 v, w, info = backend.step(state, ranges, points)
                 if not all(math.isfinite(x) for x in (v, w)):
                     raise RuntimeError('Non-finite planner command')
+                target = (v, w)
+                emergency_stops += bool(info.get('stop'))
+                for j in range(2):
+                    max_target_rates[j] = max(max_target_rates[j], abs(target[j]-last_target[j])/args.dt)
+                last_target = target
+                rates = [0., 0.]
                 for _ in range(5):
-                    state = sim.integrate(state, v, w, args.dt/5)
+                    previous = applied
+                    applied = limit_command(target, applied, robot['max_speed'], robot['max_acce'], args.dt/5)
+                    for j in range(2):
+                        rates[j] = max(rates[j], abs(applied[j]-previous[j])/(args.dt/5))
+                        max_rates[j] = max(max_rates[j], rates[j])
+                    state = sim.integrate(state, *applied, args.dt/5)
                     gap = world.clearance(state)
                     minimum = min(minimum, gap)
                     collision |= gap <= 0
+                backend.set_applied(*applied)
+                v, w = applied
                 arrived = bool(info['arrive'])
                 settled = settled+args.dt if arrived and abs(v) < .01 and abs(w) < .02 else 0.
                 row = dict(time=(index+1)*args.dt, x=state[0], y=state[1], yaw=state[2], v=v, w=w,
+                           requested_v=target[0], requested_w=target[1], raw_v=info['raw_v'], raw_w=info['raw_w'],
+                           acceleration=rates[0], angular_acceleration=rates[1],
                            clearance=gap, cross_track=path_error(state, path),
                            goal_error=math.dist(state[:2], goal), planner_ms=info['planner_ms'],
                            solved=info['solved'], arrive=arrived)
@@ -75,7 +93,13 @@ def main():
                     break
         finally:
             backend.close()
-    summary = dict(passed=arrived and settled >= 1 and not collision and minimum >= .03,
+    limits_passed = all(max_rates[j] <= robot['max_acce'][j]+1e-8 and
+                        max_target_rates[j] <= robot['max_acce'][j]+1e-8 for j in range(2))
+    summary = dict(passed=arrived and settled >= 1 and not collision and minimum >= .03 and limits_passed,
+                   acceleration_passed=limits_passed, max_command_acceleration=max_rates[0],
+                   max_command_angular_acceleration=max_rates[1],
+                   max_planner_command_acceleration=max_target_rates[0],
+                   max_planner_command_angular_acceleration=max_target_rates[1], emergency_stops=emergency_stops,
                    arrived=arrived, collision=collision, min_clearance=minimum,
                    goal_error=math.dist(state[:2], goal), final_pose=state,
                    simulated_seconds=len(rows)*args.dt, wall_seconds=time.monotonic()-started)
