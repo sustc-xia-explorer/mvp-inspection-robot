@@ -14,6 +14,7 @@ import yaml
 
 # Also works through catkin's devel-space relay and after catkin install.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from command_guard import limit_command
 from simulation_test import (clearance, create_output_directory, integrate,
                              ray_range, rotate, sensor_pose)
 
@@ -178,7 +179,7 @@ class World:
 def run_ros():
     import rospy
     import tf2_ros
-    from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped, TransformStamped, Twist
+    from geometry_msgs.msg import PoseStamped, PoseWithCovarianceStamped, TransformStamped, Twist, TwistStamped
     from nav_msgs.msg import OccupancyGrid, Odometry, Path as ROSPath
     from sensor_msgs.msg import LaserScan
     from std_msgs.msg import Bool
@@ -198,12 +199,16 @@ def run_ros():
                 raise ValueError('Initial pose collides with an obstacle')
             self.lock = threading.RLock()
             self.command, self.receipt = (0., 0.), 0.
+            self.applied = (0., 0.)
+            self.emergency = False
+            self.max_acceleration = [0., 0.]
             self.goal, self.pending_goal, self.pending_pose = None, None, None
             self.active, self.acknowledged, self.arrived, self.collided = False, False, False, False
             self.min_clearance, self.collisions = float('inf'), 0
             self.goal_history = []
             self.history = ROSPath()
             self.tf, self.static = tf2_ros.TransformBroadcaster(), tf2_ros.StaticTransformBroadcaster()
+            self.applied_pub = rospy.Publisher('applied_cmd_vel', TwistStamped, queue_size=1)
             self.scan_pub = rospy.Publisher('scan', LaserScan, queue_size=1)
             self.map_pub = rospy.Publisher('map', OccupancyGrid, queue_size=1, latch=True)
             self.obstacles_pub = rospy.Publisher('obstacles', MarkerArray, queue_size=1, latch=True)
@@ -211,7 +216,8 @@ def run_ros():
             self.path_pub = rospy.Publisher('initial_path', ROSPath, queue_size=1, latch=True)
             self.trace_pub = rospy.Publisher('actual_path', ROSPath, queue_size=1)
             self.odom_pub = rospy.Publisher('odom', Odometry, queue_size=1)
-            self.subs = [rospy.Subscriber('cmd_vel', Twist, self.on_command, queue_size=1),
+            self.subs = [rospy.Subscriber('emergency_stop', Bool, self.on_emergency, queue_size=1),
+                         rospy.Subscriber('cmd_vel', Twist, self.on_command, queue_size=1),
                          rospy.Subscriber('goal', PoseStamped, self.on_goal, queue_size=1),
                          rospy.Subscriber('initialpose', PoseWithCovarianceStamped, self.on_pose, queue_size=1),
                          rospy.Subscriber('neupan_arrive', Bool, self.on_arrive, queue_size=1),
@@ -221,7 +227,8 @@ def run_ros():
             self.log = (self.output/'trajectory.csv').open('w', newline='')
             self.writer = csv.writer(self.log)
             self.writer.writerow(['wall_seconds', 'x', 'y', 'yaw', 'raw_v', 'raw_w',
-                                  'applied_v', 'applied_w', 'true_clearance', 'arrived', 'collision'])
+                                  'applied_v', 'applied_w', 'true_clearance', 'arrived', 'collision',
+                                  'dt', 'acceleration', 'angular_acceleration', 'stop_override'])
             (self.output/'planner.yaml').write_text(self.world.robot_file.read_text())
             (self.output/'scenario.yaml').write_text(self.world.scenario_file.read_text())
             (self.output/'map.yaml').write_text(self.world.map_file.read_text())
@@ -236,6 +243,10 @@ def run_ros():
             self.publish_static()
             rospy.on_shutdown(self.close)
             rospy.loginfo('FW-mini simulation ready. Use RViz 2D Nav Goal. Results: %s', self.output)
+
+        def on_emergency(self, msg):
+            with self.lock:
+                self.emergency = msg.data
 
         def on_command(self, msg):
             with self.lock:
@@ -388,6 +399,8 @@ def run_ros():
                 self.log.close()
                 summary = dict(collision_count=self.collisions, min_true_clearance=self.min_clearance,
                                goals=self.goal_history, final_pose=self.state, arrived=self.arrived,
+                               max_normal_acceleration=self.max_acceleration[0],
+                               max_normal_angular_acceleration=self.max_acceleration[1],
                                note='Ideal diff plant. Collision is latched and requires a pose reset.')
                 (self.output/'summary.json').write_text(json.dumps(summary, indent=2)+'\n')
 
@@ -406,6 +419,7 @@ def run_ros():
                             if self.goal_history and self.goal_history[-1].get('status') == 'tracking':
                                 self.goal_history[-1]['status'] = 'pose_reset'
                             self.state, self.goal = pose, None
+                            self.applied = (0., 0.)
                             self.active, self.acknowledged, self.arrived, self.collided = False, False, False, False
                             self.command, self.receipt = (0., 0.), 0.
                             self.history.poses = []
@@ -435,6 +449,7 @@ def run_ros():
                             rospy.logwarn('Goal rejected: %s', ex)
                             self.goal = None
                             self.path_pub.publish(self.path_message([], rospy.Time.now()))
+                    previous_applied = self.applied
                     raw_v, raw_w = self.command
                     v, w = raw_v, raw_w
                     if (not self.active or not self.acknowledged or self.arrived or self.collided or
@@ -442,8 +457,10 @@ def run_ros():
                         v, w = 0., 0.
                     if not math.isfinite(v) or not math.isfinite(w):
                         v, w = 0., 0.
-                    v = max(-self.world.robot['max_speed'][0], min(self.world.robot['max_speed'][0], v))
-                    w = max(-self.world.robot['max_speed'][1], min(self.world.robot['max_speed'][1], w))
+                    self.applied = (0., 0.) if self.collided or self.emergency else limit_command(
+                        (v, w), self.applied, self.world.robot['max_speed'],
+                        self.world.robot['max_acce'], max(dt, 1e-6))
+                    v, w = self.applied
                     for _ in range(5):
                         candidate = integrate(self.state, v, w, dt/5)
                         gap = self.world.clearance(candidate)
@@ -458,6 +475,11 @@ def run_ros():
                             break
                         self.state = candidate
                     stamp = rospy.Time.now()
+                    self.applied = (v, w)
+                    applied = TwistStamped()
+                    applied.header.stamp, applied.header.frame_id = stamp, self.base
+                    applied.twist.linear.x, applied.twist.angular.z = self.applied
+                    self.applied_pub.publish(applied)
                     self.publish_state(stamp, v, w, self.world.clearance(self.state))
                     if now-last_scan >= 1/scan_hz:
                         last_scan = now
@@ -474,10 +496,15 @@ def run_ros():
                         self.history.header = pose_msg.header
                         self.history.poses = (self.history.poses+[pose_msg])[-6000:]
                         self.trace_pub.publish(self.history)
-                        if not self.log.closed:
-                            self.writer.writerow([now-self.started, *self.state, raw_v, raw_w, v, w,
-                                                  self.world.clearance(self.state), self.arrived, self.collided])
-                            self.log.flush()
+                    rates = [abs(self.applied[j]-previous_applied[j])/max(dt, 1e-6) for j in range(2)]
+                    stop_override = self.collided or self.emergency or pose is not None
+                    if not stop_override:
+                        self.max_acceleration = [max(a,b) for a,b in zip(self.max_acceleration, rates)]
+                    if not self.log.closed:
+                        self.writer.writerow([now-self.started, *self.state, raw_v, raw_w, v, w,
+                            self.world.clearance(self.state), self.arrived, self.collided,
+                            dt, *rates, stop_override])
+                        self.log.flush()
                 rate.sleep()
 
     rospy.init_node('world')
