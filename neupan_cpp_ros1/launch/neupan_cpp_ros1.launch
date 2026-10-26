@@ -7,6 +7,7 @@
   <arg name="lidar_frame" default="base_link" />
   <arg name="scan_topic" default="/scan" />
   <arg name="cmd_topic" default="/neupan_cmd_vel" />
+  <arg name="applied_cmd_topic" default="" />
   <arg name="control_rate" default="10.0" />
   <node pkg="neupan_cpp_ros1" type="neupan_node" name="neupan_node" output="screen">
     <param name="config_file" value="$(arg config_file)" />
@@ -14,6 +15,7 @@
     <param name="map_frame" value="$(arg map_frame)" />
     <param name="base_frame" value="$(arg base_frame)" />
     <param name="lidar_frame" value="$(arg lidar_frame)" />
+    <param name="applied_cmd_topic" value="$(arg applied_cmd_topic)" />
     <param name="control_rate" value="$(arg control_rate)" />
     <param name="scan_timeout" value="0.5" />
     <param name="pose_timeout" value="0.5" />
