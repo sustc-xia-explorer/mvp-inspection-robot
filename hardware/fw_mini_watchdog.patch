@@ -1,0 +1,110 @@
+--- a/yhs_can_control/include/yhs_can_control/yhs_can_control.h
++++ b/yhs_can_control/include/yhs_can_control/yhs_can_control.h
+@@ -77,6 +77,7 @@
+     void run();
+ 
+ private:
++    friend class CommandWatchdogTest;  // pipe-only transport regression
+     ros::NodeHandle nh_;
+ 
+     // Publishers
+@@ -108,7 +109,9 @@
+     ros::Subscriber imu_sub_;
+ 
+     ros::Time last_imu_time_;
+-    ros::Time last_ctrl_cmd_time_;
++    ros::WallTime last_ctrl_cmd_time_;
++    double ctrl_cmd_timeout_ = 0.3;
++    bool ctrl_cmd_seen_ = false;
+ 
+     boost::mutex cmd_mutex_;
+     std::mutex mutex_;
+@@ -166,7 +169,7 @@
+     yhs_can_msgs::rear_velocity_free_ctrl_cmd current_rear_vel_cmd_;
+ 
+     // --- 定时器 ---
+-    ros::Timer timer_;
++    ros::WallTimer timer_;
+ 
+     // Callbacks
+     void io_cmdCallBack(const yhs_can_msgs::io_cmd::ConstPtr& msg);
+@@ -196,7 +199,7 @@
+     void sendRearFreeCtrlCmd();  // 合并发送后轮的角度和速度
+     void SendAndKeepAlive(); // 封装单次发送逻辑
+     void SendControlBurst(int repeat_count); // 连续发送N次
+-    void timerCallBack(const ros::TimerEvent& event);
++    void timerCallBack(const ros::WallTimerEvent& event);
+ };
+ 
+ }
+--- a/yhs_can_control/src/yhs_can_control.cpp
++++ b/yhs_can_control/src/yhs_can_control.cpp
+@@ -10,6 +10,8 @@
+ #include <boost/thread.hpp>
+ 
+ #include "yhs_can_control.h"
++#include <cmath>
++#include <stdexcept>
+ 
+ namespace yhs_tool
+ {
+@@ -18,6 +20,9 @@
+   {
+     ros::NodeHandle private_node("~");
+ 
++    private_node.param("ctrl_cmd_timeout", ctrl_cmd_timeout_, 0.3);
++    if (!std::isfinite(ctrl_cmd_timeout_) || ctrl_cmd_timeout_ <= 0)
++      throw std::runtime_error("ctrl_cmd_timeout must be finite and positive");
+     std::string ultrasonic_numbers_str;
+     private_node.getParam("ultrasonic_number", ultrasonic_numbers_str);
+     private_node.param("/yhs_can_control/odom_frame", odomFrame_, std::string("odom"));
+@@ -180,7 +185,19 @@
+   void CanControl::ctrl_cmdCallBack(const yhs_can_msgs::ctrl_cmd::ConstPtr& msg)
+   {
+     boost::mutex::scoped_lock lock(cmd_mutex_);
++    if (!std::isfinite(msg->ctrl_cmd_x_linear) ||
++        !std::isfinite(msg->ctrl_cmd_y_linear) ||
++        !std::isfinite(msg->ctrl_cmd_z_angular)) {
++      current_ctrl_cmd_.ctrl_cmd_x_linear = 0;
++      current_ctrl_cmd_.ctrl_cmd_y_linear = 0;
++      current_ctrl_cmd_.ctrl_cmd_z_angular = 0;
++      ctrl_cmd_seen_ = false;
++      ROS_ERROR_THROTTLE(1., "invalid ctrl_cmd; holding zero");
++      return;
++    }
+     current_ctrl_cmd_ = *msg;
++    last_ctrl_cmd_time_ = ros::WallTime::now();
++    ctrl_cmd_seen_ = true;
+   }
+ 
+   void CanControl::sendMotorCmd()
+@@ -847,11 +864,19 @@
+     last_time = current_time;
+   }
+ 
+-  void CanControl::timerCallBack(const ros::TimerEvent& event)
++  void CanControl::timerCallBack(const ros::WallTimerEvent& event)
+   {
+       static int loop_count = 0;
+       boost::mutex::scoped_lock lock(cmd_mutex_);
+ 
++      // Independent of the planner/bridge and of /clock. Only overall mode.
++      if (current_control_mode_ == MODE_CTRL_CMD &&
++          (!ctrl_cmd_seen_ || (ros::WallTime::now()-last_ctrl_cmd_time_).toSec() > ctrl_cmd_timeout_)) {
++          current_ctrl_cmd_.ctrl_cmd_x_linear = 0;
++          current_ctrl_cmd_.ctrl_cmd_y_linear = 0;
++          current_ctrl_cmd_.ctrl_cmd_z_angular = 0;
++          ROS_WARN_THROTTLE(1., "ctrl_cmd timeout; sending zero velocity");
++      }
+       sendMotorCmd(); 
+ 
+       switch (current_control_mode_)
+@@ -963,7 +988,7 @@
+     boost::thread recvdata_thread(boost::bind(&CanControl::recvData, this));
+ 
+     // 启动定时器 (10ms)
+-    timer_ = nh_.createTimer(ros::Duration(0.01), &CanControl::timerCallBack, this);
++    timer_ = nh_.createWallTimer(ros::WallDuration(0.01), &CanControl::timerCallBack, this);
+ 
+     ros::spin();
+     close(dev_handler_);
