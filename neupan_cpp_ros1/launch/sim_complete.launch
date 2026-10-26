@@ -21,6 +21,7 @@
       <param name="map_frame" value="neupan_sim/map" />
       <param name="base_frame" value="neupan_sim/base_link" />
       <param name="lidar_frame" value="neupan_sim/laser" />
+      <param name="applied_cmd_topic" value="/neupan_sim/applied_cmd_vel" />
       <param name="control_rate" value="10.0" />
       <param name="scan_timeout" value="0.5" />
       <param name="pose_timeout" value="0.5" />
@@ -32,6 +33,7 @@
       <remap from="/initial_path" to="initial_path" />
       <remap from="/neupan_waypoints" to="waypoints" />
       <remap from="/neupan_goal" to="direct_goal_unused" />
+      <remap from="/neupan_emergency_stop" to="emergency_stop" />
       <remap from="/neupan_cmd_vel" to="cmd_vel" />
       <remap from="/neupan_arrive" to="neupan_arrive" />
       <remap from="/neupan_diagnostics" to="diagnostics" />
