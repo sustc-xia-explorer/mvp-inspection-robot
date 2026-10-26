@@ -39,6 +39,10 @@ TEST(Replay, EndToEndMatchesPython) {
   NeuPANPlanner planner =
       NeuPANPlanner::fromYaml(kData + "/replay_planner.yaml", kModel);
 
+  auto legacy = planner.config();
+  legacy.enforce_command_acceleration = false;
+  planner = NeuPANPlanner(legacy);
+
   const double scale = planner.robot().max_speed.maxCoeff() / 2.0;  // 4.0
 
   double max_action_diff = 0.0, sum_action_diff = 0.0;
