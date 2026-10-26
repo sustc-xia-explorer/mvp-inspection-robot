@@ -18,6 +18,9 @@ import threading
 import time
 
 import yaml
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from command_guard import limit_command
 
 TAU = 2 * math.pi
 
@@ -183,9 +186,20 @@ class CoreBackend:
         text += ''.join('{} {}\n'.format(x, y) for x, y in points)
         self.proc.stdin.write(text)
         self.proc.stdin.flush()
-        v, w, solved, stop, arrive, distance, ms = map(float, self.read().split())
+        values = list(map(float, self.read().split()))
+        v, w, solved, stop, arrive, distance, ms = values[:7]
+        self.supports_applied = len(values) == 10
+        raw_v, raw_w, braking = values[7:] if len(values) == 10 else (v, w, 0)
         return v, w, dict(solved=bool(solved), stop=bool(stop), arrive=bool(arrive),
-                          dune_distance=distance, planner_ms=ms)
+                          dune_distance=distance, planner_ms=ms, raw_v=raw_v, raw_w=raw_w, braking=bool(braking))
+
+    def set_applied(self, v, w):
+        if not self.supports_applied:
+            return  # archived seven-field backends have no APPLIED protocol
+        self.proc.stdin.write("APPLIED {} {}\n".format(v, w))
+        self.proc.stdin.flush()
+        if self.read() != "ACK":
+            raise RuntimeError("applied command feedback failed")
 
     def close(self):
         if self.proc.poll() is None:
@@ -276,7 +290,8 @@ class ROSBackend:
         self.static.sendTransform(extrinsic)
         self.log = (output/'backend.log').open('w')
         rate = 1/args.dt
-        command = ['rosrun', 'neupan_cpp_ros1', 'neupan_node', '__name:=planner', '__ns:='+self.ns,
+        node_command = [os.environ['NEUPAN_ROS_NODE']] if os.environ.get('NEUPAN_ROS_NODE') else ['rosrun', 'neupan_cpp_ros1', 'neupan_node']
+        command = node_command + [ '__name:=planner', '__ns:='+self.ns,
                    '_config_file:='+str(args.config), '_dune_checkpoint:='+str(args.model),
                    '_map_frame:='+self.map, '_base_frame:='+self.base, '_lidar_frame:='+self.laser,
                    '_control_rate:='+str(rate), '_solver_fail_grace:=0',
@@ -284,7 +299,7 @@ class ROSBackend:
                    '/neupan_cmd_vel:='+self.ns+'/cmd', '/neupan_arrive:='+self.ns+'/arrive',
                    '/neupan_diagnostics:='+self.ns+'/diag']
         for name in ['neupan_goal', 'neupan_waypoints', 'neupan_plan', 'neupan_ref_state',
-                     'neupan_initial_path', 'dune_point_markers', 'nrmp_point_markers', 'robot_marker']:
+                     'neupan_initial_path', 'dune_point_markers', 'nrmp_point_markers', 'robot_marker', 'neupan_emergency_stop']:
             command.append('/{}:={}/{}'.format(name, self.ns, name))
         self.proc = subprocess.Popen(command, stdout=self.log, stderr=self.log, start_new_session=True)
         initial = [*scene['path'][0], scene['yaw']]
@@ -433,6 +448,9 @@ def run_case(args, cfg, name, scene):
     trajectory_stream = (folder/'trajectory.csv').open('w', newline='')
     trajectory_writer = None
     settled, ever_arrived, collided = 0.0, False, False
+    applied = (0., 0.)
+    max_rates, max_target_rates, last_target = [0., 0.], [0., 0.], (0., 0.)
+    emergency_stops = 0
     min_clearance, overshoot = float('inf'), 0.0
     start = time.monotonic()
     try:
@@ -447,12 +465,26 @@ def run_case(args, cfg, name, scene):
             if abs(v) > robot['max_speed'][0]+.01 or abs(w) > robot['max_speed'][1]+.01:
                 reasons.append('velocity bound exceeded')
                 break
-            # Collision checks at 50 Hz, rather than only at the controller ticks.
+            target = (v, w)
+            emergency_stops += bool(info.get('stop'))
+            for j in range(2):
+                max_target_rates[j] = max(max_target_rates[j], abs(target[j]-last_target[j])/args.dt)
+            last_target = target
+            # The actual actuator ramps at 50 Hz; these commands drive the plant.
+            rates = [0., 0.]
             for _ in range(5):
-                state = integrate(state, v, w, args.dt/5)
+                previous = applied
+                applied = limit_command(target, applied, robot['max_speed'], robot['max_acce'], args.dt/5)
+                for j in range(2):
+                    rates[j] = max(rates[j], abs(applied[j]-previous[j])/(args.dt/5))
+                    max_rates[j] = max(max_rates[j], rates[j])
+                state = integrate(state, *applied, args.dt/5)
                 gap = clearance(state, scene, length, width, robot.get('wheelbase', 0)/2)
                 min_clearance = min(min_clearance, gap)
                 collided |= gap <= 0
+            if hasattr(backend, 'set_applied'):
+                backend.set_applied(*applied)
+            v, w = applied
             error = path_error(state, scene['path'])
             goal_error = math.dist(state[:2], scene['path'][-1])
             a, b = scene['path'][-2:]
@@ -464,6 +496,9 @@ def run_case(args, cfg, name, scene):
             stopped = abs(v) < .01 and abs(w) < .02
             settled = settled+args.dt if stopped and (arrived or scene['blocked']) else 0.0
             rows.append(dict(time=(index+1)*args.dt, x=state[0], y=state[1], yaw=state[2], v=v, w=w,
+                             requested_v=target[0], requested_w=target[1], raw_v=info.get('raw_v', target[0]),
+                             raw_w=info.get('raw_w', target[1]), acceleration=rates[0], angular_acceleration=rates[1],
+                             emergency_stop=bool(info.get('stop')),
                              cross_track=error, goal_error=goal_error, clearance=gap,
                              obstacle_points=len(points), solved=info['solved'], arrive=arrived,
                              dune_distance=info['dune_distance'], planner_ms=info['planner_ms']))
@@ -508,14 +543,20 @@ def run_case(args, cfg, name, scene):
             reasons.append('obstacle case had no sensor returns')
         if min_clearance < args.min_clearance:
             reasons.append('true clearance below required margin')
+    if any(max_rates[j] > robot['max_acce'][j]+1e-8 for j in range(2)):
+        reasons.append('applied command acceleration bound exceeded')
+    if args.backend == 'core' and any(max_target_rates[j] > robot['max_acce'][j]+1e-8 for j in range(2)):
+        reasons.append('planner command acceleration bound exceeded (including emergency stops)')
     timings = [r['planner_ms'] for r in rows if r['planner_ms'] is not None and math.isfinite(r['planner_ms'])]
     v_stream, w_stream = [0.0]+[r['v'] for r in rows], [0.0]+[r['w'] for r in rows]
     result = dict(case=name, backend=args.backend, passed=not reasons, reasons=reasons,
                   arrived=ever_arrived, collision=collided, goal_error=goal_error,
                   rms_cross_track=rms_cte, max_cross_track=max_cte, max_overshoot=overshoot,
                   min_clearance=min_clearance, simulated_seconds=len(rows)*args.dt,
-                  max_command_acceleration=max((abs(b-a)/args.dt for a, b in zip(v_stream, v_stream[1:])), default=0),
-                  max_command_angular_acceleration=max((abs(b-a)/args.dt for a, b in zip(w_stream, w_stream[1:])), default=0),
+                  max_command_acceleration=max_rates[0],
+                  max_command_angular_acceleration=max_rates[1],
+                  max_planner_command_acceleration=max_target_rates[0],
+                  max_planner_command_angular_acceleration=max_target_rates[1], emergency_stops=emergency_stops,
                   wall_seconds=time.monotonic()-start, planner_mean_ms=sum(timings)/len(timings) if timings else None,
                   planner_p95_ms=percentile(timings, .95))
     (folder/'summary.json').write_text(json.dumps(clean_json(result), indent=2, allow_nan=False)+'\n')
