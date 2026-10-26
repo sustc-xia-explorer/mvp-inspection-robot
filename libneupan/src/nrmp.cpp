@@ -30,9 +30,9 @@ NRMP::NRMP(const Robot& robot, const NRMPParams& params)
   off_e_ = off_d_ + T_;
   nz_ = off_e_ + M_ * T_;
 
-  // rows: init eq (3) | dynamics (3T) | speed (2T) | acce (2(T-1)) |
+  // rows: init eq (3) | dynamics (3T) | speed (2T) | first step (2) | acce (2(T-1)) |
   //       d box (T) | avoidance (M*T) | e >= 0 (M*T)
-  nc_ = 3 + 3 * T_ + 2 * T_ + 2 * (T_ - 1) + T_ + 2 * M_ * T_;
+  nc_ = 3 + 3 * T_ + 2 * T_ + 2 * T_ + T_ + 2 * M_ * T_;
 
   P_.resize(nz_, nz_);
   A_.resize(nc_, nz_);
@@ -74,7 +74,8 @@ void NRMP::buildFaFb(const std::vector<Mat>& mu_list,
 
 void NRMP::assemble(const Mat3X& nom_s, const Mat2X& nom_u, const Mat3X& ref_s,
                     const Vec& ref_us, const std::vector<Mat>& fa_list,
-                    const std::vector<Vec>& fb_list) {
+                    const std::vector<Vec>& fb_list,
+                    const Vec2* applied_command, double command_dt) {
   const Vec3& qs = p_.q_s;
 
   // ---- Hessian P (diagonal) and gradient q ----
@@ -153,6 +154,18 @@ void NRMP::assemble(const Mat3X& nom_s, const Mat2X& nom_u, const Mat3X& ref_s,
     }
   }
 
+  // Anchor the first control to the last applied command, not the nominal's
+  // first column (which changes during PAN iterations). Keep two rows present
+  // in legacy reference solves too, with inactive bounds.
+  for (int r = 0; r < 2; ++r) {
+    aTrip.emplace_back(row, off_u_ + r, 1.0);
+    const double delta = (robot_.acce_bound(r) / robot_.dt) *
+        (command_dt > 0.0 ? command_dt : robot_.dt);
+    lb_(row) = applied_command ? (*applied_command)(r) - delta : -kInf;
+    ub_(row) = applied_command ? (*applied_command)(r) + delta : kInf;
+    ++row;
+  }
+
   // acceleration box: |u_{t+1} - u_t| <= max_acce * dt
   for (int t = 0; t + 1 < T_; ++t) {
     for (int r = 0; r < 2; ++r) {
@@ -205,8 +218,10 @@ void NRMP::assemble(const Mat3X& nom_s, const Mat2X& nom_u, const Mat3X& ref_s,
 NRMP::Result NRMP::solve(const Mat3X& nom_s, const Mat2X& nom_u,
                          const Mat3X& ref_s, const Vec& ref_us,
                          const std::vector<Mat>& fa_list,
-                         const std::vector<Vec>& fb_list) {
-  assemble(nom_s, nom_u, ref_s, ref_us, fa_list, fb_list);
+                         const std::vector<Vec>& fb_list,
+                         const Vec2* applied_command, double command_dt) {
+  assemble(nom_s, nom_u, ref_s, ref_us, fa_list, fb_list,
+           applied_command, command_dt);
 
   if (!initialized_) {
     solver_ = std::make_unique<OsqpEigen::Solver>();
