@@ -1,0 +1,586 @@
+{
+  "date": "2026-10-26",
+  "status": "archived-diff; omni not implemented",
+  "target_repository": "https://github.com/sustc-xia-explorer/mvp-inspection-robot",
+  "archive_branch": "archive/diff-ros1-20261026",
+  "archive_tag": "diff-ros1-20261026",
+  "destination_base_commit": "a93d65c376d1c93a101afb9410c659b33c390504",
+  "source_upstream_commit": "7408e4e1505ec3daa50da38ee8627f4eb9be895a",
+  "excludes": "This manifest itself; ignored build/devel/cache artifacts; external workspaces, manufacturer PDF and adapter ZIPs",
+  "file_count": 143,
+  "total_file_bytes": 4027868,
+  "files": {
+    ".gitignore": {
+      "bytes": 600,
+      "sha256": "c37a958873ca4c1993039a5b4434af4b3a50aff7179beb68f7eb5866e272c1bd"
+    },
+    "ACCELERATION_VALIDATION_CN.md": {
+      "bytes": 6255,
+      "sha256": "a49a4449decb402a9a909c1b7d27f0fe6c7c87733de3a4c9e9289400a098301c"
+    },
+    "ARRIVAL_THRESHOLD_ANALYSIS_CN.md": {
+      "bytes": 6235,
+      "sha256": "b573d6e0127d916c076c02e1ba7392396275b6de602bfb9add2ccecccfc9ec85"
+    },
+    "COMMIT_MESSAGE.txt": {
+      "bytes": 1176,
+      "sha256": "08fcaa32eb1267986b4dde2a504ee0a31b4b042f62d770a669e9e735c45fbbf7"
+    },
+    "DIFF_ARCHIVE_CN.md": {
+      "bytes": 4156,
+      "sha256": "eb5cfb14441c9d6b7f593b224773891f15e0447429bab17fdf41c787cf169a4f"
+    },
+    "FW_MINI_HARDWARE_CN.md": {
+      "bytes": 42445,
+      "sha256": "28ca9d4fdaff51e9ddc00a3ebbeb018ec0ac94e6d631dd1a7399b76ae8e69c43"
+    },
+    "INNODISK_CAN_CN.md": {
+      "bytes": 12897,
+      "sha256": "42d3f0e6fe295916411127bdc01298623d1983506c10f3106b9779b95abdeb43"
+    },
+    "IPC_RESULTS_20261021_CN.md": {
+      "bytes": 9795,
+      "sha256": "3d459d6ff352362e012967cdbc38b3f39df0cf8d9d1db8ef970139b28e1fc8ba"
+    },
+    "IPC_RESULTS_ANALYSIS_CN.md": {
+      "bytes": 5300,
+      "sha256": "fb2cd7f978380569714e15e271c7cda8762aec81dcf2d0944181bb539fa818ee"
+    },
+    "LICENSE": {
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "NOETIC_SETUP_CN.md": {
+      "bytes": 17922,
+      "sha256": "add9f0b5b6e5868325e7a229ceae6488a517dbc2f0ab8a62f408b39e8652707e"
+    },
+    "OMNI_ADAPTATION_CN.md": {
+      "bytes": 8593,
+      "sha256": "3ea4e80804e9a96f2019fef38c9ebe9dc56b9276361108b1931a831df6c7616f"
+    },
+    "PARAMETER_TUNING_CN.md": {
+      "bytes": 12375,
+      "sha256": "fdd41d7d18b3db61387840eceadfca2f42eeb39304eefb60b4e5770c2c6e930a"
+    },
+    "PCAN_CAN_CN.md": {
+      "bytes": 7038,
+      "sha256": "cf619bc3469fa9ff4912a4ecd8b87f8a11af2064a8407132c1169e3821f5c8cb"
+    },
+    "README.md": {
+      "bytes": 35612,
+      "sha256": "acf51003d0b4e14cdcd92ec09b10e868ade007f2074ef7fbf6cd7a1c256f9cd1"
+    },
+    "README_en.md": {
+      "bytes": 10312,
+      "sha256": "e3cb295c07e06b143d932b29353ee81c77c7bf7bf4d3552e6df83354135a772d"
+    },
+    "RVIZ_SIMULATION_CN.md": {
+      "bytes": 10224,
+      "sha256": "9210d10dd723408ef7af2d3228aca09ca195c03c38ad96d3ad23e7b14b962746"
+    },
+    "SIMULATION_VALIDATION_CN.md": {
+      "bytes": 12297,
+      "sha256": "49b26dd4ae2db377c8f46d702fe41e810c9334226b1fd38f10e3d4a8b17926e0"
+    },
+    "UPDATE_CONTENTS_20261022.json": {
+      "bytes": 13480,
+      "sha256": "2a22df12262d9c3d47c88b12b2de997bbec434ec2c5e9479a77cfa2bdf29134d"
+    },
+    "VALIDATION_CN.md": {
+      "bytes": 4737,
+      "sha256": "0e7990081f3513931c66600956c4d076b74d969aa7e25af8bbb459da2703bc6e"
+    },
+    "docs/acceleration_20261022.png": {
+      "bytes": 233512,
+      "sha256": "7eb7c9d1d7fd768619696b763bba7035845496c529ad9cf31a73dce46336efd9"
+    },
+    "docs/ipc_balanced_full_rviz_20261021.png": {
+      "bytes": 120651,
+      "sha256": "3fd05ffdbacfa81413609b014b956549a67e89a8b9c813f67d1cdd4f77d3b0fb"
+    },
+    "docs/ipc_balanced_rviz_20261021.png": {
+      "bytes": 137497,
+      "sha256": "5de9a90c77c18b79f6af9a723bc6702a1d959769a777c53a11a59109a6f8e53b"
+    },
+    "docs/parameter_tuning_comparison.png": {
+      "bytes": 203893,
+      "sha256": "1f5bfd0ebb2d7bff781c284c4579b137971763f68691ab8492299168ecd444b5"
+    },
+    "docs/results/acceleration_20261022.csv": {
+      "bytes": 2933,
+      "sha256": "dcaab2dc016d7d7a4cfca0bddf4687234291f53e1fd8174728be0e1aecd2f147"
+    },
+    "docs/results/acceleration_20261022.json": {
+      "bytes": 19483,
+      "sha256": "dc3332d61207a18535b3c9f47b453a70478bad65131255f731f20b91efbf98a8"
+    },
+    "docs/results/can_adapter_mapping_20261024.json": {
+      "bytes": 2559,
+      "sha256": "7560908bab837137b535466908dbbc6d0b18b42ba2a81c639989d3b3b2e0d7c4"
+    },
+    "docs/results/diff_publication_checks_20261026.json": {
+      "bytes": 11001,
+      "sha256": "34b5143e555f45eda168b1603b96024a223932b7b44f64bf516ced31bfec9203"
+    },
+    "docs/results/fw_mini_imu_mount_20261024.json": {
+      "bytes": 2090,
+      "sha256": "8074ece4c5c44ce5597523a581f1cb1f72a705d866d5ba122441e5f965d26f23"
+    },
+    "docs/results/innodisk_can_preparation_20261024.json": {
+      "bytes": 2537,
+      "sha256": "c2b1432f9b71998014dc04fe969b3e5649b5993652d6b2b7716a538a122ed0d8"
+    },
+    "docs/results/ipc_balanced_analysis_20261021.csv": {
+      "bytes": 5406,
+      "sha256": "7ee931d04ab729d149e26affa493e0d34c910c7e5e9ecc5c70577eafe7bba42b"
+    },
+    "docs/results/ipc_balanced_complete_20261021.json": {
+      "bytes": 23999,
+      "sha256": "7c40dc65dcf8c6c7a67648421146ffaba80648921bf714601c4e90d79adb6198"
+    },
+    "docs/results/ipc_interface_inventory_20261021.json": {
+      "bytes": 917,
+      "sha256": "4a1fc561a2372cd1882405bfb4e9f1e92a1225eb8c0e80a5173f6370ac2e238e"
+    },
+    "docs/results/omni_review_20261026.json": {
+      "bytes": 1842,
+      "sha256": "b1cfa55b3513a4ac1ba411c806ddea8ae9433285c699d0d243c9489968197cfb"
+    },
+    "hardware/CMakeLists.txt": {
+      "bytes": 1205,
+      "sha256": "18893458383ea6318a50d436388011bd71a1bf91182624f64ff331298848f783"
+    },
+    "hardware/driver_original_sha256.json": {
+      "bytes": 247,
+      "sha256": "b28e21f3ab42c88f3101afdc680843a5941f032fa3a7c8699153c0987591dfd9"
+    },
+    "hardware/driver_patched_sha256.json": {
+      "bytes": 247,
+      "sha256": "042004fdb0c127a6993e7a88068565d8aee56a15447d89fbf8c45f31085c82bd"
+    },
+    "hardware/fw_mini_watchdog.patch": {
+      "bytes": 3816,
+      "sha256": "b86b445fe1e8c25c2aaf34c0ae122747397b3bc4cb9b98841661e943e3bdcdb8"
+    },
+    "hardware/watchdog_pipe_test.cpp": {
+      "bytes": 2443,
+      "sha256": "adb1a18f0b39d5364ff245b25308d9d5e245216ef9f5e01844698ce865c0d1d6"
+    },
+    "libneupan/CMakeLists.txt": {
+      "bytes": 3078,
+      "sha256": "b6f838b0ea1c3fd14e12759a871ec74c092b8554b70203f1f44e2e6ffd587183"
+    },
+    "libneupan/build.sh": {
+      "bytes": 104,
+      "sha256": "27462162c2a859abffd24d2baa7c44c773e4db25d647174663b6e19ca9001c43"
+    },
+    "libneupan/include/neupan/command_limiter.hpp": {
+      "bytes": 937,
+      "sha256": "6e9199ddf0174e7bab87b1a5928457bbb3d0f8114ecb55cb02f172adc312144a"
+    },
+    "libneupan/include/neupan/dune.hpp": {
+      "bytes": 1523,
+      "sha256": "c547c3197f7e5cbe36c7c64d35e5083a020825300cf37771b8aeaad0ac184754"
+    },
+    "libneupan/include/neupan/initial_path.hpp": {
+      "bytes": 3459,
+      "sha256": "b07210f5959facf37b36f30f5629c3b9d21134cd11a9750c55ffa6bddc43c758"
+    },
+    "libneupan/include/neupan/mlp.hpp": {
+      "bytes": 1464,
+      "sha256": "090afe6aa568da179180d4df074a5101df16e91c6355b721cc2c80e05512494c"
+    },
+    "libneupan/include/neupan/neupan_planner.hpp": {
+      "bytes": 4237,
+      "sha256": "bb00aa730842cbd2b91f1eddc4c612fb086c60a2931f917b15e156e592e0219a"
+    },
+    "libneupan/include/neupan/nrmp.hpp": {
+      "bytes": 3829,
+      "sha256": "3fad2a4d1c34eba5e771a0a8661a0a3da9576029d776da0793b41e48793c9f63"
+    },
+    "libneupan/include/neupan/pan.hpp": {
+      "bytes": 2466,
+      "sha256": "123934999fff27d9b774949544b90167ef0d44f8404fd4ded7337a1b0ecf5167"
+    },
+    "libneupan/include/neupan/robot.hpp": {
+      "bytes": 1784,
+      "sha256": "8aec0d611878eaa518269ce98b38d7e9250de7b208be04dad42dd7bed3eeb7cc"
+    },
+    "libneupan/include/neupan/tensor_io.hpp": {
+      "bytes": 1461,
+      "sha256": "81bab2bc46a05c46f29e9dbe8a486cb0dcde0cdc3016eb44f6148a774f08ec5b"
+    },
+    "libneupan/include/neupan/types.hpp": {
+      "bytes": 916,
+      "sha256": "3a11eac9fe2055aab7ef4da30f19b4ac4084ea2a69b84c25fb895dbc66980140"
+    },
+    "libneupan/models/diff_default.bin": {
+      "bytes": 19281,
+      "sha256": "0682830bea1fc94c89e031b7f46819fe336da44a7a2dc55b0d31e739992c224e"
+    },
+    "libneupan/models/diff_sentry.bin": {
+      "bytes": 19421,
+      "sha256": "fc6ca75c0a7de51760e9d55c3d90287d120207e011d7b64ed15765e722764dc1"
+    },
+    "libneupan/package.xml": {
+      "bytes": 717,
+      "sha256": "cc0962d0059f3c8008a08626180970bc3756bb6411404eac96bc261157010389"
+    },
+    "libneupan/src/dune.cpp": {
+      "bytes": 4300,
+      "sha256": "39c53b76ba346f0b8331709449fa9a8c0acdda5ae25354e1719ca40ccaa587ce"
+    },
+    "libneupan/src/initial_path.cpp": {
+      "bytes": 9542,
+      "sha256": "7110e969b084e4de2ff833530394f2a23d57d792fdbdc9484009fabbc60c9f20"
+    },
+    "libneupan/src/mlp.cpp": {
+      "bytes": 3697,
+      "sha256": "ecd6ae1b8120922347243f9b1756c7f4a1f4cb58365e8fbf41d5e52551d034f5"
+    },
+    "libneupan/src/neupan_planner.cpp": {
+      "bytes": 8758,
+      "sha256": "5121a6aa514e525248173b0a469371075d15e3246b64ea68e5216fedef4263c5"
+    },
+    "libneupan/src/nrmp.cpp": {
+      "bytes": 10242,
+      "sha256": "99c470279ee35e628de5a471464bfedbebe04e01cf1f43f57cb6462566ba809a"
+    },
+    "libneupan/src/pan.cpp": {
+      "bytes": 5456,
+      "sha256": "52440068f2c9c774b74612edd77fd211d8c485199797f081c0a548bcdfc29717"
+    },
+    "libneupan/src/robot.cpp": {
+      "bytes": 3557,
+      "sha256": "a1265a3eb098eb3c59d4402aff02b0091c90f148389d7884fc0dfd214cd8422a"
+    },
+    "libneupan/src/tensor_io.cpp": {
+      "bytes": 2835,
+      "sha256": "4caa4f8d1219bf43ce5722ffcbe956a126699d70b0c4f16741743230103f1334"
+    },
+    "libneupan/tests/data/dune_mlp.nptf": {
+      "bytes": 20052,
+      "sha256": "b5a47256d41b33d9db35d2f324d4b4915678c4e2316d45abff6a68b693ee1b1f"
+    },
+    "libneupan/tests/data/frames.nptf": {
+      "bytes": 2243825,
+      "sha256": "6148628b032e7f770ec1da1b4e4247d1573666be3ff8c2a44fac436227f5fc2f"
+    },
+    "libneupan/tests/data/replay.nptf": {
+      "bytes": 24011,
+      "sha256": "271940ffc17587e68ff8b790a712f0bbfc257c4a6e69c51bd6729d971634e742"
+    },
+    "libneupan/tests/data/replay_planner.yaml": {
+      "bytes": 679,
+      "sha256": "5de1a52b108f5c4749ebccf4c5f809234f40b3cd0496cc05f93e38e97978357b"
+    },
+    "libneupan/tests/test_command_limits.cpp": {
+      "bytes": 2256,
+      "sha256": "6f4d509abe56ec58a150b9d60303e2e3d1fcf84bc9acd9ee20c50a3c08468bbc"
+    },
+    "libneupan/tests/test_dune.cpp": {
+      "bytes": 4289,
+      "sha256": "c11a58db16a1bb533cebd228b4e2126159e768d927fdc39e9d9ae1f1cea3a625"
+    },
+    "libneupan/tests/test_nrmp.cpp": {
+      "bytes": 4300,
+      "sha256": "e4d19e77f034042585e47fb8534e2ee58920bcc893dc05103939c62421ee55dc"
+    },
+    "libneupan/tests/test_replay.cpp": {
+      "bytes": 4718,
+      "sha256": "beeb1011f599f10b89ad1a876aeae2c10c88af9ddfefaeae2ead913a4233dae6"
+    },
+    "libneupan/tools/ab_configs/season_d0.yaml": {
+      "bytes": 530,
+      "sha256": "3d994cd0fd83eb99cdc02e3135dd168d9aa618e9a409c0e9820e429d0e124b50"
+    },
+    "libneupan/tools/ab_configs/upstream_margins.yaml": {
+      "bytes": 532,
+      "sha256": "f5b1d7e59f52fd9ae5e41920d7ad016e889d10ee97dc06f61dc30e5887d3dfc9"
+    },
+    "libneupan/tools/ab_safety_margin.cpp": {
+      "bytes": 6120,
+      "sha256": "89f03ace4b0dc2553490d8622e246dfaee524503beccd34e7383497710e819f8"
+    },
+    "libneupan/tools/bench.cpp": {
+      "bytes": 4905,
+      "sha256": "bfb244a86f0e1317677fa5d0e91719245583a0cabf2bfaab3fef470028c37303"
+    },
+    "libneupan/tools/bench_python.py": {
+      "bytes": 2081,
+      "sha256": "216c42832bbd932528859c921483610a4f5f7aae10bd69999909ce4683ee01ce"
+    },
+    "libneupan/tools/dump_test_data.py": {
+      "bytes": 7914,
+      "sha256": "9d339183fcfd295010e7b61a8cf05774b624b7ad2b4ee855011f26ed2b48c2ba"
+    },
+    "libneupan/tools/export_dune_weights.py": {
+      "bytes": 3500,
+      "sha256": "d9157a062e5c9b19163c8e432a404e607c03627fc18939fab4df85a47e2a9b46"
+    },
+    "libneupan/tools/nptf.py": {
+      "bytes": 1359,
+      "sha256": "ea21c7b4940dce9fa546b64fcdbad0b4b6ce8c0ab2cea775b6b2591f9dc49898"
+    },
+    "libneupan/tools/sim_backend.cpp": {
+      "bytes": 3432,
+      "sha256": "c29bfb9575950627f0090b45f651fc6f393197b5895d41086024bd161cb1b34a"
+    },
+    "neupan_cpp_ros1/CMakeLists copy.txt": {
+      "bytes": 2483,
+      "sha256": "0ea4e5029a98f8789d40e2275be34b19d99197dc8902862ec5d9b4b255d43650"
+    },
+    "neupan_cpp_ros1/CMakeLists.txt": {
+      "bytes": 1301,
+      "sha256": "1bdd6d1c737bfb0da48a6c360f1ad1867a26ffc603ddce4cb857d6e5a6ecdd0c"
+    },
+    "neupan_cpp_ros1/CMakeLists_ros2.txt": {
+      "bytes": 1523,
+      "sha256": "8d56ecbd72a98e3836e390bda51446140867eebaebf8777a1f5f64c8db20507f"
+    },
+    "neupan_cpp_ros1/config/fw_mini.yaml": {
+      "bytes": 691,
+      "sha256": "debccbcf3484ffe8544304b469c4b8be3eb73dfd015505ffa9b7305e103fd05b"
+    },
+    "neupan_cpp_ros1/config/fw_mini_balanced.yaml": {
+      "bytes": 832,
+      "sha256": "9497359156d09617341a203f32428934c57dacba24efc1791ed1de7a3c64b706"
+    },
+    "neupan_cpp_ros1/config/fw_mini_dune_train.yaml": {
+      "bytes": 457,
+      "sha256": "3fd8d074a330e3e7bdf15a07f4fcf4c195ff4a4937d2a9ee6c5f33a791f05c39"
+    },
+    "neupan_cpp_ros1/config/fw_mini_sim.yaml": {
+      "bytes": 747,
+      "sha256": "34046aa01c3e1424972a2040e25b60881219a32a1ac3ee7657d117cef0724789"
+    },
+    "neupan_cpp_ros1/config/maps/corridor_fw_mini.yaml": {
+      "bytes": 1243,
+      "sha256": "c76c3e33dbe5d5c309044d7671ddb3a191ab490265f714d30e801d0971988005"
+    },
+    "neupan_cpp_ros1/config/maps/corridor_ros2_original.yaml": {
+      "bytes": 2149,
+      "sha256": "fe383b5d190bf0c72782ee9f8a95aeaf9a5363ae89f980f960708ab1bdbf56f8"
+    },
+    "neupan_cpp_ros1/config/planner.yaml": {
+      "bytes": 571,
+      "sha256": "4966811f17f0a1ec7db02fd7390c4131903c0beb5015c2e4870d2052466420d2"
+    },
+    "neupan_cpp_ros1/config/scenario_corridor.yaml": {
+      "bytes": 385,
+      "sha256": "a570aebb54af7190feac62f4cc0c2a9aada8a115cc347066187de7ccb33bf285"
+    },
+    "neupan_cpp_ros1/config/scenario_corridor_original.yaml": {
+      "bytes": 415,
+      "sha256": "33ccc8398e637dadd3e2f8281b63a655f7f91b2308530a238183846540f16c10"
+    },
+    "neupan_cpp_ros1/config/sentry_diff.yaml": {
+      "bytes": 532,
+      "sha256": "f5b1d7e59f52fd9ae5e41920d7ad016e889d10ee97dc06f61dc30e5887d3dfc9"
+    },
+    "neupan_cpp_ros1/config/smoke.yaml": {
+      "bytes": 540,
+      "sha256": "c4c0a924465ab0a1315f4eb1857be5ee4f96a74dfba211c22f904673a7a40fd4"
+    },
+    "neupan_cpp_ros1/launch/fw_mini.launch": {
+      "bytes": 788,
+      "sha256": "765421d34b1594958cf7ce4bd30850b92bd805bcead214db0a3794d88439f0e0"
+    },
+    "neupan_cpp_ros1/launch/fw_mini_hardware.launch": {
+      "bytes": 1765,
+      "sha256": "e046978e1d7ade7dcd8c18ddb6bdc71a73049e86006f4671904fb79ffe6dbe6c"
+    },
+    "neupan_cpp_ros1/launch/livox_scan.launch": {
+      "bytes": 1087,
+      "sha256": "69ba421f0cd9b43c29824cca22d690c3fcf4c59d7f5fdc3beef10d3d95502c66"
+    },
+    "neupan_cpp_ros1/launch/neupan.launch.py": {
+      "bytes": 1017,
+      "sha256": "4a904ad9b233f17f591d1dc544a5610572110435738845d62b141ffa3bc858a1"
+    },
+    "neupan_cpp_ros1/launch/neupan_cpp_ros1 copy.launch": {
+      "bytes": 556,
+      "sha256": "768357d0050dfa7e454d5256e8fd57653953261e877b3882fb0ee2c32e425566"
+    },
+    "neupan_cpp_ros1/launch/neupan_cpp_ros1.launch": {
+      "bytes": 1457,
+      "sha256": "46597fe60c2aa169294b6022bbe06e12e4088e181953185b8b3275b925937cae"
+    },
+    "neupan_cpp_ros1/launch/sim_complete.launch": {
+      "bytes": 2851,
+      "sha256": "ad094c72dfe02cd33a79aca6278f775336639043e435e53838b95e4a07c31ab4"
+    },
+    "neupan_cpp_ros1/models/diff_default.bin": {
+      "bytes": 19281,
+      "sha256": "0682830bea1fc94c89e031b7f46819fe336da44a7a2dc55b0d31e739992c224e"
+    },
+    "neupan_cpp_ros1/models/fw_mini.bin": {
+      "bytes": 19421,
+      "sha256": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8"
+    },
+    "neupan_cpp_ros1/package copy.xml": {
+      "bytes": 3786,
+      "sha256": "6e069abef85aee927853456f8b6cfb7cde323a65b25cce2f8e38ad3f7ddbb279"
+    },
+    "neupan_cpp_ros1/package.xml": {
+      "bytes": 1033,
+      "sha256": "a194a4863f53b877f5553b9e6281fdc87e5bc25bb8596c3db82097a6e6d4b2df"
+    },
+    "neupan_cpp_ros1/package_ros2.xml": {
+      "bytes": 970,
+      "sha256": "316cd8f2a2b92cbc07fd7c2ebd36b80412743c7f546fdac6a0057d406527efa1"
+    },
+    "neupan_cpp_ros1/rviz/fw_mini_sim.rviz": {
+      "bytes": 2484,
+      "sha256": "838ce0a9487a946da9ba7f50f0dad910aa9fcc3cd4718398ef37e459a402cb83"
+    },
+    "neupan_cpp_ros1/scripts/command_guard.py": {
+      "bytes": 2859,
+      "sha256": "d9bef55a6ed51c6540ad4e0cc2981c17e2204f63dc2a0212372ccd4beb2d4682"
+    },
+    "neupan_cpp_ros1/scripts/fw_mini_bridge.py": {
+      "bytes": 5224,
+      "sha256": "b700c09960be8fd061d3b65863c0b3ec6a52cf97b37b60ebf45f706328ef7fb5"
+    },
+    "neupan_cpp_ros1/scripts/rviz_sim.py": {
+      "bytes": 29377,
+      "sha256": "3ffcd67b135c9a8560faed0a3a7ba3ede01fa39a386adb2995ffbcfafce2a2b0"
+    },
+    "neupan_cpp_ros1/scripts/simulation_test.py": {
+      "bytes": 31641,
+      "sha256": "784733263362d5e230e2720e360e68ccdf2953bfb72e7dd4ed5e63cea049e21e"
+    },
+    "neupan_cpp_ros1/scripts/smoke_test.py": {
+      "bytes": 5528,
+      "sha256": "d64359d68d920ca5b258e9f5fda8d0900582f48b4215a23fd8f8eaed5fb2ccef"
+    },
+    "neupan_cpp_ros1/src/astar_global_node.cpp": {
+      "bytes": 12599,
+      "sha256": "a9752641c38029932edf36a026b0b2427650800e880dd024b491f4afb0150477"
+    },
+    "neupan_cpp_ros1/src/neupan_node.cpp": {
+      "bytes": 23515,
+      "sha256": "3f74cc2cb645db361a73a2f137f8a3f25ea46095fd0c8ec0665dae4c7d3fae48"
+    },
+    "neupan_cpp_ros1/test/README.md": {
+      "bytes": 756,
+      "sha256": "981a8f7a4b26af79c771530889a7f01651e1e3a366446f21876d53f5faf67912"
+    },
+    "neupan_cpp_ros1/test/astar_test.py": {
+      "bytes": 4342,
+      "sha256": "3b258ecc39527f2cf82c8bac1104eff95794836e1f34b75eeb8f3270ce908998"
+    },
+    "neupan_cpp_ros1/test/closed_loop_test.py": {
+      "bytes": 4091,
+      "sha256": "46bc9a517569b5e0f8ee77620e56ec9138061238511f7b1ae332f8f44c90c780"
+    },
+    "neupan_cpp_ros1/test/fw_mini_bridge_test.py": {
+      "bytes": 4179,
+      "sha256": "fffab11850414bbedeeea8f1db22601a8b33afd990d56bd0685c0954e4ecf5cc"
+    },
+    "neupan_cpp_ros1/test/path_overshoot_test.py": {
+      "bytes": 3905,
+      "sha256": "e617509c061a0f155427b6b7628cf89961971a7dffe10da7719b87915a641455"
+    },
+    "neupan_cpp_ros1/test/sentry_smoke_test.py": {
+      "bytes": 3700,
+      "sha256": "988f5ae405121f5e86660fe07f065450cd466f50bbcac3d10cf5da4f327e7322"
+    },
+    "neupan_cpp_ros1/test/smoke_test.py": {
+      "bytes": 3285,
+      "sha256": "8155d09d5e9c76007cd3bf54cc900d7ec5650eff0f1b4595b13ec7f96159ebc1"
+    },
+    "neupan_cpp_ros1/test/test_command_guard.py": {
+      "bytes": 1987,
+      "sha256": "636a672326b721a33d3b7e4ed52766b05221da99fc22af18c5354aa05b525a59"
+    },
+    "neupan_cpp_ros1/test/test_rviz_world.py": {
+      "bytes": 2204,
+      "sha256": "711a84e8f4b05c4f5f58ffe1dcfcb278b92a036952459882cf3029de4760d1cc"
+    },
+    "neupan_cpp_ros1/test/test_simulation_geometry.py": {
+      "bytes": 1935,
+      "sha256": "7cb5d702cd1e52351956faf0ab73dcfb1ccb6a53024067b04d1ad74614463ddd"
+    },
+    "tools/apply_fw_watchdog.py": {
+      "bytes": 1663,
+      "sha256": "7912a4d64a15139385ea81727621c4221b893cb025336da79ed046ad36079bdc"
+    },
+    "tools/build_noetic.sh": {
+      "bytes": 4941,
+      "sha256": "dfc249005a44d93974b5ef51e33dcec56e31d90fb87e825a161281552d3cb09a"
+    },
+    "tools/check_dune_export.py": {
+      "bytes": 2654,
+      "sha256": "02e7a8651b74f422f547d89cd80b16b7bfbfd26be3464d70c03fee7fcb524f60"
+    },
+    "tools/compare_simulations.py": {
+      "bytes": 4521,
+      "sha256": "4d7cd256ca61a3367e1e4510d1a5332aee958c66c7af237d1f67ef8c47010d04"
+    },
+    "tools/model/fw_mini/model_0.pth": {
+      "bytes": 24365,
+      "sha256": "34ba3d85e62d93caa3abf111b111626baceeac269959f47820818ef578491d2c"
+    },
+    "tools/model/fw_mini/model_1000.pth": {
+      "bytes": 25013,
+      "sha256": "1ec80b06c1aa9b8a51ba17a4ef42952c092fa15ed8b3f3d6a92c0dfc90ed6901"
+    },
+    "tools/model/fw_mini/model_1500.pth": {
+      "bytes": 25013,
+      "sha256": "7dd796b594c6b50fea9a7c31fbfa61a3c983a79e2de69debaef684b2b80fab33"
+    },
+    "tools/model/fw_mini/model_2000.pth": {
+      "bytes": 25013,
+      "sha256": "8b20b668ff2d7946106aafe7227174869c534f3949d2c6594ac960a047ab5045"
+    },
+    "tools/model/fw_mini/model_2500.pth": {
+      "bytes": 25013,
+      "sha256": "823f1ade00e733c55558f8438b4fe9b6e6d3d39e2091f343ec70aa00bed09754"
+    },
+    "tools/model/fw_mini/model_3000.pth": {
+      "bytes": 25013,
+      "sha256": "0de1dc5e8e2bb37042a3753901bbd909749170f4db53cb0a6afda5c78181fc47"
+    },
+    "tools/model/fw_mini/model_3500.pth": {
+      "bytes": 25013,
+      "sha256": "029417f8217a9f1909a88cc26982295cbe4973b9119c0fbe88a3dd653d3a7550"
+    },
+    "tools/model/fw_mini/model_4000.pth": {
+      "bytes": 25013,
+      "sha256": "eb65d95c70fea78eb8024809e8bd2eb2541a6077392be12c179f5f2a7788d121"
+    },
+    "tools/model/fw_mini/model_4500.pth": {
+      "bytes": 25013,
+      "sha256": "128ec54bfcc35c50cedc0e31081effdcba9c8bbe0a6f80e9962d0a709a2364c8"
+    },
+    "tools/model/fw_mini/model_500.pth": {
+      "bytes": 24989,
+      "sha256": "00d3a63d1245b26b4be9d3012840229beecfde129dffd682acef5ec052a06323"
+    },
+    "tools/model/fw_mini/model_5000.pth": {
+      "bytes": 25013,
+      "sha256": "b09aac3df4d9481e3fc4aa04f7105e0bb8cfe0514692b60b69f2429ce5d9e3cf"
+    },
+    "tools/model/fw_mini/results.txt": {
+      "bytes": 8132,
+      "sha256": "6eb8867b9551edfaa6effe68ad86c81d7258ae67349669e8bbe7595de15e315b"
+    },
+    "tools/model/fw_mini/train_dict.pkl": {
+      "bytes": 27666,
+      "sha256": "5b865cb04d1474e1dccbdab91370274ce6a0cb903b627742d0713422ed7a7098"
+    },
+    "tools/train_fw_mini.py": {
+      "bytes": 362,
+      "sha256": "e33a54b2fba828feaf9695a6097f19d42bad792e3d50f3cd87167a95ed5116fa"
+    },
+    "tools/validate_balanced_profile.py": {
+      "bytes": 5178,
+      "sha256": "9c1c802fdb91731154b7e309311a056b04fb9b65f1f0e8e878b49e93483b86b4"
+    },
+    "tools/validate_rviz_sim.py": {
+      "bytes": 6345,
+      "sha256": "6cd05e809cffa72f9dd15dda7a35b3cb7e19271a4de9140e30ee05ff66f114d9"
+    }
+  }
+}
