@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-26",
+  "official_repository": "https://github.com/hanruihua/NeuPAN",
+  "official_commit": "d225c3862654ade30ccd19455997f615a689a670",
+  "local_python_commit": "f5ae6d848b54aeae0340af1eb49e3a809dea00a5",
+  "method": "Extract and execute the original pure NumPy InitialPath.omni_model via Python AST, without changing repository files or importing the planner/training runtime",
+  "cases": [
+    {
+      "yaw_rad": 0.0,
+      "internal_speed_mps": 0.2,
+      "internal_direction_rad": 1.5707963267948966,
+      "dt_seconds": 0.1,
+      "world_velocity_mps": [
+        1.2246467991473533e-17,
+        0.2
+      ],
+      "body_velocity_mps": [
+        1.2246467991473533e-17,
+        0.2
+      ],
+      "next_state": [
+        1.2246467991473534e-18,
+        0.020000000000000004,
+        0.0
+      ],
+      "yaw_unchanged": true
+    },
+    {
+      "yaw_rad": 1.5707963267948966,
+      "internal_speed_mps": 0.2,
+      "internal_direction_rad": 0.0,
+      "dt_seconds": 0.1,
+      "world_velocity_mps": [
+        0.2,
+        0.0
+      ],
+      "body_velocity_mps": [
+        1.2246467991473533e-17,
+        -0.2
+      ],
+      "next_state": [
+        0.020000000000000004,
+        0.0,
+        1.5707963267948966
+      ],
+      "yaw_unchanged": true
+    }
+  ],
+  "source_sha256": {
+    "neupan/robot/robot.py": "b2323e43b5a86cd159353c505787dd0d2802bedb31ca3a3c44a80d8579665000",
+    "neupan/neupan.py": "51e2a40f76413bb1d4a0f6f0d7a796e67a928695bedde083ca1a25de51520ed7",
+    "neupan/blocks/initial_path.py": "1fe60542d4a9ee34c446f3edcf0e23a8e1949fd6b4240c1f4409d28b8427a4cc",
+    "neupan/blocks/obs_point_net.py": "fd7f7b7a33bd610e5f453a9d38613fc7ca944e1ab1a8aa6fd116175a1776b11c"
+  },
+  "local_key_files_identical_to_official": true,
+  "algorithm_implementation_changed": false,
+  "physical_chassis_omni_verified": false
+}
