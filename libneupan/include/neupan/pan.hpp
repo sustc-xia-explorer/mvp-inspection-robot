@@ -50,7 +50,8 @@ class PAN {
 
   // points: (2, N) global frame, may be empty (0 cols).
   Output forward(Mat3X nom_s, Mat2X nom_u, const Mat3X& ref_s,
-                 const Vec& ref_us, const Mat2X& points);
+                 const Vec& ref_us, const Mat2X& points,
+                 const Vec2* applied_command = nullptr, double command_dt = 0.0);
 
   void reset() { prev_.reset(); }
   NRMP& nrmp() { return nrmp_; }
