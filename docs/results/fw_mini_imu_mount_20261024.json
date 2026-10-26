@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-24",
+  "samples": 1000,
+  "source": "user-provided stationary IMU mean",
+  "mean_acceleration_g": [
+    -0.9820701718330384,
+    -0.02337134000658989,
+    0.1737365095615387
+  ],
+  "norm_g": 0.997593312273345,
+  "nominal_rotation": "base_link -> body: +90 degrees around Y",
+  "nominal_mapped_acceleration_g": [
+    0.17373650956153847,
+    -0.02337134000658989,
+    0.9820701718330384
+  ],
+  "residual_tilt_deg": 10.120813663812633,
+  "method": "Minimum additional rotation of nominal mounting that maps normalized measured specific force to base_link +Z. Yaw remains a mounting prior, not an IMU observation.",
+  "assumptions": [
+    "Vehicle stationary on approximately level ground during averaging.",
+    "base_link XY at footprint centre, Z=0 at ground.",
+    "IMU position in base_link remains coarse estimate [0.25,0.023,0.24] m.",
+    "FAST-LIO initializes camera_init -> body to zero translation and identity rotation for the given map -> camera_init example.",
+    "No competing publishers for either child frame."
+  ],
+  "base_link_to_body": {
+    "translation_m": [
+      0.25,
+      0.023,
+      0.24
+    ],
+    "quaternion_xyzw": [
+      -0.008315362128709067,
+      0.64253640429304,
+      -0.008315362128709064,
+      0.7661649161006446
+    ]
+  },
+  "body_to_base_link": {
+    "translation_m": [
+      0.19326538409759103,
+      -0.017884992986875535,
+      -0.2880236419731374
+    ],
+    "quaternion_xyzw": [
+      0.008315362128709067,
+      -0.64253640429304,
+      0.008315362128709064,
+      0.7661649161006446
+    ]
+  },
+  "map_to_camera_init": {
+    "translation_m": [
+      0.25,
+      0.023,
+      0.24
+    ],
+    "quaternion_xyzw": [
+      -0.008315362128709067,
+      0.64253640429304,
+      -0.008315362128709064,
+      0.7661649161006446
+    ]
+  },
+  "corrected_mapped_acceleration_g": [
+    0.0,
+    1.6263032587282567e-19,
+    0.9975933122733451
+  ],
+  "checks": {
+    "inverse_composition_max_error": 2.220446049250313e-16,
+    "rounded_command_gravity_xy_error": 1.301478012420476e-08,
+    "physical_calibration_complete": false
+  }
+}
