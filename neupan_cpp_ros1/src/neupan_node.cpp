@@ -18,6 +18,7 @@
 #include <geometry_msgs/Quaternion.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <geometry_msgs/Twist.h>
+#include <geometry_msgs/TwistStamped.h>
 #include <nav_msgs/Path.h>
 #include <sensor_msgs/LaserScan.h>
 #include <std_msgs/Bool.h>
@@ -37,6 +38,7 @@
 #include <vector>
 
 #include "neupan/neupan_planner.hpp"
+#include "neupan/command_limiter.hpp"
 
 namespace {
 
@@ -115,6 +117,13 @@ class NeuPANNode {
     path_sub_ = nh_.subscribe("/initial_path", 1, &NeuPANNode::pathCallbackRos, this);
     waypoints_sub_ = nh_.subscribe("/neupan_waypoints", 1, &NeuPANNode::waypointsCallbackRos, this);
     goal_sub_ = nh_.subscribe("/neupan_goal", 1, &NeuPANNode::goalCallbackRos, this);
+    emergency_pub_ = nh_.advertise<std_msgs::Bool>("/neupan_emergency_stop", 1, true);
+    std::string applied_topic;
+    pnh_.param<std::string>("applied_cmd_topic", applied_topic, "");
+    if (!applied_topic.empty())
+      applied_sub_ = nh_.subscribe<geometry_msgs::TwistStamped>(applied_topic, 1,
+          &NeuPANNode::appliedCallback, this);
+    last_output_time_ = ros::WallTime::now();
     timer_ = nh_.createTimer(ros::Duration(1.0 / rate), &NeuPANNode::timerCallback, this);
     ROS_INFO("neupan_cpp ROS1 ready (config: %s)", config_file.c_str());
   }
@@ -128,6 +137,15 @@ class NeuPANNode {
   void pathCallbackRos(const nav_msgs::Path::ConstPtr& msg) { pathCallback(*msg); }
   void waypointsCallbackRos(const nav_msgs::Path::ConstPtr& msg) { waypointsCallback(*msg); }
   void goalCallbackRos(const geometry_msgs::PoseStamped::ConstPtr& msg) { goalCallback(*msg); }
+
+  void appliedCallback(const geometry_msgs::TwistStamped::ConstPtr& msg) {
+    if (msg->header.frame_id != base_frame_) return;
+    const double age = (ros::Time::now()-msg->header.stamp).toSec();
+    if (!std::isfinite(age) || age < -.1 || age > .3) return;
+    const neupan::Vec2 cmd(msg->twist.linear.x, msg->twist.angular.z);
+    try { planner_->setAppliedCommand(cmd); }
+    catch (const std::exception& ex) { ROS_WARN_THROTTLE(1., "%s", ex.what()); }
+  }
 
   void timerCallback(const ros::TimerEvent&) {
     try {
@@ -167,6 +185,12 @@ class NeuPANNode {
   // Publishing nothing is not a stop: consumers hold the last command.
   void halt(const char* why) {
     vel_pub_.publish(geometry_msgs::Twist());
+    last_output_.setZero();
+    planner_->setAppliedCommand(last_output_);
+    last_output_time_ = ros::WallTime::now();
+    std_msgs::Bool emergency;
+    emergency.data = true;
+    emergency_pub_.publish(emergency);
     publishArrive(false);
     ROS_WARN_THROTTLE(1.0, "%s", why);
   }
@@ -202,6 +226,10 @@ class NeuPANNode {
           1.0,
           "no obstacle points, only path tracking will be performed");
 
+    const auto tick = ros::WallTime::now();
+    const double command_dt = std::max(1e-6, std::min(
+        (tick-last_output_time_).toSec(), planner_->config().step_time));
+    planner_->setCommandInterval(command_dt);
     neupan::NeuPANPlanner::Info info;
     const neupan::Vec2 action =
         planner_->forward(robot_state_, obstacle_points_, info);
@@ -215,16 +243,26 @@ class NeuPANNode {
                            info.min_distance, planner_->collisionThreshold());
 
     geometry_msgs::Twist twist;
-    if (!info.stop && !info.arrive && !solverGaveUp(info)) {
-      twist.linear.x = action(0);
-      twist.angular.z = action(1);
-    }
+    const bool arriving = info.arrive || (info.braking && info.opt_s.cols() == 0);
+    if (arriving) consecutive_unsolved_ = 0;
+    else solverGaveUp(info);  // core supplies a bounded braking command
+    neupan::Vec2 output = action;
+    if (!info.stop) output = neupan::limitCommand(action, last_output_,
+        planner_->config().max_speed, planner_->config().max_acce, command_dt);
+    twist.linear.x = output(0);
+    twist.angular.z = output(1);
     if (!std::isfinite(twist.linear.x) || !std::isfinite(twist.angular.z)) {
       halt("non-finite planner action");
       return;
     }
+    last_output_ = output;
+    last_output_time_ = ros::WallTime::now();
+    planner_->setAppliedCommand(output);
+    std_msgs::Bool emergency;
+    emergency.data = info.stop;
+    emergency_pub_.publish(emergency);
     vel_pub_.publish(twist);
-    publishArrive(info.arrive);
+    publishArrive(info.arrive && output.cwiseAbs().maxCoeff() < 1e-10);
     updateStall(twist, info.arrive);
     publishDiagnostics(info, twist);
 
@@ -284,7 +322,10 @@ class NeuPANNode {
     diagnostic_msgs::DiagnosticStatus st;
     st.name = "neupan";
     st.hardware_id = base_frame_;
-    if (stalled_ || consecutive_unsolved_ > solver_fail_grace_) {
+    if (info.arrive || (info.braking && info.opt_s.cols() == 0)) {
+      st.level = diagnostic_msgs::DiagnosticStatus::OK;
+      st.message = info.arrive ? "arrived" : "braking at goal";
+    } else if (stalled_ || consecutive_unsolved_ > solver_fail_grace_) {
       st.level = diagnostic_msgs::DiagnosticStatus::ERROR;
       st.message = stalled_ ? "stalled" : "solver failing";
     } else if (info.stop || !info.solved) {
@@ -307,6 +348,10 @@ class NeuPANNode {
     kv("min_distance", std::to_string(info.min_distance));
     kv("obstacle_points", std::to_string(obstacle_points_.cols()));
     kv("stalled", stalled_ ? "true" : "false");
+    kv("braking", info.braking ? "true" : "false");
+    kv("emergency_stop", info.stop ? "true" : "false");
+    kv("raw_v", std::to_string(info.raw_action(0)));
+    kv("raw_w", std::to_string(info.raw_action(1)));
     kv("cmd_v", std::to_string(cmd.linear.x));
     kv("cmd_w", std::to_string(cmd.angular.z));
 
@@ -421,7 +466,7 @@ class NeuPANNode {
       planner_->replaceInitialPath(pathMsgToPoints(msg), robot_state_);
     } else {
       planner_->setInitialPath(pathMsgToPoints(msg));
-      planner_->reset();
+      planner_->reset(false);
     }
     publishArrive(false);
   }
@@ -435,7 +480,7 @@ class NeuPANNode {
     ROS_INFO_THROTTLE(1.0,
                          "initial path update from waypoints");
     planner_->setWaypoints(wps);
-    planner_->reset();
+    planner_->reset(false);
     publishArrive(false);
   }
 
@@ -447,7 +492,7 @@ class NeuPANNode {
     ROS_INFO( "set neupan goal: [%.2f, %.2f, %.2f]", goal(0),
                 goal(1), goal(2));
     planner_->updateInitialPathFromGoal(robot_state_, goal);
-    planner_->reset();
+    planner_->reset(false);
   }
 
   nav_msgs::Path matToPath(const neupan::Mat3X& states) {
@@ -525,6 +570,10 @@ class NeuPANNode {
     robot_marker_pub_.publish(m);
   }
 
+  neupan::Vec2 last_output_ = neupan::Vec2::Zero();
+  ros::WallTime last_output_time_;
+  ros::Publisher emergency_pub_;
+  ros::Subscriber applied_sub_;
   ros::NodeHandle nh_;
   ros::NodeHandle pnh_;
   tf2_ros::Buffer tf_buffer_;
