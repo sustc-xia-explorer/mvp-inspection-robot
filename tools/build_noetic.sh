@@ -74,6 +74,13 @@ fi
 # ROS setup files are not nounset-safe.
 set +u
 source /opt/ros/noetic/setup.bash
+if [[ -n "${NEUPAN_DRIVER_WS:-}" ]]; then
+  [[ -f "$NEUPAN_DRIVER_WS/devel/setup.bash" ]] || {
+    echo "Build the FW-mini driver workspace first: $NEUPAN_DRIVER_WS" >&2; exit 1;
+  }
+  source "$NEUPAN_DRIVER_WS/devel/setup.bash"
+  python3 -c 'from yhs_can_msgs.msg import ctrl_cmd'
+fi
 set -u
 export LD_LIBRARY_PATH="$prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export CMAKE_PREFIX_PATH="$prefix${CMAKE_PREFIX_PATH:+:$CMAKE_PREFIX_PATH}"
@@ -101,6 +108,9 @@ catkin_make -C "$ros_ws" -j"$jobs" -l"$jobs" \
 # Emit literal, shell-escaped paths so spaces and different usernames are safe.
 {
   printf 'source %q\n' /opt/ros/noetic/setup.bash
+  if [[ -n "${NEUPAN_DRIVER_WS:-}" ]]; then
+    printf 'source %q\n' "$NEUPAN_DRIVER_WS/devel/setup.bash"
+  fi
   printf 'source %q\n' "$ros_ws/devel/setup.bash"
   printf 'export LD_LIBRARY_PATH=%q"${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"\n' "$prefix/lib"
 } > "$build_root/activate.bash"
