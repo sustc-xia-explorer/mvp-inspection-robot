@@ -1,0 +1,33 @@
+<launch>
+  <!-- Explicit CAN gear from the firmware manual; RC MODE2 is not this value. -->
+  <arg name="ctrl_gear" />
+  <arg name="config_file" default="$(find neupan_cpp_ros1)/config/fw_mini_balanced.yaml" />
+  <arg name="dune_checkpoint" default="$(find neupan_cpp_ros1)/models/fw_mini.bin" />
+  <arg name="map_frame" default="camera_init" />
+  <arg name="base_frame" default="base_link" />
+  <arg name="scan_topic" default="/scan" />
+  <arg name="driver_command_topic" default="/ctrl_cmd" />
+  <arg name="start_planner" default="true" />
+  <group if="$(arg start_planner)">
+    <include file="$(find neupan_cpp_ros1)/launch/neupan_cpp_ros1.launch">
+      <arg name="config_file" value="$(arg config_file)" />
+      <arg name="dune_checkpoint" value="$(arg dune_checkpoint)" />
+      <arg name="map_frame" value="$(arg map_frame)" />
+      <arg name="base_frame" value="$(arg base_frame)" />
+      <arg name="lidar_frame" value="$(arg base_frame)" />
+      <arg name="scan_topic" value="$(arg scan_topic)" />
+      <arg name="applied_cmd_topic" value="/fw_mini/applied_cmd_vel" />
+    </include>
+  </group>
+  <node pkg="neupan_cpp_ros1" type="fw_mini_bridge.py" name="fw_mini_bridge" output="screen" required="true">
+    <param name="config_file" value="$(arg config_file)" />
+    <param name="ctrl_gear" type="int" value="$(arg ctrl_gear)" />
+    <param name="base_frame" value="$(arg base_frame)" />
+    <param name="publish_rate" value="50.0" />
+    <param name="command_timeout" value="0.3" />
+    <remap from="cmd_vel" to="/neupan_cmd_vel" />
+    <remap from="ctrl_cmd" to="$(arg driver_command_topic)" />
+    <remap from="applied_cmd_vel" to="/fw_mini/applied_cmd_vel" />
+    <remap from="emergency_stop" to="/neupan_emergency_stop" />
+  </node>
+</launch>
