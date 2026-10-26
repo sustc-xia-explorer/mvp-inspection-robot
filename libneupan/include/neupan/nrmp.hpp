@@ -63,7 +63,8 @@ class NRMP {
   // for the no-point case (equivalent to zero fa/fb upstream).
   Result solve(const Mat3X& nom_s, const Mat2X& nom_u, const Mat3X& ref_s,
                const Vec& ref_us, const std::vector<Mat>& fa_list,
-               const std::vector<Vec>& fb_list);
+               const std::vector<Vec>& fb_list,
+               const Vec2* applied_command = nullptr, double command_dt = 0.0);
 
   // Port of generate_coefficient_parameter_value: build fa/fb for stages
   // 1..T from the DUNE outputs (mu/lam/points are distance-sorted, the
@@ -89,7 +90,8 @@ class NRMP {
  private:
   void assemble(const Mat3X& nom_s, const Mat2X& nom_u, const Mat3X& ref_s,
                 const Vec& ref_us, const std::vector<Mat>& fa_list,
-                const std::vector<Vec>& fb_list);
+                const std::vector<Vec>& fb_list,
+                const Vec2* applied_command, double command_dt);
 
   Robot robot_;
   NRMPParams p_;
