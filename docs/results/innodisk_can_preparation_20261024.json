@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-24",
+  "purpose": "Prepare the missing Innodisk SocketCAN layer for the existing FW-mini ROS1 chassis driver",
+  "ipc_observations_source": "User-provided command output; not queried directly from the IPC",
+  "ipc_observations": {
+    "kernel": "5.15.0-139-generic",
+    "usb_vid_pid": "04d8:0205",
+    "usb_product": "innodisk USB Dual CAN",
+    "usb_kernel_driver": "cdc_acm",
+    "tty": "/dev/ttyACM0",
+    "tty_by_id": "/dev/serial/by-id/usb-Microchip_Technology_Inc._innodisk_USB_Dual_CAN-if00",
+    "can_network_interfaces_present": false,
+    "ros_driver_error": ">>bind dev_handler error!",
+    "exact_board_model_confirmed": false
+  },
+  "official_source": {
+    "product_page": "https://www.innodisk.com/en/products/networking/can-bus/emuc-b202",
+    "download_url": "https://www.innodisk.com/upload/file/EMUC-B202.zip",
+    "outer_zip_sha256": "08f75fa22bdca1ce74a48d438caa678d8c86badc650456d5580d94a5f6524c2c",
+    "inner_zip_path": "Linux/ExUC_SocketCAN_driver_v3.10_utility_v3.6_20260901.zip",
+    "inner_zip_sha256": "527e4b88a18f4a06079324c23a976166eeb911dc32ef89581d7d89a2366f8ec3",
+    "driver_version": "v3.10",
+    "utility_version": "v3.6"
+  },
+  "local_compile_verification": {
+    "host_kernel": "6.8.0-138-generic",
+    "compiler": "Ubuntu GCC 11.4.0-1ubuntu1~22.04.3",
+    "target_headers": "5.15.0-139-generic",
+    "header_package_version": "5.15.0-139.149",
+    "headers_installed_system_wide": false,
+    "command": "make -j2 KERNEL_SRC=/home/xiapilang/work/neupan_innodisk_can_20261024/headers/usr/src/linux-headers-5.15.0-139-generic",
+    "build_exit_code": 0,
+    "outputs": ["emuc2socketcan.ko", "emucd_64"],
+    "modinfo_version": "v3.10",
+    "modinfo_vermagic": "5.15.0-139-generic SMP mod_unload modversions",
+    "utility_help_checked": true,
+    "utility_help_exit_code": 1,
+    "utility_help_exit_code_expected_from_vendor_source": true,
+    "kernel_module_loaded": false,
+    "hardware_device_opened": false,
+    "can_frames_transmitted": false,
+    "ipc_runtime_verified": false,
+    "limitation": "Local Ubuntu 22.04 headers/compiler verify source compilation only; rebuild on the Ubuntu 20.04 IPC against its running kernel headers."
+  },
+  "vendor_configuration_review": {
+    "baud_argument_500_kbit_s_both_channels": "-s7",
+    "example": "sudo ./emucd_64 -s7 -e0 /dev/ttyACM0 can0 can1",
+    "both_can_interfaces_must_be_up": true,
+    "baud_set_by": "emucd_64 rather than ip link type can bitrate",
+    "fw_mini_ros_driver_rewrite_required_for_adapter": false
+  }
+}
