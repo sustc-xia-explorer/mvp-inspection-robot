@@ -46,6 +46,11 @@ int main(int argc, char** argv) {
         planner.setInitialPath(std::move(path));
         planner.reset();
         std::cout << "READY\n" << std::flush;
+      } else if (command == "APPLIED") {
+        neupan::Vec2 u;
+        if (!(std::cin >> u(0) >> u(1))) throw std::runtime_error("bad applied command");
+        planner.setAppliedCommand(u);
+        std::cout << "ACK\n" << std::flush;
       } else if (command == "STEP") {
         neupan::Vec3 state;
         int n;
@@ -61,10 +66,11 @@ int main(int argc, char** argv) {
         const double ms = std::chrono::duration<double, std::milli>(
             std::chrono::steady_clock::now() - begin).count();
         // Match the ROS1 wrapper's default solver_fail_grace=0.
-        if (info.stop || info.arrive || !info.solved) action.setZero();
+        if (info.stop || info.arrive || (!info.solved && !info.braking)) action.setZero();
         std::cout << action(0) << ' ' << action(1) << ' ' << info.solved << ' '
                   << info.stop << ' ' << info.arrive << ' ' << info.min_distance
-                  << ' ' << ms << '\n' << std::flush;
+                  << ' ' << ms << ' ' << info.raw_action(0) << ' ' << info.raw_action(1)
+                  << ' ' << info.braking << '\n' << std::flush;
       } else {
         throw std::runtime_error("unknown command");
       }
