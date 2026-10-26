@@ -38,8 +38,9 @@ def main():
     names = ['scan', 'initial_path', 'neupan_waypoints', 'neupan_goal',
              'neupan_plan', 'neupan_ref_state', 'neupan_initial_path',
              'dune_point_markers', 'nrmp_point_markers', 'robot_marker',
-             'neupan_arrive', 'neupan_diagnostics']
-    args = ['rosrun', 'neupan_cpp_ros1', 'neupan_node', '__name:=planner', '__ns:=' + ns,
+             'neupan_arrive', 'neupan_diagnostics', 'neupan_emergency_stop']
+    node_command = [os.environ['NEUPAN_ROS_NODE']] if os.environ.get('NEUPAN_ROS_NODE') else ['rosrun', 'neupan_cpp_ros1', 'neupan_node']
+    args = node_command + [ '__name:=planner', '__ns:=' + ns,
             '_config_file:=' + root + '/config/smoke.yaml',
             '_dune_checkpoint:=' + root + '/models/diff_default.bin',
             '_map_frame:=' + frame_map, '_base_frame:=' + frame_base,
