@@ -1,5 +1,9 @@
 # FW-mini 的 ROS1 / C++ NeuPAN 交互仿真
 
+**2026-10-26：本页为归档 diff 版本的理想运动学仿真。** 其通过结果不作为真实四轮独立转向/双阿克曼底盘的全向验证。见 [归档说明](DIFF_ARCHIVE_CN.md) 和 [全向适配评估](OMNI_ADAPTATION_CN.md)。
+
+> 2026-10-22：虚拟底盘现按 50 Hz 限制实际执行指令的加速度，并记录每个执行周期；参数和实机桥接使用同一份 balanced YAML。 见 [变化率约束复测](ACCELERATION_VALIDATION_CN.md)。
+
 这套入口对应原来的 `ros2 launch neupan_ros2 sim_complete.launch.py sim_env_config:=scenario_corridor.yaml` 操作方式。规划器实际运行本仓库的 `neupan_cpp_ros1/neupan_node`，加载你的 `fw_mini.bin`；环境、扫描和理想 diff 虚拟底盘由 `scripts/rviz_sim.py` 提供。
 
 2026-10-21 调参后，`sim_complete.launch` 与实机入口 `fw_mini.launch` 已统一默认加载 `config/fw_mini_balanced.yaml`。该候选在开发机通过原 7 场景、14 个扩展场景及完整四障碍走廊；到达门限保持 0.10 m。原 `fw_mini.yaml`、`fw_mini_sim.yaml` 保留作对照，以下旧参数结果属于历史实验。新参数、结果与复现命令见 [调参报告](PARAMETER_TUNING_CN.md)。
