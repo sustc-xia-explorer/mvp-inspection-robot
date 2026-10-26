@@ -30,6 +30,9 @@ class NeuPANPlanner {
     double step_time = 0.1;
     double ref_speed = 4.0;
     double collision_threshold = 0.1;
+    // False is only for replaying the unmodified upstream numerical reference.
+    // YAML/runtime deployment always uses the bounded policy.
+    bool enforce_command_acceleration = true;
 
     // robot (diff rectangle)
     Vec2 max_speed{8.0, 1.0};
@@ -59,6 +62,8 @@ class NeuPANPlanner {
   struct Info {
     bool arrive = false;
     bool stop = false;
+    bool braking = false;
+    Vec2 raw_action = Vec2::Zero();  // requested action before the output guard
     // False: the action is a nominal with no avoidance; act on it only briefly.
     bool solved = false;
     int solver_status = -1;
@@ -74,7 +79,11 @@ class NeuPANPlanner {
   // Returns the action (2,1) and fills info.
   Vec2 forward(const Vec3& state, const Mat2X& points, Info& info);
 
-  void reset();
+  void reset(bool reset_command = true);
+  // An actuator/bridge may apply less than requested. Feed that command back
+  // so the next QP first step uses the actual execution history.
+  void setAppliedCommand(const Vec2& command);
+  void setCommandInterval(double seconds);
   void setReferenceSpeed(double speed) { ref_speed_ = speed; }
   // Override the internal nominal control sequence (testing / bridging).
   void setCurVelArray(const Mat2X& u) { cur_vel_array_ = u; }
@@ -106,6 +115,9 @@ class NeuPANPlanner {
   PAN pan_;
   double ref_speed_;
   Mat2X cur_vel_array_;  // (2, T)
+  Vec2 last_command_ = Vec2::Zero();
+  double command_dt_ = 0.0;
+  Vec2 emitCommand(const Vec2& requested, Info& info);
 };
 
 }  // namespace neupan
