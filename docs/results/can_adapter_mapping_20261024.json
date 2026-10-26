@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-24",
+  "source": "User-provided IPC lsusb -t, ip -br link and sysfs device/driver links",
+  "chassis_wiring_source": "User confirmed chassis CAN-H/L connected to external PEAK PCAN-USB",
+  "interface_snapshot_stage": "Initial sysfs mapping, before the user enabled PEAK can2; subsequent functional observations are recorded below",
+  "interfaces": {
+    "can0": {
+      "device_symlink": "../../../ttyACM0",
+      "adapter": "Innodisk USB Dual CAN",
+      "flags": ["NOARP", "UP", "LOWER_UP"],
+      "chassis_connected": false
+    },
+    "can1": {
+      "device_symlink": "../../../ttyACM0",
+      "adapter": "Innodisk USB Dual CAN",
+      "flags": ["NOARP", "UP", "LOWER_UP"],
+      "chassis_connected": false
+    },
+    "can2": {
+      "device_symlink": "../../../3-10.3:1.0",
+      "driver_symlink": "../../../../../../../bus/usb/drivers/peak_usb",
+      "adapter": "External PEAK PCAN-USB",
+      "flags": ["NOARP", "ECHO"],
+      "link_state": "DOWN",
+      "chassis_connected": true
+    }
+  },
+  "required_ipc_settings": {
+    "interface": "can2",
+    "bitrate_bits_per_second": 500000,
+    "ros_parameter": "/yhs_can_control/if_name",
+    "ros_parameter_value": "can2"
+  },
+  "configuration_executed_by_assistant_on_ipc": false,
+  "can2_bitrate_readback_verified": false,
+  "can2_raw_feedback_verified": true,
+  "chassis_feedback_verified": true,
+  "ros_driver_if_name_verified": "can2",
+  "ros_feedback_observations": {
+    "source": "User-provided rostopic hz /ctrl_fb and one-message motor_fb/io_fb output",
+    "ctrl_fb_rate_hz": 77.682,
+    "ctrl_fb_samples": 498,
+    "ctrl_fb_interval_min_seconds": 0.010,
+    "ctrl_fb_interval_max_seconds": 0.025,
+    "ctrl_fb_interval_stddev_seconds": 0.00177,
+    "motor_fb_all_four_drive_enables": true,
+    "motor_fb_all_four_steering_enables": true,
+    "motor_fb_power_restart": false,
+    "io_fb_estop": false,
+    "io_fb_joypad_ctrl": false,
+    "io_fb_joypad_first": false,
+    "io_fb_joypad_online": false,
+    "joypad_ctrl_manual_meaning": "False indicates command control; verify by observing SWA mode changes",
+    "joypad_online_interpretation_verified": false,
+    "joypad_online_limitation": "The supplied FW-mini V1.0.3 manual page 26 does not define the additional joypad_online or joypad_first bits decoded by this driver"
+  },
+  "control_ownership_switch_verified": false,
+  "physical_emergency_stop_test_verified": false,
+  "velocity_execution_verified": false,
+  "neupan_physical_closed_loop_verified": false,
+  "requires_name_recheck_after_reboot_or_replug": true
+}
