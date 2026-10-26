@@ -11,10 +11,12 @@
  */
 
 #include "neupan/neupan_planner.hpp"
+#include "neupan/command_limiter.hpp"
 
 #include <yaml-cpp/yaml.h>
 
 #include <stdexcept>
+#include <cmath>
 
 namespace neupan {
 
@@ -39,8 +41,11 @@ void NeuPANPlanner::validate(const Config& c) {
   };
   const NRMPParams& a = c.adjust;
 
-  if (c.receding < 1 || c.step_time <= 0.0)
+  if (c.receding < 1 || !std::isfinite(c.step_time) || c.step_time <= 0.0)
     fail("receding must be >= 1 and step_time > 0");
+  if (!c.max_speed.allFinite() || !c.max_acce.allFinite() ||
+      (c.max_speed.array() <= 0).any() || (c.max_acce.array() <= 0).any())
+    fail("max_speed and max_acce must be finite and positive");
 
   if (a.d_min < 0.0)
     fail("d_min is negative (" + std::to_string(a.d_min) +
@@ -157,15 +162,19 @@ Vec2 NeuPANPlanner::forward(const Vec3& state, const Mat2X& points,
   info = Info{};
 
   if (ipath_.checkArrive(state)) {
-    info.arrive = true;
-    return Vec2::Zero();
+    const Vec2 action = emitCommand(Vec2::Zero(), info);
+    info.arrive = action.cwiseAbs().maxCoeff() < 1e-10;
+    info.braking = !info.arrive;
+    return action;
   }
 
   const InitialPath::NomRef nom =
       ipath_.generateNomRefState(state, cur_vel_array_, ref_speed_);
 
   const PAN::Output out =
-      pan_.forward(nom.nom_s, nom.nom_u, nom.ref_s, nom.ref_us, points);
+      pan_.forward(nom.nom_s, nom.nom_u, nom.ref_s, nom.ref_us, points,
+          cfg_.enforce_command_acceleration ? &last_command_ : nullptr,
+          command_dt_ > 0 ? command_dt_ : cfg_.step_time);
 
   cur_vel_array_ = out.opt_u;
 
@@ -179,20 +188,49 @@ Vec2 NeuPANPlanner::forward(const Vec3& state, const Mat2X& points,
   info.nrmp_points = out.nrmp_points;
 
   if (out.min_distance < cfg_.collision_threshold) {
+    info.raw_action = out.opt_u.col(0);
     info.stop = true;
+    // Collision stop is an explicitly reported emergency, not a normal ramp.
+    last_command_.setZero();
     return Vec2::Zero();
   }
 
+  if (!out.solved && cfg_.enforce_command_acceleration) {
+    info.braking = true;
+    return emitCommand(Vec2::Zero(), info);
+  }
+
   // it only bounds a command that a degraded solve might otherwise let slip through to the robot.
-  return out.opt_u.col(0)
-      .cwiseMax(-robot_.max_speed)
-      .cwiseMin(robot_.max_speed);
+  return emitCommand(out.opt_u.col(0), info);
 }
 
-void NeuPANPlanner::reset() {
+Vec2 NeuPANPlanner::emitCommand(const Vec2& requested, Info& info) {
+  info.raw_action = requested;
+  last_command_ = cfg_.enforce_command_acceleration
+      ? limitCommand(requested, last_command_, robot_.max_speed,
+                     (robot_.acce_bound / robot_.dt).eval(), command_dt_ > 0 ? command_dt_ : cfg_.step_time)
+      : requested.cwiseMax(-robot_.max_speed).cwiseMin(robot_.max_speed);
+  return last_command_;
+}
+
+void NeuPANPlanner::setAppliedCommand(const Vec2& command) {
+  if (!command.allFinite() ||
+      (command.cwiseAbs().array() > robot_.max_speed.array() + 1e-6).any())
+    throw std::invalid_argument("invalid applied command feedback");
+  last_command_ = command;
+}
+
+void NeuPANPlanner::setCommandInterval(double seconds) {
+  if (!std::isfinite(seconds) || seconds <= 0)
+    throw std::invalid_argument("command interval must be positive");
+  command_dt_ = std::min(seconds, cfg_.step_time);
+}
+
+void NeuPANPlanner::reset(bool reset_command) {
   ipath_.reset();
   pan_.reset();
   cur_vel_array_.setZero();
+  if (reset_command) last_command_.setZero();
 }
 
 }  // namespace neupan
