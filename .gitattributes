@@ -1,0 +1,4 @@
+# Preserve byte-exact CSV evidence and numerical fixtures across checkouts.
+neupan_cpp_ros1/test/results/** -text
+neupan_cpp_ros1/test/data/** -text
+*.csv -text whitespace=cr-at-eol

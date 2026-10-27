@@ -125,7 +125,8 @@ class NeuPANNode {
           &NeuPANNode::appliedCallback, this);
     last_output_time_ = ros::WallTime::now();
     timer_ = nh_.createTimer(ros::Duration(1.0 / rate), &NeuPANNode::timerCallback, this);
-    ROS_INFO("neupan_cpp ROS1 ready (config: %s)", config_file.c_str());
+    ROS_INFO("neupan_cpp ROS1 ready (%s, config: %s)",
+             neupan::kinematicsName(planner_->robot().kinematics), config_file.c_str());
   }
 
   ~NeuPANNode() {
@@ -142,7 +143,15 @@ class NeuPANNode {
     if (msg->header.frame_id != base_frame_) return;
     const double age = (ros::Time::now()-msg->header.stamp).toSec();
     if (!std::isfinite(age) || age < -.1 || age > .3) return;
-    const neupan::Vec2 cmd(msg->twist.linear.x, msg->twist.angular.z);
+    neupan::Vec2 cmd(msg->twist.linear.x, msg->twist.angular.z);
+    if (planner_->isOmni()) {
+      // Feedback is a ROS body-frame Twist, while Python omni acts in world XY.
+      const auto pose = lookupPose(map_frame_, base_frame_);
+      if (!pose || !std::isfinite(msg->twist.angular.z) ||
+          std::abs(msg->twist.angular.z) > 1e-6) return;
+      cmd = neupan::bodyToWorld(
+          neupan::Vec2(msg->twist.linear.x, msg->twist.linear.y), (*pose)(2));
+    }
     try { planner_->setAppliedCommand(cmd); }
     catch (const std::exception& ex) { ROS_WARN_THROTTLE(1., "%s", ex.what()); }
   }
@@ -233,6 +242,7 @@ class NeuPANNode {
     neupan::NeuPANPlanner::Info info;
     const neupan::Vec2 action =
         planner_->forward(robot_state_, obstacle_points_, info);
+    last_plan_ms_ = (ros::WallTime::now()-tick).toSec()*1000.;
 
     if (info.arrive)
       ROS_INFO_THROTTLE(1.0,
@@ -247,11 +257,20 @@ class NeuPANNode {
     if (arriving) consecutive_unsolved_ = 0;
     else solverGaveUp(info);  // core supplies a bounded braking command
     neupan::Vec2 output = action;
-    if (!info.stop) output = neupan::limitCommand(action, last_output_,
+    if (!info.stop && !planner_->isOmni()) output = neupan::limitCommand(action, last_output_,
         planner_->config().max_speed, planner_->config().max_acce, command_dt);
-    twist.linear.x = output(0);
-    twist.angular.z = output(1);
-    if (!std::isfinite(twist.linear.x) || !std::isfinite(twist.angular.z)) {
+    if (planner_->isOmni()) {
+      // Keep the original polar bounds inside the core. Applying them to vx/vy
+      // here would mistake the angle bound for a lateral speed bound.
+      const auto body = neupan::worldToBody(output, robot_state_(2));
+      twist.linear.x = body(0);
+      twist.linear.y = body(1);
+      twist.angular.z = 0.0;
+    } else {
+      twist.linear.x = output(0);
+      twist.angular.z = output(1);
+    }
+    if (!output.allFinite()) {
       halt("non-finite planner action");
       return;
     }
@@ -301,7 +320,8 @@ class NeuPANNode {
 
   // Idling at the clearance in front of a blocked path sets neither stop nor arrive.
   void updateStall(const geometry_msgs::Twist& cmd, bool arrived) {
-    const bool moving = std::abs(cmd.linear.x) > stall_speed_ ||
+    if (last_progress_time_.isZero()) last_progress_time_ = ros::Time::now();
+    const bool moving = std::hypot(cmd.linear.x, cmd.linear.y) > stall_speed_ ||
                         std::abs(cmd.angular.z) > stall_speed_;
     if (moving || arrived) {
       last_progress_time_ = ros::Time::now();
@@ -350,10 +370,16 @@ class NeuPANNode {
     kv("stalled", stalled_ ? "true" : "false");
     kv("braking", info.braking ? "true" : "false");
     kv("emergency_stop", info.stop ? "true" : "false");
-    kv("raw_v", std::to_string(info.raw_action(0)));
-    kv("raw_w", std::to_string(info.raw_action(1)));
+    kv("kinematics", neupan::kinematicsName(planner_->robot().kinematics));
+    kv("raw_action_frame", planner_->isOmni() ? map_frame_ : base_frame_);
+    kv(planner_->isOmni() ? "raw_vx" : "raw_v", std::to_string(info.raw_action(0)));
+    kv(planner_->isOmni() ? "raw_vy" : "raw_w", std::to_string(info.raw_action(1)));
     kv("cmd_v", std::to_string(cmd.linear.x));
+    kv("cmd_vy", std::to_string(cmd.linear.y));
     kv("cmd_w", std::to_string(cmd.angular.z));
+    kv("planner_ms", std::to_string(last_plan_ms_));
+    kv("control_speed", std::to_string(planner_->appliedControl()(0)));
+    kv("control_direction", std::to_string(planner_->appliedControl()(1)));
 
     diagnostic_msgs::DiagnosticArray arr;
     arr.header.stamp = ros::Time::now();
@@ -571,6 +597,7 @@ class NeuPANNode {
   }
 
   neupan::Vec2 last_output_ = neupan::Vec2::Zero();
+  double last_plan_ms_ = 0.;
   ros::WallTime last_output_time_;
   ros::Publisher emergency_pub_;
   ros::Subscriber applied_sub_;

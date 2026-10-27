@@ -1,0 +1,269 @@
+/*
+ * neupan_cpp: C++ port of the NeuPAN planner.
+ *
+ * Ported from NeuPAN (https://github.com/hanruihua/NeuPAN),
+ * Copyright (c) 2025 Ruihua Han <hanrh@connect.hku.hk>.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version. See <https://www.gnu.org/licenses/>.
+ */
+
+#include "neupan/neupan_planner.hpp"
+#include "neupan/command_limiter.hpp"
+
+#include <yaml-cpp/yaml.h>
+
+#include <stdexcept>
+#include <cmath>
+
+namespace neupan {
+
+namespace {
+
+Robot makeRobot(const NeuPANPlanner::Config& c) {
+  return Robot::rectangle(c.kinematics, c.receding, c.step_time, c.max_speed,
+                              c.max_acce, c.length, c.width, c.wheelbase);
+}
+
+// cfg_ is the first member, so this runs before the robot and the blocks.
+const NeuPANPlanner::Config& validated(const NeuPANPlanner::Config& c) {
+  NeuPANPlanner::validate(c);
+  return c;
+}
+
+}  // namespace
+
+void NeuPANPlanner::validate(const Config& c) {
+  const auto fail = [](const std::string& what) {
+    throw std::runtime_error("neupan config: " + what);
+  };
+  const NRMPParams& a = c.adjust;
+
+  if (c.receding < 1 || !std::isfinite(c.step_time) || c.step_time <= 0.0)
+    fail("receding must be >= 1 and step_time > 0");
+  if (!c.max_speed.allFinite() || !c.max_acce.allFinite() ||
+      (c.max_speed.array() <= 0).any() || (c.max_acce.array() <= 0).any())
+    fail("max_speed and max_acce must be finite and positive");
+  if (!a.control_change_weight.allFinite() || (a.control_change_weight.array() < 0).any())
+    fail("control_change_weight must be finite and nonnegative");
+  if (c.periodic_direction && (c.kinematics != Kinematics::Omni || c.max_speed(1) < 2.*std::acos(-1.)-1e-8))
+    fail("periodic_direction requires omni and an angle bound of at least 2*pi");
+  if (!std::isfinite(c.ipath.turn_rate) || c.ipath.turn_rate < 0.0 ||
+      !std::isfinite(c.ipath.turn_window) || c.ipath.turn_window <= 0.0 ||
+      !std::isfinite(c.ipath.reference_acceleration) || c.ipath.reference_acceleration <= 0.0 ||
+      !std::isfinite(c.ipath.minimum_turn_speed) || c.ipath.minimum_turn_speed <= 0.0)
+    fail("invalid turn speed envelope parameters");
+  if (c.ipath.turn_rate > 0.0 && (!c.ipath.arc_length_sampling || c.kinematics != Kinematics::Omni))
+    fail("turn_rate requires omni and arc_length_sampling");
+
+  if (a.d_min < 0.0)
+    fail("d_min is negative (" + std::to_string(a.d_min) +
+         "); a negative clearance lets the plan penetrate obstacles");
+
+  if (a.d_max < a.d_min)
+    fail("d_max (" + std::to_string(a.d_max) + ") is below d_min (" +
+         std::to_string(a.d_min) + "), leaving the clearance box empty");
+
+  // Shipped as d = 0 with eta = 15 for a whole season, silently.
+  if (a.eta > 0.0 && a.d_max <= 0.0)
+    fail("eta > 0 rewards clearance but d_max is " + std::to_string(a.d_max) +
+         "; the clearance variable is pinned to zero and avoidance has no "
+         "gradient (upstream uses d_min 0.1, d_max 1.0)");
+
+  if (c.collision_threshold <= 0.0)
+    fail("collision_threshold is " + std::to_string(c.collision_threshold) +
+         "; stop would then require min_distance < 0, i.e. the footprint "
+         "already overlapping, which is unrecoverable");
+}
+
+NeuPANPlanner::NeuPANPlanner(const Config& config)
+    : cfg_(validated(config)),
+      robot_(makeRobot(config)),
+      ipath_(robot_, config.ref_speed, config.ipath),
+      pan_(robot_, config.dune_checkpoint, config.adjust, config.pan),
+      ref_speed_(config.ref_speed),
+      cur_vel_array_(Mat2X::Zero(2, config.receding)) {}
+
+NeuPANPlanner NeuPANPlanner::fromYaml(const std::string& yaml_path,
+                                      const std::string& checkpoint_override) {
+  const YAML::Node y = YAML::LoadFile(yaml_path);
+  Config c;
+
+  c.receding = y["receding"].as<int>(c.receding);
+  c.step_time = y["step_time"].as<double>(c.step_time);
+  c.ref_speed = y["ref_speed"].as<double>(c.ref_speed);
+  c.collision_threshold =
+      y["collision_threshold"].as<double>(c.collision_threshold);
+
+  if (const auto r = y["robot"]) {
+    c.kinematics = parseKinematics(r["kinematics"].as<std::string>("diff"));
+    c.periodic_direction = r["periodic_direction"].as<bool>(false);
+    if (r["max_speed"]) {
+      const auto v = r["max_speed"].as<std::vector<double>>();
+      c.max_speed = Vec2(v.at(0), v.at(1));
+    }
+    if (r["max_acce"]) {
+      const auto v = r["max_acce"].as<std::vector<double>>();
+      c.max_acce = Vec2(v.at(0), v.at(1));
+    }
+    c.length = r["length"].as<double>(c.length);
+    c.width = r["width"].as<double>(c.width);
+    c.wheelbase = r["wheelbase"].as<double>(0.0);
+  }
+
+  if (const auto ip = y["ipath"]) {
+    const auto style = ip["curve_style"].as<std::string>("line");
+    if (style != "line")
+      throw std::runtime_error("neupan_cpp currently supports only the "
+                               "'line' curve_style (got '" + style + "')");
+    if (ip["waypoints"])
+      for (const auto& w : ip["waypoints"]) {
+        const auto v = w.as<std::vector<double>>();
+        c.ipath.waypoints.emplace_back(v.at(0), v.at(1), v.at(2));
+      }
+    c.ipath.loop = ip["loop"].as<bool>(false);
+    c.ipath.interval = ip["interval"].as<double>(-1.0);
+    c.ipath.arrive_threshold =
+        ip["arrive_threshold"].as<double>(c.ipath.arrive_threshold);
+    c.ipath.close_threshold =
+        ip["close_threshold"].as<double>(c.ipath.close_threshold);
+    c.ipath.ind_range = ip["ind_range"].as<int>(c.ipath.ind_range);
+    c.ipath.arrive_index_threshold =
+        ip["arrive_index_threshold"].as<int>(c.ipath.arrive_index_threshold);
+    c.ipath.arc_length_sampling = ip["arc_length_sampling"].as<bool>(false);
+    c.ipath.turn_rate = ip["turn_rate"].as<double>(0.0);
+    c.ipath.turn_window = ip["turn_window"].as<double>(0.16);
+    c.ipath.reference_acceleration = ip["reference_acceleration"].as<double>(0.10);
+    c.ipath.minimum_turn_speed = ip["minimum_turn_speed"].as<double>(0.035);
+  }
+
+  if (const auto p = y["pan"]) {
+    c.pan.iter_num = p["iter_num"].as<int>(c.pan.iter_num);
+    c.pan.dune_max_num = p["dune_max_num"].as<int>(c.pan.dune_max_num);
+    c.pan.iter_threshold = p["iter_threshold"].as<double>(c.pan.iter_threshold);
+    c.adjust.max_num = p["nrmp_max_num"].as<int>(c.adjust.max_num);
+    c.dune_checkpoint = p["dune_checkpoint"].as<std::string>("");
+  }
+
+  if (const auto a = y["adjust"]) {
+    if (a["q_s"]) {
+      if (a["q_s"].IsSequence()) {
+        const auto v = a["q_s"].as<std::vector<double>>();
+        c.adjust.q_s = Vec3(v.at(0), v.at(1), v.at(2));
+      } else {
+        c.adjust.q_s = Vec3::Constant(a["q_s"].as<double>());
+      }
+    }
+    c.adjust.p_u = a["p_u"].as<double>(c.adjust.p_u);
+    c.adjust.eta = a["eta"].as<double>(c.adjust.eta);
+    c.adjust.d_max = a["d_max"].as<double>(c.adjust.d_max);
+    c.adjust.d_min = a["d_min"].as<double>(c.adjust.d_min);
+    c.adjust.ro_obs = a["ro_obs"].as<double>(c.adjust.ro_obs);
+    c.adjust.bk = a["bk"].as<double>(c.adjust.bk);
+    if (a["control_change_weight"]) {
+      const auto v = a["control_change_weight"].as<std::vector<double>>();
+      c.adjust.control_change_weight = Vec2(v.at(0),v.at(1));
+    }
+  }
+
+  if (!checkpoint_override.empty()) c.dune_checkpoint = checkpoint_override;
+  if (c.dune_checkpoint.empty())
+    throw std::runtime_error("neupan_cpp: dune_checkpoint (.bin) is required");
+
+  return NeuPANPlanner(c);
+}
+
+Vec2 NeuPANPlanner::forward(const Vec3& state, const Mat2X& points,
+                            Info& info) {
+  info = Info{};
+
+  if (ipath_.checkArrive(state)) {
+    const Vec2 action = emitCommand(robot_.stoppingControl(last_command_), info);
+    info.arrive = action.cwiseAbs().maxCoeff() < 1e-10;
+    info.braking = !info.arrive;
+    return action;
+  }
+
+  const InitialPath::NomRef nom =
+      ipath_.generateNomRefState(state, cur_vel_array_, ref_speed_);
+
+  const PAN::Output out =
+      pan_.forward(nom.nom_s, nom.nom_u, nom.ref_s, nom.ref_us, points,
+          cfg_.enforce_command_acceleration ? &last_command_ : nullptr,
+          command_dt_ > 0 ? command_dt_ : cfg_.step_time);
+
+  cur_vel_array_ = out.opt_u;
+
+  info.solved = out.solved;
+  info.solver_status = out.solver_status;
+  info.min_distance = out.min_distance;
+  info.opt_s = out.opt_s;
+  info.opt_u = out.opt_u;
+  info.ref_s = nom.ref_s;
+  info.dune_points = out.dune_points;
+  info.nrmp_points = out.nrmp_points;
+
+  if (out.min_distance < cfg_.collision_threshold) {
+    info.raw_action = robot_.controlToAction(out.opt_u.col(0));
+    info.stop = true;
+    // Collision stop is an explicitly reported emergency, not a normal ramp.
+    last_command_ = robot_.stoppingControl(last_command_);
+    return Vec2::Zero();
+  }
+
+  if (!out.solved && cfg_.enforce_command_acceleration) {
+    info.braking = true;
+    return emitCommand(robot_.stoppingControl(last_command_), info);
+  }
+
+  // it only bounds a command that a degraded solve might otherwise let slip through to the robot.
+  return emitCommand(out.opt_u.col(0), info);
+}
+
+Vec2 NeuPANPlanner::emitCommand(const Vec2& requested, Info& info) {
+  info.raw_action = robot_.controlToAction(requested);
+  last_command_ = cfg_.enforce_command_acceleration
+      ? limitCommand(requested, last_command_, robot_.max_speed,
+                     (robot_.acce_bound / robot_.dt).eval(), command_dt_ > 0 ? command_dt_ : cfg_.step_time)
+      : requested.cwiseMax(-robot_.max_speed).cwiseMin(robot_.max_speed);
+  normalizeDirection();
+  return robot_.controlToAction(last_command_);
+}
+
+void NeuPANPlanner::normalizeDirection() {
+  if (!cfg_.periodic_direction || std::abs(last_command_(1)) <= std::acos(-1.)) return;
+  const double period = 2.*std::acos(-1.);
+  last_command_(1) = std::remainder(last_command_(1),period);
+  double previous = last_command_(1);
+  for (int t = 0; t < cur_vel_array_.cols(); ++t) {
+    cur_vel_array_(1,t) = previous + std::remainder(cur_vel_array_(1,t)-previous,period);
+    previous = cur_vel_array_(1,t);
+  }
+  pan_.reset();
+}
+
+void NeuPANPlanner::setAppliedCommand(const Vec2& command) {
+  if (!command.allFinite() ||
+      (isOmni() ? command.norm() > robot_.max_speed(0) + 1e-6 :
+       (command.cwiseAbs().array() > robot_.max_speed.array() + 1e-6).any()))
+    throw std::invalid_argument("invalid applied command feedback");
+  last_command_ = robot_.actionToControl(command, last_command_);
+  normalizeDirection();
+}
+
+void NeuPANPlanner::setCommandInterval(double seconds) {
+  if (!std::isfinite(seconds) || seconds <= 0)
+    throw std::invalid_argument("command interval must be positive");
+  command_dt_ = std::min(seconds, cfg_.step_time);
+}
+
+void NeuPANPlanner::reset(bool reset_command) {
+  ipath_.reset();
+  pan_.reset();
+  cur_vel_array_.setZero();
+  if (reset_command) last_command_.setZero();
+}
+
+}  // namespace neupan

@@ -14,8 +14,8 @@ import yaml
 
 # Also works through catkin's devel-space relay and after catkin install.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from command_guard import limit_command
-from simulation_test import (clearance, create_output_directory, integrate,
+from planar_kinematics import PlanarPlant, control_difference
+from simulation_test import (clearance, create_output_directory,
                              ray_range, rotate, sensor_pose)
 
 
@@ -26,8 +26,8 @@ class World:
         self.config = yaml.safe_load(self.scenario_file.read_text())
         self.planner = yaml.safe_load(self.robot_file.read_text())
         self.robot = self.planner['robot']
-        if self.robot['kinematics'] != 'diff':
-            raise ValueError('This virtual plant supports diff kinematics only')
+        if self.robot['kinematics'] not in ('diff', 'omni'):
+            raise ValueError('This virtual plant supports diff or omni')
         self.map_file = self.scenario_file.parent/self.config['map_file']
         environment = yaml.safe_load(self.map_file.read_text())
         self.width, self.height = [float(environment['world'][x]) for x in ('width', 'height')]
@@ -35,6 +35,13 @@ class World:
         self.radius = math.hypot(self.robot['length'], self.robot['width'])/2
         self.radius += abs(self.robot.get('wheelbase', 0))/2
         self.margin = float(self.config.get('safety_margin', .04))
+        self.global_options = (self.config.get('omni_global_planner', {})
+                               if self.robot['kinematics'] == 'omni' else {})
+        self.margin = float(self.global_options.get('safety_margin', self.margin))
+        self.fixed_footprint = self.global_options.get('footprint', 'circle') == 'fixed_heading'
+        self.clearance_weight = float(self.global_options.get('clearance_weight', 0.))
+        self.preferred_clearance = float(self.global_options.get('preferred_clearance', .3))
+        self.planning_yaw = float(self.config['initial_pose'][2])
         self.rectangles, self.scene = [], dict(circles=[], walls=[])
         for obstacle in environment['obstacles']:
             shape, pose = obstacle['shape'], obstacle['pose']
@@ -54,15 +61,56 @@ class World:
             else:
                 raise ValueError('Unsupported obstacle: '+str(shape['type']))
         self.nx, self.ny = math.ceil(self.width/self.resolution), math.ceil(self.height/self.resolution)
+        self.prepare_footprint(self.planning_yaw)
         self.occupied, self.blocked = [], set()
+        self.planning_gaps = {}
         for j in range(self.ny):
             for i in range(self.nx):
                 x, y = self.point((i, j))
                 gap = self.point_clearance(x, y)
                 self.occupied.append(100 if gap <= self.resolution/math.sqrt(2) else 0)
                 # Include cell half-diagonal so every point in a free cell is safe.
-                if gap <= self.radius+self.margin+self.resolution/math.sqrt(2):
+                planning_gap = self.planning_clearance(x,y) if self.fixed_footprint else gap-self.radius
+                self.planning_gaps[(i,j)] = planning_gap
+                if planning_gap <= self.margin+self.resolution/math.sqrt(2):
                     self.blocked.add((i, j))
+
+    def prepare_footprint(self, yaw):
+        self.planning_yaw = yaw
+        hx,hy = self.robot['length']/2,self.robot['width']/2
+        self.foot_x = abs(math.cos(yaw))*hx+abs(math.sin(yaw))*hy
+        self.foot_y = abs(math.sin(yaw))*hx+abs(math.cos(yaw))*hy
+        self.expanded_rectangles = []
+        for x,y,angle,length,width in getattr(self, 'rectangles', []):
+            relative = yaw-angle
+            ex = abs(math.cos(relative))*hx+abs(math.sin(relative))*hy
+            ey = abs(math.sin(relative))*hx+abs(math.cos(relative))*hy
+            self.expanded_rectangles.append((x,y,angle,length+2*ex,width+2*ey))
+
+    def planning_clearance(self, x, y):
+        if not self.fixed_footprint:
+            return self.point_clearance(x,y)-self.radius
+        # A conservative bounding rectangle of each Minkowski sum. Body yaw is
+        # fixed for Python omni, so this is tighter than an all-yaw circle.
+        result = min(self.width/2-abs(x)-self.foot_x,
+                     self.height/2-abs(y)-self.foot_y)
+        for cx,cy,yaw,length,width in self.expanded_rectangles:
+            px,py = rotate(x-cx,y-cy,-yaw)
+            qx,qy = abs(px)-length/2,abs(py)-width/2
+            result = min(result,math.hypot(max(qx,0),max(qy,0))+min(max(qx,qy),0))
+        for cx,cy,radius in self.scene['circles']:
+            result = min(result,math.hypot(x-cx,y-cy)-radius-self.radius)
+        return result
+
+    def planning_penalty(self, gap):
+        return 1.+self.clearance_weight*(max(0.,self.preferred_clearance-gap)/self.preferred_clearance)**2
+
+    def segment_cost(self, a, b):
+        length = math.dist(a,b)
+        count = max(1,math.ceil(length/(self.resolution/2)))
+        return length*sum(self.planning_penalty(self.planning_clearance(
+            a[0]+(b[0]-a[0])*k/count,a[1]+(b[1]-a[1])*k/count))
+            for k in range(count+1))/(count+1)
 
     def point_clearance(self, x, y):
         result = min(self.width/2-abs(x), self.height/2-abs(y))
@@ -110,10 +158,44 @@ class World:
 
     def segment_free(self, a, b):
         count = max(1, math.ceil(math.dist(a, b)/(self.resolution/2)))
-        return all(self.point_clearance(a[0]+(b[0]-a[0])*k/count, a[1]+(b[1]-a[1])*k/count)
-                   > self.radius+self.margin for k in range(count+1))
+        return all(self.planning_clearance(a[0]+(b[0]-a[0])*k/count, a[1]+(b[1]-a[1])*k/count)
+                   > self.margin for k in range(count+1))
 
     def route(self, start, goal):
+        if self.fixed_footprint and len(start)>2 and abs(start[2]-self.planning_yaw)>1e-8:
+            self.prepare_footprint(start[2])
+            self.blocked.clear()
+            for j in range(self.ny):
+                for i in range(self.nx):
+                    gap = self.planning_clearance(*self.point((i,j)))
+                    self.planning_gaps[(i,j)] = gap
+                    if gap <= self.margin+self.resolution/math.sqrt(2):
+                        self.blocked.add((i,j))
+        # Explicit test fixtures exercise an unsmoothed external right-angle
+        # path. They apply only at the configured initial pose/default goal;
+        # subsequent interactive goals continue to use the normal A* planner.
+        if (math.dist(start[:2],self.config['initial_pose'][:2])<.1 and
+                abs(math.atan2(math.sin(start[2]-self.config['initial_pose'][2]),
+                               math.cos(start[2]-self.config['initial_pose'][2])))<1e-6 and
+                math.dist(goal[:2],self.config['default_goal'][:2])<1e-6):
+            fixture=self.config.get('test_reference_path')
+            via=self.config.get('test_via_points')
+            if fixture:
+                if (math.dist(fixture[0],start[:2])>.1 or math.dist(fixture[-1],goal[:2])>1e-6 or
+                        not all(self.segment_free(a,b) for a,b in zip(fixture,fixture[1:]))):
+                    raise ValueError('Unsafe test reference path')
+                return [tuple(p) for p in fixture]
+            if via:
+                path=[]
+                # Clear fixture keys only in a local copy to avoid recursion.
+                saved=self.config
+                self.config={k:v for k,v in saved.items() if k not in ('test_via_points','test_reference_path')}
+                try:
+                    for a,b in zip(via,via[1:]):
+                        part=self.route([*a,start[2]],b)
+                        path.extend(part if not path else part[1:])
+                finally:self.config=saved
+                return path
         start, goal = tuple(start[:2]), tuple(goal[:2])
         source, target = self.cell(start), self.cell(goal)
         if not self.free(source) or not self.free(target):
@@ -132,7 +214,8 @@ class World:
                 if dx and dy and (not self.free((current[0]+dx, current[1])) or
                                   not self.free((current[0], current[1]+dy))):
                     continue
-                candidate = g+math.hypot(dx, dy)
+                penalty = self.planning_penalty(min(self.planning_gaps[current],self.planning_gaps[neighbour]))
+                candidate = g+math.hypot(dx, dy)*penalty
                 if candidate < cost.get(neighbour, float('inf')):
                     cost[neighbour], parent[neighbour] = candidate, current
                     heapq.heappush(queue, (candidate+math.dist(neighbour, target), candidate, neighbour))
@@ -143,10 +226,18 @@ class World:
             cells.append(parent[cells[-1]])
         raw = [start]+[self.point(c) for c in reversed(cells)]+[goal]
         raw = [p for i, p in enumerate(raw) if not i or math.dist(p, raw[i-1]) > 1e-8]
+        prefix_cost = [0.]
+        if self.clearance_weight > 0:
+            for a,b in zip(raw,raw[1:]):
+                prefix_cost.append(prefix_cost[-1]+self.segment_cost(a,b))
         sparse, index = [raw[0]], 0
         while index < len(raw)-1:
             end = len(raw)-1
-            while end > index+1 and not self.segment_free(raw[index], raw[end]):
+            while end > index+1:
+                feasible = self.segment_free(raw[index],raw[end])
+                if feasible and (self.clearance_weight <= 0 or self.segment_cost(raw[index],raw[end])
+                                 <= 1.02*(prefix_cost[end]-prefix_cost[index])):
+                    break
                 end -= 1
             if not self.segment_free(raw[index], raw[end]):
                 raise ValueError('Start/goal cannot connect safely to the grid')
@@ -156,7 +247,7 @@ class World:
         # if any sampled arc segment leaves the inflated free space.
         rounded = [sparse[0]]
         for a, b, c in zip(sparse, sparse[1:], sparse[2:]):
-            cut = min(.45, .3*math.dist(a, b), .3*math.dist(b, c))
+            cut = min(float(self.global_options.get('corner_cut', .45)), .3*math.dist(a, b), .3*math.dist(b, c))
             p = tuple(b[k]+(a[k]-b[k])*cut/math.dist(a, b) for k in (0, 1))
             q = tuple(b[k]+(c[k]-b[k])*cut/math.dist(b, c) for k in (0, 1))
             arc = [tuple((1-t)**2*p[k]+2*t*(1-t)*b[k]+t*t*q[k] for k in (0, 1))
@@ -169,7 +260,8 @@ class World:
         rounded.append(sparse[-1])
         path = [rounded[0]]
         for a, b in zip(rounded, rounded[1:]):
-            count = max(1, math.ceil(math.dist(a, b)/.04))
+            spacing = float(self.global_options.get('path_spacing', .04))
+            count = max(1, math.ceil(math.dist(a, b)/spacing))
             path.extend(tuple(a[k]+(b[k]-a[k])*i/count for k in (0, 1)) for i in range(1, count+1))
         if len(path) < 2:
             path.append(goal)
@@ -183,6 +275,7 @@ def run_ros():
     from nav_msgs.msg import OccupancyGrid, Odometry, Path as ROSPath
     from sensor_msgs.msg import LaserScan
     from std_msgs.msg import Bool
+    from diagnostic_msgs.msg import DiagnosticArray
     from visualization_msgs.msg import Marker, MarkerArray
 
     class Simulation:
@@ -195,12 +288,15 @@ def run_ros():
             self.base = rospy.get_param('~base_frame', 'neupan_sim/base_link')
             self.laser = rospy.get_param('~laser_frame', 'neupan_sim/laser')
             self.state = list(self.world.config['initial_pose'])
+            self.plant = PlanarPlant(self.world.robot)
+            self.omni = self.plant.model == 'omni'
             if self.world.clearance(self.state) <= 0:
                 raise ValueError('Initial pose collides with an obstacle')
             self.lock = threading.RLock()
             self.command, self.receipt = (0., 0.), 0.
             self.applied = (0., 0.)
             self.emergency = False
+            self.diagnostic = {}
             self.max_acceleration = [0., 0.]
             self.goal, self.pending_goal, self.pending_pose = None, None, None
             self.active, self.acknowledged, self.arrived, self.collided = False, False, False, False
@@ -217,6 +313,7 @@ def run_ros():
             self.trace_pub = rospy.Publisher('actual_path', ROSPath, queue_size=1)
             self.odom_pub = rospy.Publisher('odom', Odometry, queue_size=1)
             self.subs = [rospy.Subscriber('emergency_stop', Bool, self.on_emergency, queue_size=1),
+                         rospy.Subscriber('diagnostics', DiagnosticArray, self.on_diagnostics, queue_size=1),
                          rospy.Subscriber('cmd_vel', Twist, self.on_command, queue_size=1),
                          rospy.Subscriber('goal', PoseStamped, self.on_goal, queue_size=1),
                          rospy.Subscriber('initialpose', PoseWithCovarianceStamped, self.on_pose, queue_size=1),
@@ -226,15 +323,18 @@ def run_ros():
             self.output = create_output_directory(output)
             self.log = (self.output/'trajectory.csv').open('w', newline='')
             self.writer = csv.writer(self.log)
-            self.writer.writerow(['wall_seconds', 'x', 'y', 'yaw', 'raw_v', 'raw_w',
-                                  'applied_v', 'applied_w', 'true_clearance', 'arrived', 'collision',
-                                  'dt', 'acceleration', 'angular_acceleration', 'stop_override'])
+            self.writer.writerow(['wall_seconds', 'x', 'y', 'yaw', 'raw_vx' if self.omni else 'raw_v', 'raw_vy' if self.omni else 'raw_w',
+                                  'applied_vx' if self.omni else 'applied_v',
+                                  'applied_vy' if self.omni else 'applied_w', 'true_clearance', 'arrived', 'collision',
+                                  'dt', 'acceleration', 'direction_rate' if self.omni else 'angular_acceleration', 'stop_override',
+                                  'solved','solver_status','planner_ms','control_speed','control_direction',
+                                  'active','acknowledged','goal_x','goal_y','goal_distance'])
             (self.output/'planner.yaml').write_text(self.world.robot_file.read_text())
             (self.output/'scenario.yaml').write_text(self.world.scenario_file.read_text())
             (self.output/'map.yaml').write_text(self.world.map_file.read_text())
             model = Path(rospy.get_param('~dune_checkpoint'))
             (self.output/'run.json').write_text(json.dumps(dict(
-                backend='ros_rviz', model=str(model),
+                backend='ros_rviz', kinematics=self.plant.model, model=str(model),
                 model_sha256=hashlib.sha256(model.read_bytes()).hexdigest(),
                 config_sha256=hashlib.sha256(self.world.robot_file.read_bytes()).hexdigest(),
                 scenario_file=str(self.world.scenario_file), output=str(self.output),
@@ -248,10 +348,15 @@ def run_ros():
             with self.lock:
                 self.emergency = msg.data
 
+        def on_diagnostics(self, msg):
+            if msg.status:
+                with self.lock:
+                    self.diagnostic = {entry.key:entry.value for entry in msg.status[0].values}
+
         def on_command(self, msg):
             with self.lock:
                 if self.acknowledged:
-                    self.command = (msg.linear.x, msg.angular.z)
+                    self.command = (msg.linear.x, msg.linear.y if self.omni else msg.angular.z)
                     self.receipt = time.monotonic()
 
         def on_reference(self, msg):
@@ -355,7 +460,11 @@ def run_ros():
             odom.header.stamp, odom.header.frame_id, odom.child_frame_id = stamp, self.odom_frame, self.base
             odom.pose.pose.position.x, odom.pose.pose.position.y = x, y
             odom.pose.pose.orientation = tf.transform.rotation
-            odom.twist.twist.linear.x, odom.twist.twist.angular.z = v, w
+            odom.twist.twist.linear.x = v
+            if self.omni:
+                odom.twist.twist.linear.y = w
+            else:
+                odom.twist.twist.angular.z = w
             self.odom_pub.publish(odom)
             array = MarkerArray()
             body = self.marker(0, Marker.CUBE, stamp)
@@ -379,7 +488,8 @@ def run_ros():
             status.color.r, status.color.g, status.color.b = 1., 1., 1.
             label = ('COLLISION: RESET POSE' if self.collided else 'ARRIVED' if self.arrived else
                      'TRACKING' if self.active else 'SET 2D NAV GOAL')
-            status.text = '{}\nv={:.2f} w={:.2f} clearance={:.2f}m'.format(label, v, w, gap)
+            status.text = ('{}\nvx={:.2f} vy={:.2f} clearance={:.2f}m' if self.omni else
+                           '{}\nv={:.2f} w={:.2f} clearance={:.2f}m').format(label, v, w, gap)
             array.markers.append(status)
             goal = self.marker(3, Marker.SPHERE, stamp)
             if self.goal:
@@ -400,8 +510,10 @@ def run_ros():
                 summary = dict(collision_count=self.collisions, min_true_clearance=self.min_clearance,
                                goals=self.goal_history, final_pose=self.state, arrived=self.arrived,
                                max_normal_acceleration=self.max_acceleration[0],
-                               max_normal_angular_acceleration=self.max_acceleration[1],
-                               note='Ideal diff plant. Collision is latched and requires a pose reset.')
+                               **({'max_normal_direction_rate': self.max_acceleration[1]} if self.omni else
+                       {'max_normal_angular_acceleration': self.max_acceleration[1]}),
+                               kinematics=self.plant.model,
+                               note='Ideal kinematic plant. Collision is latched and requires a pose reset.')
                 (self.output/'summary.json').write_text(json.dumps(summary, indent=2)+'\n')
 
         def run(self):
@@ -420,6 +532,7 @@ def run_ros():
                                 self.goal_history[-1]['status'] = 'pose_reset'
                             self.state, self.goal = pose, None
                             self.applied = (0., 0.)
+                            self.plant.reset()
                             self.active, self.acknowledged, self.arrived, self.collided = False, False, False, False
                             self.command, self.receipt = (0., 0.), 0.
                             self.history.poses = []
@@ -449,7 +562,7 @@ def run_ros():
                             rospy.logwarn('Goal rejected: %s', ex)
                             self.goal = None
                             self.path_pub.publish(self.path_message([], rospy.Time.now()))
-                    previous_applied = self.applied
+                    previous_applied = self.plant.control
                     raw_v, raw_w = self.command
                     v, w = raw_v, raw_w
                     if (not self.active or not self.acknowledged or self.arrived or self.collided or
@@ -457,12 +570,11 @@ def run_ros():
                         v, w = 0., 0.
                     if not math.isfinite(v) or not math.isfinite(w):
                         v, w = 0., 0.
-                    self.applied = (0., 0.) if self.collided or self.emergency else limit_command(
-                        (v, w), self.applied, self.world.robot['max_speed'],
-                        self.world.robot['max_acce'], max(dt, 1e-6))
+                    self.applied = self.plant.apply((v, w), self.state[2], max(dt, 1e-6),
+                                                    self.collided or self.emergency)
                     v, w = self.applied
                     for _ in range(5):
-                        candidate = integrate(self.state, v, w, dt/5)
+                        candidate = self.plant.integrate(self.state, (v, w), dt/5)
                         gap = self.world.clearance(candidate)
                         self.min_clearance = min(self.min_clearance, gap)
                         if gap <= 0:
@@ -478,7 +590,11 @@ def run_ros():
                     self.applied = (v, w)
                     applied = TwistStamped()
                     applied.header.stamp, applied.header.frame_id = stamp, self.base
-                    applied.twist.linear.x, applied.twist.angular.z = self.applied
+                    applied.twist.linear.x = v
+                    if self.omni:
+                        applied.twist.linear.y = w
+                    else:
+                        applied.twist.angular.z = w
                     self.applied_pub.publish(applied)
                     self.publish_state(stamp, v, w, self.world.clearance(self.state))
                     if now-last_scan >= 1/scan_hz:
@@ -496,14 +612,20 @@ def run_ros():
                         self.history.header = pose_msg.header
                         self.history.poses = (self.history.poses+[pose_msg])[-6000:]
                         self.trace_pub.publish(self.history)
-                    rates = [abs(self.applied[j]-previous_applied[j])/max(dt, 1e-6) for j in range(2)]
+                    rates = [abs(x)/max(dt,1e-6) for x in control_difference(
+                        self.plant.control,previous_applied,self.world.robot)]
                     stop_override = self.collided or self.emergency or pose is not None
                     if not stop_override:
                         self.max_acceleration = [max(a,b) for a,b in zip(self.max_acceleration, rates)]
                     if not self.log.closed:
                         self.writer.writerow([now-self.started, *self.state, raw_v, raw_w, v, w,
                             self.world.clearance(self.state), self.arrived, self.collided,
-                            dt, *rates, stop_override])
+                            dt, *rates, stop_override,
+                            self.diagnostic.get('solved',''),self.diagnostic.get('solver_status',''),
+                            self.diagnostic.get('planner_ms',''),self.diagnostic.get('control_speed',''),
+                            self.diagnostic.get('control_direction',''),self.active,self.acknowledged,
+                            *(self.goal if self.goal else ('','')),
+                            math.dist(self.state[:2],self.goal) if self.goal else ''])
                         self.log.flush()
                 rate.sleep()
 

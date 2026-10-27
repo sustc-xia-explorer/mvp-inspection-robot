@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+build/
+devel/
+install/
+test/results/**/roslogs/
+test/results/**/*.log

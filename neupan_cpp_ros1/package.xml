@@ -2,7 +2,7 @@
 <package format="2">
   <name>neupan_cpp_ros1</name>
   <version>0.1.0</version>
-  <description>ROS Noetic interface for the standalone libneupan planner.</description>
+  <description>ROS1 NeuPAN planner with configurable diff and Python-compatible omni kinematics.</description>
   <maintainer email="robert_kaiyuan@utexas.edu">Kaiyuan Zhang</maintainer>
   <license>GPL-3.0-or-later</license>
   <buildtool_depend>catkin</buildtool_depend>
@@ -23,5 +23,8 @@
   <exec_depend>python3-yaml</exec_depend>
   <exec_depend>rviz</exec_depend>
   <exec_depend>pointcloud_to_laserscan</exec_depend>
-  <!-- libneupan is installed separately and found using CMake CONFIG mode. -->
+  <depend>eigen</depend>
+  <depend>yaml-cpp</depend>
+  <test_depend>gtest</test_depend>
+  <!-- The core is maintained inside this package; OSQP 1.x/OsqpEigen remain external. -->
 </package>
