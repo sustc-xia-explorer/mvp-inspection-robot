@@ -1,5 +1,7 @@
 # diff 控制版本归档说明
 
+> 2026-10-27 更新：主分支现已完成 omni C++/ROS1 移植及工控机仿真复测。本文保留 2026-10-26 的 diff 归档经过；归档分支/标签保持原快照，当前使用入口见 [README.md](README.md)。
+
 日期：2026-10-26。目标仓库：[mvp-inspection-robot](https://github.com/sustc-xia-explorer/mvp-inspection-robot)。
 
 ## 1. 原因与方式
