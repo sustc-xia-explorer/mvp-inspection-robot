@@ -1,0 +1,28 @@
+map_file: hard_90_open.yaml
+initial_pose:
+- -1.5
+- -1.0
+- 0.0
+default_goal:
+- 0.0
+- 1.5
+resolution: 0.05
+safety_margin: 0.04
+update_rate: 50.0
+command_timeout: 0.5
+sensor:
+  offset:
+  - 0.15
+  - 0.0
+  - 0.0
+  beams: 360
+  rate: 10.0
+  range_min: 0.1
+  range_max: 5.0
+omni_global_planner:
+  footprint: fixed_heading
+  safety_margin: 0.16
+  clearance_weight: 6.0
+  preferred_clearance: 0.28
+  corner_cut: 0.5
+  path_spacing: 0.04

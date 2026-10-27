@@ -1,0 +1,21 @@
+command_timeout: 0.5
+default_goal:
+- 4.4
+- -0.5
+initial_pose:
+- -4.0
+- 0.0
+- 0.0
+map_file: /home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_smooth_20261027/maps/corridor_fw_mini.yaml
+resolution: 0.05
+safety_margin: 0.04
+sensor:
+  beams: 360
+  offset:
+  - 0.15
+  - 0.0
+  - 0.0
+  range_max: 5.0
+  range_min: 0.1
+  rate: 10.0
+update_rate: 50.0

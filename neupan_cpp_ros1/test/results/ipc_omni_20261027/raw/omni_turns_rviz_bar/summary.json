@@ -1,0 +1,46 @@
+{
+  "collision_count": 0,
+  "min_true_clearance": 0.23673243253563844,
+  "goals": [
+    {
+      "goal": [
+        0.75,
+        0.1
+      ],
+      "wall_seconds": 2.001210964008351,
+      "status": "arrived",
+      "final_pose": [
+        0.7507135288845002,
+        0.08992681730007594,
+        0.0
+      ],
+      "goal_error": 0.01009842231118631,
+      "arrived_wall_seconds": 35.296616384002846
+    },
+    {
+      "goal": [
+        -0.8093401193618774,
+        -0.2300647497177124
+      ],
+      "wall_seconds": 54.97852728700673,
+      "status": "arrived",
+      "final_pose": [
+        -0.8085112465102283,
+        -0.23886253671318386,
+        0.0
+      ],
+      "goal_error": 0.00883674635948592,
+      "arrived_wall_seconds": 86.29799339800957
+    }
+  ],
+  "final_pose": [
+    -0.8085518788690309,
+    -0.23843122205792072,
+    0.0
+  ],
+  "arrived": true,
+  "max_normal_acceleration": 0.20000000000000057,
+  "max_normal_direction_rate": 0.800000000000009,
+  "kinematics": "omni",
+  "note": "Ideal kinematic plant. Collision is latched and requires a pose reset."
+}

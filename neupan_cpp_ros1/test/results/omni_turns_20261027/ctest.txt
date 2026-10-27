@@ -1,0 +1,16 @@
+Internal ctest changing into directory: /tmp/neupan_omni_smooth/core
+Test project /tmp/neupan_omni_smooth/core
+    Start 1: ros1_test_dune
+1/5 Test #1: ros1_test_dune ...................   Passed    0.02 sec
+    Start 2: ros1_test_nrmp
+2/5 Test #2: ros1_test_nrmp ...................   Passed    0.03 sec
+    Start 3: ros1_test_replay
+3/5 Test #3: ros1_test_replay .................   Passed    0.19 sec
+    Start 4: ros1_test_command_limits
+4/5 Test #4: ros1_test_command_limits .........   Passed    0.01 sec
+    Start 5: ros1_test_omni
+5/5 Test #5: ros1_test_omni ...................   Passed    1.15 sec
+
+100% tests passed, 0 tests failed out of 5
+
+Total Test time (real) =   1.40 sec

@@ -1,0 +1,35 @@
+[
+  {
+    "case": "omni_lateral",
+    "passed": true,
+    "arrival_distance": 0.004797036685190129,
+    "max_body_vx": 0.18,
+    "max_body_vy": 0.16431015595186602,
+    "max_yawrate": 0.0,
+    "scan_loss_stop": true,
+    "tf_loss_stop": true,
+    "commands": 118
+  },
+  {
+    "case": "omni_rotated",
+    "passed": true,
+    "arrival_distance": 0.0024632099809830388,
+    "max_body_vx": 0.015366039435202187,
+    "max_body_vy": 0.17999779647243605,
+    "max_yawrate": 0.0,
+    "scan_loss_stop": true,
+    "tf_loss_stop": true,
+    "commands": 106
+  },
+  {
+    "case": "diff_regression",
+    "passed": true,
+    "arrival_distance": 0.004200094462084691,
+    "max_body_vx": 0.2,
+    "max_body_vy": 0.0,
+    "max_yawrate": 0.0,
+    "scan_loss_stop": true,
+    "tf_loss_stop": true,
+    "commands": 103
+  }
+]

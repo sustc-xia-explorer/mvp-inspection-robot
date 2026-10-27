@@ -1,0 +1,551 @@
+{
+  "date": "2026-10-27",
+  "baseline": {
+    "case": "forward",
+    "arrived": true,
+    "collision": false,
+    "min_clearance": 0.08703050599404168,
+    "goal_error": 0.010063461849259712,
+    "seconds": 77.4,
+    "steps": 774,
+    "max_stall_seconds": 0.0,
+    "total_low_speed_seconds": 0.0,
+    "max_xy_acceleration": 0.5955932176678919,
+    "rms_xy_acceleration": 0.18697196013218745,
+    "max_xy_jerk": 11.701437263490579,
+    "rms_xy_jerk": 2.4269632377861696,
+    "speed_total_variation": 5.078007625588588,
+    "direction_total_variation": 61.71533089916956,
+    "solved": 769,
+    "unsolved": 0,
+    "emergency_stops": 0,
+    "solve_p95_ms": 34.632093,
+    "solve_max_ms": 42.133573,
+    "yaw_drift": 0.0,
+    "reference_min_clearance": 0.04473178317848348,
+    "elapsed_seconds": 22.795940325000174
+  },
+  "recommended": {
+    "case": "forward",
+    "arrived": true,
+    "collision": false,
+    "min_clearance": 0.20657297587724982,
+    "goal_error": 0.020741054920540614,
+    "final_pose": [
+      4.404571664730031,
+      -0.5202309476004728,
+      0.0
+    ],
+    "seconds": 68.4,
+    "steps": 684,
+    "max_stall_seconds": 0.0,
+    "total_low_speed_seconds": 0.0,
+    "max_xy_acceleration": 0.21074584181903253,
+    "rms_xy_acceleration": 0.0483271796391287,
+    "max_xy_jerk": 1.9999813666746906,
+    "rms_xy_jerk": 0.2774234447665581,
+    "speed_total_variation": 0.5739114424351989,
+    "direction_total_variation": 9.922324906538273,
+    "solved": 679,
+    "unsolved": 0,
+    "emergency_stops": 0,
+    "solve_p95_ms": 47.679777,
+    "solve_max_ms": 67.476613,
+    "yaw_drift": 0.0,
+    "reference_min_clearance": 0.17629058593661584,
+    "elapsed_seconds": 26.95716626600006
+  },
+  "rms_jerk_reduction_percent": 88.56911219555107,
+  "speed_variation_reduction_percent": 88.69809805831717,
+  "transit_time_reduction_percent": 11.627906976744185,
+  "source_sha256": {
+    "config/fw_mini_omni.yaml": "afdae54613d516be809696c187dd5bfa7154c914b0d215ab45d90119f7078a34",
+    "config/scenario_corridor.yaml": "2960c87024312b903f45f75e7fce58aadc1c9a817b94a6213af7c0855144c9eb",
+    "models/fw_mini.bin": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8",
+    "core/src/initial_path.cpp": "dc46aba5a8985d8e445ac8a312eb6f79d6e72a0f0a687f2021427aa1e78b594f",
+    "core/src/nrmp.cpp": "d2f529a1f60001c278a9895815e78afbfb997a902c88026fc73014ec207fc494",
+    "core/src/neupan_planner.cpp": "23a74e430f91b3df9016335386b086afae591d9e77e57206f592b0b65c3a9dc3",
+    "src/neupan_node.cpp": "0c3cb31227742ccbf02704f71f68f22da74ee2e6f2b314b77bc6e495e583d64f",
+    "scripts/rviz_sim.py": "a576d22d56d670648b7b6a4f90f285132bd2d435a39d5f2bc813427cf50af689"
+  },
+  "ros1": {
+    "sequence": [
+      {
+        "goal": [
+          4.4,
+          -0.5
+        ],
+        "seconds": 72.82450668000001,
+        "error": 0.05345317119506236,
+        "arrived": true
+      },
+      {
+        "goal": [
+          -4.0,
+          0.0
+        ],
+        "seconds": 71.31158488999972,
+        "error": 0.037263161785676964,
+        "arrived": true
+      },
+      {
+        "goal": [
+          -1.65,
+          0.65
+        ],
+        "seconds": 22.539205489999404,
+        "error": 0.0203339120360054,
+        "arrived": true
+      }
+    ],
+    "world": {
+      "collision_count": 0,
+      "min_true_clearance": 0.20836479296805888,
+      "goals": [
+        {
+          "goal": [
+            4.4,
+            -0.5
+          ],
+          "wall_seconds": 0.9209398660004808,
+          "status": "arrived",
+          "final_pose": [
+            4.444136271695658,
+            -0.4698465419625591,
+            0.0
+          ],
+          "goal_error": 0.05345317119506236,
+          "arrived_wall_seconds": 73.70533446700028
+        },
+        {
+          "goal": [
+            -4.0,
+            0.0
+          ],
+          "wall_seconds": 74.33578445900002,
+          "status": "arrived",
+          "final_pose": [
+            -4.019063569412888,
+            0.03174867427640656,
+            0.0
+          ],
+          "goal_error": 0.03703239118757175,
+          "arrived_wall_seconds": 145.59312220100037
+        },
+        {
+          "goal": [
+            -1.65,
+            0.65
+          ],
+          "wall_seconds": 146.25516790200072,
+          "status": "arrived",
+          "final_pose": [
+            -1.6343192029366356,
+            0.6382860270015618,
+            0.0
+          ],
+          "goal_error": 0.019573056990428342,
+          "arrived_wall_seconds": 168.6889016590003
+        }
+      ],
+      "final_pose": [
+        -1.6337057223820102,
+        0.6378359342489494,
+        0.0
+      ],
+      "arrived": true,
+      "max_normal_acceleration": 0.20000000000000057,
+      "max_normal_direction_rate": 0.8000000000000123,
+      "kinematics": "omni",
+      "note": "Ideal kinematic plant. Collision is latched and requires a pose reset."
+    },
+    "metrics": {
+      "goals": {
+        "4.4,-0.5": {
+          "min_clearance": 0.20836479296805888,
+          "max_stall_seconds": 0.3600734999999986,
+          "samples": 3657,
+          "unsolved_tracking_samples": 0
+        },
+        "-4.0,0.0": {
+          "min_clearance": 0.20836479296805888,
+          "max_stall_seconds": 0.2999150829991777,
+          "samples": 3578,
+          "unsolved_tracking_samples": 3
+        },
+        "-1.65,0.65": {
+          "min_clearance": 0.23111062281500452,
+          "max_stall_seconds": 0.3516094759997941,
+          "samples": 1190,
+          "unsolved_tracking_samples": 4
+        }
+      },
+      "max_actual_xy_acceleration": 0.24550839428761811,
+      "planner_p95_ms": 63.589636,
+      "planner_max_ms": 107.886232
+    },
+    "passed": true
+  },
+  "core_sequence": [
+    {
+      "case": "forward",
+      "arrived": true,
+      "collision": false,
+      "min_clearance": 0.20657297587724982,
+      "goal_error": 0.020741054920540614,
+      "final_pose": [
+        4.404571664730031,
+        -0.5202309476004728,
+        0.0
+      ],
+      "seconds": 68.4,
+      "steps": 684,
+      "max_stall_seconds": 0.0,
+      "total_low_speed_seconds": 0.0,
+      "max_xy_acceleration": 0.21074584181903253,
+      "rms_xy_acceleration": 0.0483271796391287,
+      "max_xy_jerk": 1.9999813666746906,
+      "rms_xy_jerk": 0.2774234447665581,
+      "speed_total_variation": 0.5739114424351989,
+      "direction_total_variation": 9.922324906538273,
+      "solved": 679,
+      "unsolved": 0,
+      "emergency_stops": 0,
+      "solve_p95_ms": 47.679777,
+      "solve_max_ms": 67.476613,
+      "yaw_drift": 0.0,
+      "reference_min_clearance": 0.17629058593661584,
+      "elapsed_seconds": 26.95716626600006
+    },
+    {
+      "case": "reverse",
+      "arrived": true,
+      "collision": false,
+      "min_clearance": 0.20462199649833696,
+      "goal_error": 0.007141970477171852,
+      "final_pose": [
+        -4.0036745105041405,
+        0.006124190954873604,
+        0.0
+      ],
+      "seconds": 68.4,
+      "steps": 684,
+      "max_stall_seconds": 0.0,
+      "total_low_speed_seconds": 0.0,
+      "max_xy_acceleration": 0.225269320643533,
+      "rms_xy_acceleration": 0.04273277173882612,
+      "max_xy_jerk": 1.9999999999999998,
+      "rms_xy_jerk": 0.20947463051638063,
+      "speed_total_variation": 0.5190121193783562,
+      "direction_total_variation": 7.289179869116681,
+      "solved": 678,
+      "unsolved": 0,
+      "emergency_stops": 0,
+      "solve_p95_ms": 47.283241,
+      "solve_max_ms": 65.980045,
+      "yaw_drift": 0.0,
+      "reference_min_clearance": 0.1729659430215974,
+      "elapsed_seconds": 24.78593843500039
+    },
+    {
+      "case": "third_goal",
+      "arrived": true,
+      "collision": false,
+      "min_clearance": 0.20838620316091097,
+      "goal_error": 0.005798164667437786,
+      "final_pose": [
+        -1.645355460052833,
+        0.6465291265955245,
+        0.0
+      ],
+      "seconds": 20.1,
+      "steps": 201,
+      "max_stall_seconds": 0.0,
+      "total_low_speed_seconds": 0.0,
+      "max_xy_acceleration": 0.20001167098971354,
+      "rms_xy_acceleration": 0.07488128619145779,
+      "max_xy_jerk": 2.4363884195739876,
+      "rms_xy_jerk": 0.4360268937841011,
+      "speed_total_variation": 0.5095325046849876,
+      "direction_total_variation": 6.302530361010099,
+      "solved": 195,
+      "unsolved": 0,
+      "emergency_stops": 0,
+      "solve_p95_ms": 48.958227,
+      "solve_max_ms": 66.389714,
+      "yaw_drift": 0.0,
+      "reference_min_clearance": 0.1778751134118779,
+      "elapsed_seconds": 7.447921091999888
+    }
+  ],
+  "hot_replan": [
+    {
+      "case": "hot_reverse",
+      "arrived": true,
+      "collision": false,
+      "min_clearance": 0.20657297587724982,
+      "goal_error": 0.00648476336306742,
+      "final_pose": [
+        -4.003423521017718,
+        0.005507418607317533,
+        0.0
+      ],
+      "seconds": 61.5,
+      "steps": 615,
+      "max_stall_seconds": 0.2,
+      "total_low_speed_seconds": 0.2,
+      "max_xy_acceleration": 0.23356758568095956,
+      "rms_xy_acceleration": 0.06112945789532971,
+      "max_xy_jerk": 3.4756356596087032,
+      "rms_xy_jerk": 0.3705469815927338,
+      "speed_total_variation": 1.0569038517174612,
+      "direction_total_variation": 8.973381416630268,
+      "solved": 609,
+      "unsolved": 0,
+      "emergency_stops": 0,
+      "solve_p95_ms": 52.691043,
+      "solve_max_ms": 77.033821,
+      "yaw_drift": 0.0,
+      "reference_min_clearance": 0.19837128521953803,
+      "elapsed_seconds": 23.68230564300029
+    }
+  ],
+  "standard_regressions": {
+    "core_omni": {
+      "config": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/config/fw_mini_omni.yaml",
+      "model": "omni",
+      "cases": [
+        {
+          "case": "lateral",
+          "kinematics": "omni",
+          "passed": true,
+          "arrived": true,
+          "steps": 97,
+          "simulated_seconds": 9.700000000000001,
+          "goal_distance": 0.0014844855079698689,
+          "min_true_clearance": null,
+          "max_speed": 0.16755431476874008,
+          "max_control_change_rates": [
+            0.20000000000000004,
+            0.8000000000000008
+          ],
+          "max_yaw_drift": 0.0,
+          "solved_cycles": 92,
+          "elapsed_seconds": 0.7493007510001917
+        },
+        {
+          "case": "diagonal_rotated",
+          "kinematics": "omni",
+          "passed": true,
+          "arrived": true,
+          "steps": 102,
+          "simulated_seconds": 10.200000000000001,
+          "goal_distance": 0.00013643249180319533,
+          "min_true_clearance": null,
+          "max_speed": 0.16325855604373185,
+          "max_control_change_rates": [
+            0.20000000000000018,
+            0.8000000000000008
+          ],
+          "max_yaw_drift": 0.0,
+          "solved_cycles": 97,
+          "elapsed_seconds": 0.44135882099999435
+        },
+        {
+          "case": "reverse",
+          "kinematics": "omni",
+          "passed": true,
+          "arrived": true,
+          "steps": 89,
+          "simulated_seconds": 8.9,
+          "goal_distance": 0.0007215601772987417,
+          "min_true_clearance": null,
+          "max_speed": 0.16147692429635724,
+          "max_control_change_rates": [
+            0.20000000000000007,
+            0.8000000000000008
+          ],
+          "max_yaw_drift": 0.0,
+          "solved_cycles": 83,
+          "elapsed_seconds": 0.39597732900074334
+        },
+        {
+          "case": "right_angle",
+          "kinematics": "omni",
+          "passed": true,
+          "arrived": true,
+          "steps": 144,
+          "simulated_seconds": 14.4,
+          "goal_distance": 0.0020027411373472236,
+          "min_true_clearance": null,
+          "max_speed": 0.15807240938423964,
+          "max_control_change_rates": [
+            0.20000000000000004,
+            0.8000000000000008
+          ],
+          "max_yaw_drift": 0.0,
+          "solved_cycles": 138,
+          "elapsed_seconds": 0.698878428000171
+        },
+        {
+          "case": "narrow_corridor",
+          "kinematics": "omni",
+          "passed": true,
+          "arrived": true,
+          "steps": 108,
+          "simulated_seconds": 10.8,
+          "goal_distance": 0.0020130293972553392,
+          "min_true_clearance": 0.26999999663819757,
+          "max_speed": 0.15799463136926284,
+          "max_control_change_rates": [
+            0.20000000000000018,
+            2.2227959495551112e-06
+          ],
+          "max_yaw_drift": 0.0,
+          "solved_cycles": 102,
+          "elapsed_seconds": 3.531794178000382
+        },
+        {
+          "case": "rviz_corridor_astar",
+          "kinematics": "omni",
+          "passed": true,
+          "arrived": true,
+          "steps": 684,
+          "simulated_seconds": 68.4,
+          "goal_distance": 0.023041005303701626,
+          "min_true_clearance": 0.20642901907061972,
+          "max_speed": 0.18,
+          "max_control_change_rates": [
+            0.20000000000000007,
+            0.8000000000000008
+          ],
+          "max_yaw_drift": 0.0,
+          "solved_cycles": 678,
+          "elapsed_seconds": 26.793675736000296
+        }
+      ],
+      "passed": 6,
+      "total": 6
+    },
+    "core_diff": {
+      "config": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/config/fw_mini_balanced.yaml",
+      "model": "diff",
+      "cases": [
+        {
+          "case": "lateral",
+          "kinematics": "diff",
+          "passed": true,
+          "arrived": true,
+          "steps": 117,
+          "simulated_seconds": 11.700000000000001,
+          "goal_distance": 0.008451422449409109,
+          "min_true_clearance": null,
+          "max_speed": 0.16327206089417554,
+          "max_control_change_rates": [
+            0.3,
+            0.6
+          ],
+          "max_yaw_drift": 1.6581690949337085,
+          "solved_cycles": 112,
+          "elapsed_seconds": 0.2572392279998894
+        },
+        {
+          "case": "diagonal_rotated",
+          "kinematics": "diff",
+          "passed": true,
+          "arrived": true,
+          "steps": 111,
+          "simulated_seconds": 11.100000000000001,
+          "goal_distance": 0.005870578162863678,
+          "min_true_clearance": null,
+          "max_speed": 0.1661375741855801,
+          "max_control_change_rates": [
+            0.3,
+            0.6
+          ],
+          "max_yaw_drift": 0.8702178230711366,
+          "solved_cycles": 106,
+          "elapsed_seconds": 0.2774977730005048
+        },
+        {
+          "case": "reverse",
+          "kinematics": "diff",
+          "passed": true,
+          "arrived": true,
+          "steps": 142,
+          "simulated_seconds": 14.200000000000001,
+          "goal_distance": 0.009834772145282398,
+          "min_true_clearance": null,
+          "max_speed": 0.1645540013893593,
+          "max_control_change_rates": [
+            0.3,
+            0.6
+          ],
+          "max_yaw_drift": 3.039138894252707,
+          "solved_cycles": 137,
+          "elapsed_seconds": 0.12241787400034809
+        },
+        {
+          "case": "right_angle",
+          "kinematics": "diff",
+          "passed": true,
+          "arrived": true,
+          "steps": 161,
+          "simulated_seconds": 16.1,
+          "goal_distance": 0.011077105740986786,
+          "min_true_clearance": null,
+          "max_speed": 0.16137775740534976,
+          "max_control_change_rates": [
+            0.3,
+            0.6
+          ],
+          "max_yaw_drift": 1.6576944604461812,
+          "solved_cycles": 156,
+          "elapsed_seconds": 0.15342648400019243
+        },
+        {
+          "case": "narrow_corridor",
+          "kinematics": "diff",
+          "passed": true,
+          "arrived": true,
+          "steps": 106,
+          "simulated_seconds": 10.600000000000001,
+          "goal_distance": 0.004438457678226593,
+          "min_true_clearance": 0.27,
+          "max_speed": 0.15000000000000385,
+          "max_control_change_rates": [
+            0.3,
+            0.0
+          ],
+          "max_yaw_drift": 0.0,
+          "solved_cycles": 101,
+          "elapsed_seconds": 2.1738925959998596
+        },
+        {
+          "case": "rviz_corridor_astar",
+          "kinematics": "diff",
+          "passed": true,
+          "arrived": true,
+          "steps": 773,
+          "simulated_seconds": 77.30000000000001,
+          "goal_distance": 0.0034037287065501517,
+          "min_true_clearance": 0.17076246548956808,
+          "max_speed": 0.14473607013782053,
+          "max_control_change_rates": [
+            0.3,
+            0.6000000000000002
+          ],
+          "max_yaw_drift": 0.894884379541761,
+          "solved_cycles": 768,
+          "elapsed_seconds": 18.305122826000115
+        }
+      ],
+      "passed": 6,
+      "total": 6
+    }
+  },
+  "tests": {
+    "cpp_groups": 5,
+    "python_tests": 19
+  }
+}

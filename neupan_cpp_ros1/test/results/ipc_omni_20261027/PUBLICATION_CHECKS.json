@@ -1,0 +1,11 @@
+{
+  "source_files_matched": 938,
+  "profile_sha256": "d2e406ff8e80a86071bd39e218d33ba345ff88831d55275abd75561ed6f6f12e",
+  "cpp_test_groups_passed": 5,
+  "python_tests_passed": 20,
+  "ros1_build": "passed",
+  "readme_image_paths_checked": true,
+  "max_staged_file_bytes": 4987523,
+  "audit_passed": true,
+  "evidence_newline_policy": "Preserve original bytes with .gitattributes; CSV uses CRLF"
+}

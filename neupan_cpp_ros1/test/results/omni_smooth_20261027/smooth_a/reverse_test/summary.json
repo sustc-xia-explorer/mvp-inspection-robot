@@ -1,0 +1,27 @@
+[
+  {
+    "case": "reverse",
+    "arrived": false,
+    "collision": false,
+    "min_clearance": 0.19250083864626344,
+    "goal_error": 0.03704897326652862,
+    "seconds": 160.0,
+    "steps": 1600,
+    "max_stall_seconds": 0.0,
+    "total_low_speed_seconds": 0.0,
+    "max_xy_acceleration": 0.20700714706622364,
+    "rms_xy_acceleration": 0.05111485045181194,
+    "max_xy_jerk": 2.405013524404676,
+    "rms_xy_jerk": 0.8160375631527687,
+    "speed_total_variation": 1.1849215002176359,
+    "direction_total_variation": 26.771027268618138,
+    "solved": 1600,
+    "unsolved": 0,
+    "emergency_stops": 0,
+    "solve_p95_ms": 65.7627,
+    "solve_max_ms": 86.111504,
+    "yaw_drift": 0.0,
+    "reference_min_clearance": 0.17772944264915874,
+    "elapsed_seconds": 55.33780832699995
+  }
+]

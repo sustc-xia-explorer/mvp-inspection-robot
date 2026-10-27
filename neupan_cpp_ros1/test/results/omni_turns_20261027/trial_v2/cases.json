@@ -1,0 +1,315 @@
+[
+  {
+    "name": "bar_auto_180",
+    "start": [
+      -0.75,
+      0.1,
+      0.0
+    ],
+    "goal": [
+      0.75,
+      0.1
+    ],
+    "scenario": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/maps/bar_auto_180_scenario.yaml"
+  },
+  {
+    "name": "bar_retarget_moving",
+    "start": [
+      -1.15,
+      -1.75,
+      0.0
+    ],
+    "goal": [
+      -1.15,
+      0.75
+    ],
+    "switch_at": 8.0,
+    "next_goal": [
+      1.15,
+      0.75
+    ],
+    "scenario": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/maps/bar_retarget_moving_scenario.yaml"
+  },
+  {
+    "name": "bar_wrap_below",
+    "start": [
+      -1.15,
+      0.75,
+      0.0
+    ],
+    "goal": [
+      1.15,
+      0.75
+    ],
+    "via": [
+      [
+        -1.15,
+        0.75
+      ],
+      [
+        -0.65,
+        -1.75
+      ],
+      [
+        0.65,
+        -1.75
+      ],
+      [
+        1.15,
+        0.75
+      ]
+    ],
+    "scenario": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/maps/bar_wrap_below_scenario.yaml"
+  },
+  {
+    "name": "bar_wrap_above",
+    "start": [
+      1.15,
+      -0.75,
+      0.0
+    ],
+    "goal": [
+      -1.15,
+      -0.75
+    ],
+    "via": [
+      [
+        1.15,
+        -0.75
+      ],
+      [
+        0.65,
+        1.75
+      ],
+      [
+        -0.65,
+        1.75
+      ],
+      [
+        -1.15,
+        -0.75
+      ]
+    ],
+    "scenario": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/maps/bar_wrap_above_scenario.yaml"
+  },
+  {
+    "name": "hard_90_open",
+    "start": [
+      -1.5,
+      -1.0,
+      0.0
+    ],
+    "goal": [
+      0.0,
+      1.5
+    ],
+    "path": [
+      [
+        -1.5,
+        -1.0
+      ],
+      [
+        0.0,
+        -1.0
+      ],
+      [
+        0.0,
+        1.5
+      ]
+    ],
+    "scenario": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/maps/hard_90_open_scenario.yaml"
+  },
+  {
+    "name": "hard_90_double",
+    "start": [
+      -2.0,
+      -1.5,
+      0.0
+    ],
+    "goal": [
+      2.0,
+      1.0
+    ],
+    "path": [
+      [
+        -2.0,
+        -1.5
+      ],
+      [
+        0.0,
+        -1.5
+      ],
+      [
+        0.0,
+        1.0
+      ],
+      [
+        2.0,
+        1.0
+      ]
+    ],
+    "scenario": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/maps/hard_90_double_scenario.yaml"
+  },
+  {
+    "name": "short_acute_zigzag",
+    "start": [
+      -1.5,
+      -1.0,
+      0.0
+    ],
+    "goal": [
+      1.0,
+      1.0
+    ],
+    "path": [
+      [
+        -1.5,
+        -1.0
+      ],
+      [
+        0.0,
+        -1.0
+      ],
+      [
+        -0.4,
+        -0.6
+      ],
+      [
+        0.4,
+        -0.6
+      ],
+      [
+        0.0,
+        -0.2
+      ],
+      [
+        1.0,
+        1.0
+      ]
+    ],
+    "scenario": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/maps/short_acute_zigzag_scenario.yaml"
+  },
+  {
+    "name": "hard_90_walled",
+    "start": [
+      -2.4,
+      -2.0,
+      0.0
+    ],
+    "goal": [
+      2.0,
+      2.5
+    ],
+    "path": [
+      [
+        -2.4,
+        -2.0
+      ],
+      [
+        2.0,
+        -2.0
+      ],
+      [
+        2.0,
+        2.5
+      ]
+    ],
+    "scenario": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/maps/hard_90_walled_scenario.yaml"
+  },
+  {
+    "name": "random_1103",
+    "seed": 1103,
+    "obstacle_count": 6,
+    "start": [
+      -3.15,
+      -3.15,
+      0.0
+    ],
+    "goal": [
+      3.15,
+      3.15
+    ],
+    "generation_attempts": 6,
+    "scenario": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/maps/random_1103_scenario.yaml"
+  },
+  {
+    "name": "random_2207",
+    "seed": 2207,
+    "obstacle_count": 10,
+    "start": [
+      -3.15,
+      -3.15,
+      0.0
+    ],
+    "goal": [
+      3.15,
+      3.15
+    ],
+    "generation_attempts": 10,
+    "scenario": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/maps/random_2207_scenario.yaml"
+  },
+  {
+    "name": "random_3301",
+    "seed": 3301,
+    "obstacle_count": 14,
+    "start": [
+      -3.15,
+      -3.15,
+      0.0
+    ],
+    "goal": [
+      3.15,
+      3.15
+    ],
+    "generation_attempts": 14,
+    "scenario": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/maps/random_3301_scenario.yaml"
+  },
+  {
+    "name": "random_4409",
+    "seed": 4409,
+    "obstacle_count": 18,
+    "start": [
+      -3.15,
+      -3.15,
+      1.5707963267948966
+    ],
+    "goal": [
+      3.15,
+      3.15
+    ],
+    "generation_attempts": 18,
+    "scenario": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/maps/random_4409_scenario.yaml"
+  },
+  {
+    "name": "random_5519",
+    "seed": 5519,
+    "obstacle_count": 22,
+    "start": [
+      -3.15,
+      -3.15,
+      0.0
+    ],
+    "goal": [
+      3.15,
+      3.15
+    ],
+    "generation_attempts": 23,
+    "scenario": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/maps/random_5519_scenario.yaml"
+  },
+  {
+    "name": "random_6619",
+    "seed": 6619,
+    "obstacle_count": 12,
+    "start": [
+      -4.15,
+      -2.15,
+      0.0
+    ],
+    "goal": [
+      4.15,
+      2.15
+    ],
+    "generation_attempts": 14,
+    "scenario": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/maps/random_6619_scenario.yaml"
+  }
+]

@@ -1,0 +1,14 @@
+# ROS1 interactive corridor. See RVIZ_SIMULATION_CN.md for the ROS2 map comparison.
+map_file: maps/corridor_fw_mini.yaml
+initial_pose: [-4.0, 0.0, 0.0]
+default_goal: [4.4, -0.5]
+resolution: 0.05
+safety_margin: 0.04
+update_rate: 50.0
+command_timeout: 0.5
+sensor:
+  offset: [0.15, 0.0, 0.0]  # simulated base->laser x, y, yaw
+  beams: 360
+  rate: 10.0
+  range_min: 0.10
+  range_max: 5.0

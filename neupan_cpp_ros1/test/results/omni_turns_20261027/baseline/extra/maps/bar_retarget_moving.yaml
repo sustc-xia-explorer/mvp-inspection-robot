@@ -1,0 +1,44 @@
+world:
+  width: 8.0
+  height: 8.0
+obstacles:
+- shape:
+    type: rectangle
+    length: 8.2
+    width: 0.2
+  pose:
+    x: 0.0
+    y: -4.0
+    yaw: 0.0
+- shape:
+    type: rectangle
+    length: 8.2
+    width: 0.2
+  pose:
+    x: 0.0
+    y: 4.0
+    yaw: 0.0
+- shape:
+    type: rectangle
+    length: 0.2
+    width: 8.0
+  pose:
+    x: -4.0
+    y: 0.0
+    yaw: 0.0
+- shape:
+    type: rectangle
+    length: 0.2
+    width: 8.0
+  pose:
+    x: 4.0
+    y: 0.0
+    yaw: 0.0
+- shape:
+    type: rectangle
+    length: 0.24
+    width: 2.2
+  pose:
+    x: 0.0
+    y: 0.0
+    yaw: 0.0

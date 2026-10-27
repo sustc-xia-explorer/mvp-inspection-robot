@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-26",
+  "environment": {
+    "os": "Ubuntu 22.04 host, isolated ROS1 ros_comm 1.15.14",
+    "compiler": "GCC 11.4",
+    "eigen": "3.4.0",
+    "OSQP": "1.x",
+    "OsqpEigen": "0.11.2"
+  },
+  "original_python_qp": {
+    "cases": 5,
+    "max_control_error": 4.50439319e-07,
+    "max_objective_error": 1.2321084e-08,
+    "tolerances": {
+      "control": 0.0002,
+      "objective": 2e-05
+    }
+  },
+  "core_ctest_groups": 5,
+  "python_unittest_count": 17,
+  "scope": "Package-local omni/diff port; no chassis driver or CAN changes",
+  "sha256": {
+    "core/include/neupan/robot.hpp": "62070242a50c10a01380b4ebc1c195958812f834d6f2a316399313d405aa5796",
+    "core/src/robot.cpp": "498533ff3804520d61584e8c07d425dce5721b4bf2cfa2f01945020c6118c3d5",
+    "core/src/initial_path.cpp": "f6d587ecc9d42efb540a0eaba11b220e495811fa30c70a4bfa660f18eeb33c85",
+    "core/src/nrmp.cpp": "2bce9b108364dd663e3e71d625a7a69dc79b57a9db1ed7c0dcc0d1ec5ee39d11",
+    "core/src/neupan_planner.cpp": "2a03a01b1fd8d54dfc4eba9aa6d2b4a734a7f76bc24a62db99ebd1f306eb52f8",
+    "src/neupan_node.cpp": "6b614ee5478b654f4caa3b92f9d83794f02899a7ab214709c5a9976c4ca2e3fa",
+    "config/fw_mini_omni.yaml": "1b25274ca3d3f04de9f419a812219470387454158ca6dd63fc1a5280fbfb2888",
+    "config/fw_mini_balanced.yaml": "9497359156d09617341a203f32428934c57dacba24efc1791ed1de7a3c64b706",
+    "models/fw_mini.bin": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8",
+    "core/include/neupan/neupan_planner.hpp": "ba08b00d6853972737d3732cff5ff33cb24c382a4c84d4c60a6009a6d8e7447f"
+  },
+  "eigen337_compatibility": {
+    "OsqpEigen_rebuilt": true,
+    "ctest_groups_passed": 5,
+    "ctest_groups_total": 5
+  },
+  "ros1_final_report": "ros1_final/summary.json",
+  "external_libneupan_changed_files": [],
+  "catkin_build": true,
+  "catkin_install_smoke": true
+}

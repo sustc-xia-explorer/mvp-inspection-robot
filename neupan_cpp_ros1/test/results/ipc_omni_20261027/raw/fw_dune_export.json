@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "points": 1000,
+  "max_absolute_error": 1.811981201171875e-05,
+  "rms_error": 3.8628598355296956e-07,
+  "tolerance": 0.0001,
+  "checkpoint_sha256": "b09aac3df4d9481e3fc4aa04f7105e0bb8cfe0514692b60b69f2429ce5d9e3cf",
+  "model_sha256": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8"
+}

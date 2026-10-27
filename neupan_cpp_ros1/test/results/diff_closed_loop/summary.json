@@ -1,0 +1,116 @@
+{
+  "config": "config/fw_mini_balanced.yaml",
+  "model": "diff",
+  "cases": [
+    {
+      "case": "lateral",
+      "kinematics": "diff",
+      "passed": true,
+      "arrived": true,
+      "steps": 117,
+      "simulated_seconds": 11.700000000000001,
+      "goal_distance": 0.008451422449409109,
+      "min_true_clearance": null,
+      "max_speed": 0.16327206089417554,
+      "max_control_change_rates": [
+        0.3,
+        0.6
+      ],
+      "max_yaw_drift": 1.6581690949337085,
+      "solved_cycles": 112,
+      "elapsed_seconds": 0.2269711590006409
+    },
+    {
+      "case": "diagonal_rotated",
+      "kinematics": "diff",
+      "passed": true,
+      "arrived": true,
+      "steps": 111,
+      "simulated_seconds": 11.100000000000001,
+      "goal_distance": 0.005870578162863678,
+      "min_true_clearance": null,
+      "max_speed": 0.1661375741855801,
+      "max_control_change_rates": [
+        0.3,
+        0.6
+      ],
+      "max_yaw_drift": 0.8702178230711366,
+      "solved_cycles": 106,
+      "elapsed_seconds": 0.2898584389995449
+    },
+    {
+      "case": "reverse",
+      "kinematics": "diff",
+      "passed": true,
+      "arrived": true,
+      "steps": 142,
+      "simulated_seconds": 14.200000000000001,
+      "goal_distance": 0.009834772145282398,
+      "min_true_clearance": null,
+      "max_speed": 0.1645540013893593,
+      "max_control_change_rates": [
+        0.3,
+        0.6
+      ],
+      "max_yaw_drift": 3.039138894252707,
+      "solved_cycles": 137,
+      "elapsed_seconds": 0.08545206199960376
+    },
+    {
+      "case": "right_angle",
+      "kinematics": "diff",
+      "passed": true,
+      "arrived": true,
+      "steps": 161,
+      "simulated_seconds": 16.1,
+      "goal_distance": 0.011077105740986786,
+      "min_true_clearance": null,
+      "max_speed": 0.16137775740534976,
+      "max_control_change_rates": [
+        0.3,
+        0.6
+      ],
+      "max_yaw_drift": 1.6576944604461812,
+      "solved_cycles": 156,
+      "elapsed_seconds": 0.12785113399968395
+    },
+    {
+      "case": "narrow_corridor",
+      "kinematics": "diff",
+      "passed": true,
+      "arrived": true,
+      "steps": 106,
+      "simulated_seconds": 10.600000000000001,
+      "goal_distance": 0.004438457678226593,
+      "min_true_clearance": 0.27,
+      "max_speed": 0.15000000000000385,
+      "max_control_change_rates": [
+        0.3,
+        0.0
+      ],
+      "max_yaw_drift": 0.0,
+      "solved_cycles": 101,
+      "elapsed_seconds": 2.1432535829999324
+    },
+    {
+      "case": "rviz_corridor_astar",
+      "kinematics": "diff",
+      "passed": true,
+      "arrived": true,
+      "steps": 773,
+      "simulated_seconds": 77.30000000000001,
+      "goal_distance": 0.0034037287065501517,
+      "min_true_clearance": 0.17076246548956808,
+      "max_speed": 0.14473607013782053,
+      "max_control_change_rates": [
+        0.3,
+        0.6000000000000002
+      ],
+      "max_yaw_drift": 0.894884379541761,
+      "solved_cycles": 768,
+      "elapsed_seconds": 18.083466591000615
+    }
+  ],
+  "passed": 6,
+  "total": 6
+}

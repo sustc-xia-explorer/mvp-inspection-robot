@@ -1,0 +1,25 @@
+test_enable_needs_fresh_command_and_repeat_false_is_harmless (test_command_guard.GuardTests) ... ok
+test_fw_units_and_required_gear (test_command_guard.GuardTests) ... ok
+test_invalid_lateral_and_emergency_stop_disable (test_command_guard.GuardTests) ... ok
+test_timeout_ramps_and_does_not_resume_old_command (test_command_guard.GuardTests) ... ok
+test_cross_pi_changes_direction_continuously (test_planar_kinematics.PeriodicDirection) ... ok
+test_diff_has_no_lateral_motion (test_planar_kinematics.PlanarKinematics) ... ok
+test_lateral_rotated_frame_and_polar_rates (test_planar_kinematics.PlanarKinematics) ... ok
+test_reverse_preserves_angle_and_emergency_zero (test_planar_kinematics.PlanarKinematics) ... ok
+test_clearance_margin_for_fixed_heading_omni (test_rviz_world.FixedHeadingPlanning) ... ok
+test_exact_ros2_map_is_not_silently_widened (test_rviz_world.RVizWorld) ... ok
+test_global_path_clears_full_body_at_multiple_orientations (test_rviz_world.RVizWorld) ... ok
+test_reject_goal_in_obstacle (test_rviz_world.RVizWorld) ... ok
+test_scan_and_solid_obstacle_interior (test_rviz_world.RVizWorld) ... ok
+test_hard_corner_is_preserved_and_unsafe_fixture_is_rejected (test_rviz_world.ReferenceFixtures) ... ok
+test_arc_motion (test_simulation_geometry.SimulationGeometry) ... ok
+test_footprint_not_just_centre (test_simulation_geometry.SimulationGeometry) ... ok
+test_ray_circle (test_simulation_geometry.SimulationGeometry) ... ok
+test_ray_wall_and_range_limit (test_simulation_geometry.SimulationGeometry) ... ok
+test_rotated_offset_sensor (test_simulation_geometry.SimulationGeometry) ... ok
+test_wall_crosses_rectangle_without_endpoint_inside (test_simulation_geometry.SimulationGeometry) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 5.539s
+
+OK

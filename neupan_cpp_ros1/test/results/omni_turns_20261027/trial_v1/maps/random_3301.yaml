@@ -1,0 +1,140 @@
+world:
+  width: 8.0
+  height: 8.0
+obstacles:
+- shape:
+    type: rectangle
+    length: 8.2
+    width: 0.2
+  pose:
+    x: 0.0
+    y: -4.0
+    yaw: 0.0
+- shape:
+    type: rectangle
+    length: 8.2
+    width: 0.2
+  pose:
+    x: 0.0
+    y: 4.0
+    yaw: 0.0
+- shape:
+    type: rectangle
+    length: 0.2
+    width: 8.0
+  pose:
+    x: -4.0
+    y: 0.0
+    yaw: 0.0
+- shape:
+    type: rectangle
+    length: 0.2
+    width: 8.0
+  pose:
+    x: 4.0
+    y: 0.0
+    yaw: 0.0
+- shape:
+    type: rectangle
+    length: 0.6512645972033013
+    width: 0.37786473785023894
+  pose:
+    x: -1.815460863405835
+    y: -1.8085709489136932
+    yaw: 0.5675123603079419
+- shape:
+    type: rectangle
+    length: 0.7796904258869308
+    width: 0.46237141189039427
+  pose:
+    x: 2.394412514740564
+    y: 1.9067646056620564
+    yaw: 0.15084040478437366
+- shape:
+    type: circle
+    radius: 0.26657563439924886
+  pose:
+    x: -0.04052172889138328
+    y: 2.502457042378003
+- shape:
+    type: rectangle
+    length: 0.5064644804796072
+    width: 0.3030266808664379
+  pose:
+    x: -0.7674141931219571
+    y: 1.6740704508626436
+    yaw: -2.8227057299303446
+- shape:
+    type: circle
+    radius: 0.1994594633122233
+  pose:
+    x: -0.5181634236198449
+    y: 1.7338196782022797
+- shape:
+    type: rectangle
+    length: 0.7813362279097519
+    width: 0.45681655097154805
+  pose:
+    x: -1.9140238945267976
+    y: -0.3587537785230639
+    yaw: 1.0822126483442274
+- shape:
+    type: rectangle
+    length: 1.0196061712091433
+    width: 0.4654443012088304
+  pose:
+    x: 1.669330206487997
+    y: 1.956277504742439
+    yaw: -2.9865242846413174
+- shape:
+    type: rectangle
+    length: 0.4807562380848852
+    width: 0.3504917926681568
+  pose:
+    x: -0.0100566000436757
+    y: 1.8277838278460887
+    yaw: -1.6998440438484195
+- shape:
+    type: rectangle
+    length: 0.8057716543104736
+    width: 0.23091876097947064
+  pose:
+    x: 1.5132535277144088
+    y: 0.4698990859081662
+    yaw: 0.22433620846061375
+- shape:
+    type: rectangle
+    length: 0.7338581271636175
+    width: 0.4426039703753172
+  pose:
+    x: 2.637571043657543
+    y: -0.8160377580461193
+    yaw: 0.650392513857295
+- shape:
+    type: circle
+    radius: 0.2711691958060841
+  pose:
+    x: -1.1908913149885687
+    y: 2.1699578565996234
+- shape:
+    type: circle
+    radius: 0.21511389114487134
+  pose:
+    x: 1.5904095790511565
+    y: 2.3054095344912033
+- shape:
+    type: rectangle
+    length: 0.6260674695396853
+    width: 0.24930587147651612
+  pose:
+    x: -0.5794735865558467
+    y: -2.37736415943847
+    yaw: -2.0553316714548853
+- shape:
+    type: rectangle
+    length: 0.788814192646238
+    width: 0.458175218067615
+  pose:
+    x: -0.6959270339290335
+    y: -0.6269914194801283
+    yaw: 2.692573873665091

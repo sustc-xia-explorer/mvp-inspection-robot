@@ -1,0 +1,118 @@
+{
+  "sequence": [
+    {
+      "goal": [
+        4.4,
+        -0.5
+      ],
+      "seconds": 72.82450668000001,
+      "error": 0.05345317119506236,
+      "arrived": true
+    },
+    {
+      "goal": [
+        -4.0,
+        0.0
+      ],
+      "seconds": 71.31158488999972,
+      "error": 0.037263161785676964,
+      "arrived": true
+    },
+    {
+      "goal": [
+        -1.65,
+        0.65
+      ],
+      "seconds": 22.539205489999404,
+      "error": 0.0203339120360054,
+      "arrived": true
+    }
+  ],
+  "world": {
+    "collision_count": 0,
+    "min_true_clearance": 0.20836479296805888,
+    "goals": [
+      {
+        "goal": [
+          4.4,
+          -0.5
+        ],
+        "wall_seconds": 0.9209398660004808,
+        "status": "arrived",
+        "final_pose": [
+          4.444136271695658,
+          -0.4698465419625591,
+          0.0
+        ],
+        "goal_error": 0.05345317119506236,
+        "arrived_wall_seconds": 73.70533446700028
+      },
+      {
+        "goal": [
+          -4.0,
+          0.0
+        ],
+        "wall_seconds": 74.33578445900002,
+        "status": "arrived",
+        "final_pose": [
+          -4.019063569412888,
+          0.03174867427640656,
+          0.0
+        ],
+        "goal_error": 0.03703239118757175,
+        "arrived_wall_seconds": 145.59312220100037
+      },
+      {
+        "goal": [
+          -1.65,
+          0.65
+        ],
+        "wall_seconds": 146.25516790200072,
+        "status": "arrived",
+        "final_pose": [
+          -1.6343192029366356,
+          0.6382860270015618,
+          0.0
+        ],
+        "goal_error": 0.019573056990428342,
+        "arrived_wall_seconds": 168.6889016590003
+      }
+    ],
+    "final_pose": [
+      -1.6337057223820102,
+      0.6378359342489494,
+      0.0
+    ],
+    "arrived": true,
+    "max_normal_acceleration": 0.20000000000000057,
+    "max_normal_direction_rate": 0.8000000000000123,
+    "kinematics": "omni",
+    "note": "Ideal kinematic plant. Collision is latched and requires a pose reset."
+  },
+  "metrics": {
+    "goals": {
+      "4.4,-0.5": {
+        "min_clearance": 0.20836479296805888,
+        "max_stall_seconds": 0.3600734999999986,
+        "samples": 3657,
+        "unsolved_tracking_samples": 0
+      },
+      "-4.0,0.0": {
+        "min_clearance": 0.20836479296805888,
+        "max_stall_seconds": 0.2999150829991777,
+        "samples": 3578,
+        "unsolved_tracking_samples": 3
+      },
+      "-1.65,0.65": {
+        "min_clearance": 0.23111062281500452,
+        "max_stall_seconds": 0.3516094759997941,
+        "samples": 1190,
+        "unsolved_tracking_samples": 4
+      }
+    },
+    "max_actual_xy_acceleration": 0.24550839428761811,
+    "planner_p95_ms": 63.589636,
+    "planner_max_ms": 107.886232
+  },
+  "passed": true
+}

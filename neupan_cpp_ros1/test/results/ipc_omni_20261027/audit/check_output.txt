@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "profile_sha256": "d2e406ff8e80a86071bd39e218d33ba345ff88831d55275abd75561ed6f6f12e",
+  "model_sha256": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8",
+  "dune_export_report": {
+    "passed": true,
+    "points": 1000,
+    "max_absolute_error": 1.811981201171875e-05,
+    "rms_error": 3.8628598355296956e-07,
+    "tolerance": 0.0001,
+    "checkpoint_sha256": "b09aac3df4d9481e3fc4aa04f7105e0bb8cfe0514692b60b69f2429ce5d9e3cf",
+    "model_sha256": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8"
+  },
+  "core_cases": 22,
+  "core_arrived": 19,
+  "core_no_route": [
+    "random_6619",
+    "random_10427",
+    "random_14891"
+  ],
+  "ros_sessions": 4,
+  "ros_goals": 12,
+  "issues": [],
+  "scope": "Offline reanalysis of user-supplied IPC simulations; not real chassis validation."
+}
+{"session": "omni_turns_ros1_90/world", "passed": true, "goals": [{"index": 1, "goal": [2.0, 2.5], "status": "arrived", "goal_error": 0.0004851679812358789, "seconds": 64.43489713101008, "max_stall_seconds": 0.6399942299904069, "max_no_solve_seconds": 0.0}], "csv_rows": 3335, "min_clearance": 0.6438046818775525, "independent_gap_max_error": 0.0, "max_speed": 0.15222024743952584, "max_control_rates": [0.20000000000000057, 0.8000000000000078], "max_xy_acceleration": 0.21351057436771181, "yaw_drift": 0.0, "solver_failure_samples": 0, "unexpected_emergency_samples": 0, "planner_p95_ms": 58.9309949, "planner_max_ms": 66.143783, "planner_cycles": 638, "planner_over_100ms": 0, "initial_emergency_samples": 51, "issues": [], "first_corner_overshoot_m": 0.008695318122447837}
+{"session": "omni_turns_rviz", "passed": true, "goals": [{"index": 1, "goal": [2.7312142848968506, 0.8322259783744812], "status": "arrived", "goal_error": 0.015810111466186386, "seconds": 54.66280921299767, "max_stall_seconds": 0.0, "max_no_solve_seconds": 0.0}, {"index": 2, "goal": [-1.3879977464675903, 0.8564486503601074], "status": "arrived", "goal_error": 0.006778610734898863, "seconds": 42.233843422000064, "max_stall_seconds": 0.0, "max_no_solve_seconds": 0.0}, {"index": 3, "goal": [0.18649950623512268, 0.7834036350250244], "status": "arrived", "goal_error": 0.005653555667705657, "seconds": 29.221149093995336, "max_stall_seconds": 0.0, "max_no_solve_seconds": 0.0}, {"index": 4, "goal": [-1.1798522472381592, 0.8068651556968689], "status": "arrived", "goal_error": 0.009184927905914688, "seconds": 31.23455937099061, "max_stall_seconds": 0.0, "max_no_solve_seconds": 0.0}, {"index": 5, "goal": [3.5536274909973145, -0.6837981939315796], "status": "arrived", "goal_error": 0.017938664795323918, "seconds": 52.87281351200363, "max_stall_seconds": 0.0, "max_no_solve_seconds": 0.0}, {"index": 6, "goal": [-4.3284759521484375, 0.7289702892303467], "status": "arrived", "goal_error": 0.026955747381568022, "seconds": 70.17889965900395, "max_stall_seconds": 0.0, "max_no_solve_seconds": 0.0}], "csv_rows": 16170, "min_clearance": 0.19340820846475099, "independent_gap_max_error": 1.1102230246251565e-16, "max_speed": 0.18000000000000002, "max_control_rates": [0.2000000000000011, 0.8000000000000078], "max_xy_acceleration": 0.24551209860295256, "yaw_drift": 0.0, "solver_failure_samples": 0, "unexpected_emergency_samples": 0, "planner_p95_ms": 71.57781715, "planner_max_ms": 97.308241, "planner_cycles": 2762, "planner_over_100ms": 0, "initial_emergency_samples": 619, "issues": []}
+{"session": "omni_turns_rviz_90", "passed": true, "goals": [{"index": 1, "goal": [2.0, 2.5], "status": "arrived", "goal_error": 0.012867354157770627, "seconds": 65.1688804459991, "max_stall_seconds": 0.399925442005042, "max_no_solve_seconds": 0.0}, {"index": 2, "goal": [0.2174464762210846, -1.6384131908416748], "status": "arrived", "goal_error": 0.00554537979992263, "seconds": 42.483532363999984, "max_stall_seconds": 1.5600170649995562, "max_no_solve_seconds": 0.0}, {"index": 3, "goal": [1.7385354042053223, 2.9640681743621826], "status": "arrived", "goal_error": 0.011951243630079902, "seconds": 41.24383786399267, "max_stall_seconds": 0.0, "max_no_solve_seconds": 0.0}], "csv_rows": 10832, "min_clearance": 0.2130942677591917, "independent_gap_max_error": 5.551115123125783e-17, "max_speed": 0.18, "max_control_rates": [0.20000000000000076, 0.8000000000000087], "max_xy_acceleration": 0.24452918887799166, "yaw_drift": 0.0, "solver_failure_samples": 0, "unexpected_emergency_samples": 0, "planner_p95_ms": 68.0781968, "planner_max_ms": 94.557132, "planner_cycles": 1469, "planner_over_100ms": 0, "initial_emergency_samples": 107, "issues": [], "first_corner_overshoot_m": 0.011039594829647559}
+{"session": "omni_turns_rviz_bar", "passed": true, "goals": [{"index": 1, "goal": [0.75, 0.1], "status": "arrived", "goal_error": 0.01009842231118631, "seconds": 33.295405419994495, "max_stall_seconds": 0.0, "max_no_solve_seconds": 0.0}, {"index": 2, "goal": [-0.8093401193618774, -0.2300647497177124], "status": "arrived", "goal_error": 0.008836746359485918, "seconds": 31.31946611100284, "max_stall_seconds": 0.0, "max_no_solve_seconds": 0.0}], "csv_rows": 4589, "min_clearance": 0.2367333692175951, "independent_gap_max_error": 5.551115123125783e-17, "max_speed": 0.18000000000000002, "max_control_rates": [0.20000000000000057, 0.800000000000009], "max_xy_acceleration": 0.24550889311222848, "yaw_drift": 0.0, "solver_failure_samples": 0, "unexpected_emergency_samples": 0, "planner_p95_ms": 73.29680295000003, "planner_max_ms": 95.557872, "planner_cycles": 634, "planner_over_100ms": 0, "initial_emergency_samples": 104, "issues": []}

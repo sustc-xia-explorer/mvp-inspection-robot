@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-27",
+  "host_os": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "compiler": "c++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+  "scope": "Local C++ core and isolated ROS1; no real chassis or IPC execution",
+  "files": {
+    "core/src/initial_path.cpp": "a0e7b82d0c7e0193338361e48797d2c8707131745d0705eedb409ff6b78f209b",
+    "core/src/neupan_planner.cpp": "e72e59f051db5b540af65be19edf117f619e484dad81f7bb6bbc0fca7a7a0f99",
+    "core/include/neupan/initial_path.hpp": "f6118fce858ad09b9650d3d85aecda617092d2fc5a537c1a1b828522985003b7",
+    "config/fw_mini_omni.yaml": "d2e406ff8e80a86071bd39e218d33ba345ff88831d55275abd75561ed6f6f12e",
+    "config/scenario_corridor.yaml": "2960c87024312b903f45f75e7fce58aadc1c9a817b94a6213af7c0855144c9eb",
+    "scripts/rviz_sim.py": "b91f16032ae44fbf4ebe987b090639c392064501f7db4993013a2421b0c9ec9c",
+    "scripts/planar_kinematics.py": "99d26a4614ca5f053dbc7a59847cf94055452896e7e190cfa5401cbc1c465bb5",
+    "test/stress_omni_navigation.py": "9513ac919c2953039908778bd4d06f90f381e2a0cec841c6b1c9dd28682d4299",
+    "test/tune_omni_corridor.py": "3b2d852f34fff231fe6400a529f4afeaa0ca2b194e402cd1d010fa0675df2d86",
+    "test/ros1_smooth_corridor_test.py": "84650db306b125edf2befc78d1789d97e3fe6f151e46836869f1e57ae57b997d",
+    "models/fw_mini.bin": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8"
+  }
+}

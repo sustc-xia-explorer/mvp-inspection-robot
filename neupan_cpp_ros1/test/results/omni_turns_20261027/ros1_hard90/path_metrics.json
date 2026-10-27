@@ -1,0 +1,15 @@
+{
+  "max_path_error": 0.008154527018164437,
+  "rms_path_error": 0.001274765294736929,
+  "speed_high_frequency_rms": 0.0005931641028287226,
+  "backwards_progress_m": 0.0,
+  "hard_corner_overshoot_m": null,
+  "case": "hard_90_walled",
+  "passed": true,
+  "min_clearance": 0.6444610359463412,
+  "max_xy_acceleration": 0.21393902684866287,
+  "seconds": 65.13999365100062,
+  "rms_xy_jerk": 1.8300180844831193,
+  "note": "ROS samples at variable ~50 Hz; moving-average ripple uses 11 samples (~0.22 s), not core 1.1 s.",
+  "corner_overshoot_m": 0.008038964053659114
+}

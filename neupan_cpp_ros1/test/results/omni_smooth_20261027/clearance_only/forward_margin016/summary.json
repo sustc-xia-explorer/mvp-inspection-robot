@@ -1,0 +1,27 @@
+[
+  {
+    "case": "forward",
+    "arrived": true,
+    "collision": false,
+    "min_clearance": 0.1912560953231444,
+    "goal_error": 0.004141628286970125,
+    "seconds": 67.9,
+    "steps": 679,
+    "max_stall_seconds": 0.0,
+    "total_low_speed_seconds": 0.0,
+    "max_xy_acceleration": 0.48937032240809764,
+    "rms_xy_acceleration": 0.07414626637332766,
+    "max_xy_jerk": 9.350021780144658,
+    "rms_xy_jerk": 0.9978283345679794,
+    "speed_total_variation": 0.362976207428432,
+    "direction_total_variation": 9.375148455232338,
+    "solved": 674,
+    "unsolved": 0,
+    "emergency_stops": 0,
+    "solve_p95_ms": 31.866243,
+    "solve_max_ms": 49.157399,
+    "yaw_drift": 0.0,
+    "reference_min_clearance": 0.17629058593661584,
+    "elapsed_seconds": 18.424726270000065
+  }
+]

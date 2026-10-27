@@ -1,0 +1,10 @@
+{
+  "backend": "ros_rviz",
+  "kinematics": "omni",
+  "model": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/models/fw_mini.bin",
+  "model_sha256": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8",
+  "config_sha256": "1b25274ca3d3f04de9f419a812219470387454158ca6dd63fc1a5280fbfb2888",
+  "scenario_file": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/config/scenario_corridor.yaml",
+  "output": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ros1_final/rviz_corridor",
+  "command_topic": "/neupan_sim/cmd_vel"
+}

@@ -1,0 +1,116 @@
+{
+  "config": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/config/fw_mini_omni.yaml",
+  "model": "omni",
+  "cases": [
+    {
+      "case": "lateral",
+      "kinematics": "omni",
+      "passed": true,
+      "arrived": true,
+      "steps": 87,
+      "simulated_seconds": 8.700000000000001,
+      "goal_distance": 0.004424998340936559,
+      "min_true_clearance": null,
+      "max_speed": 0.15,
+      "max_control_change_rates": [
+        0.30000000000000004,
+        3.0000000000000004
+      ],
+      "max_yaw_drift": 0.0,
+      "solved_cycles": 82,
+      "elapsed_seconds": 0.2638896960006605
+    },
+    {
+      "case": "diagonal_rotated",
+      "kinematics": "omni",
+      "passed": true,
+      "arrived": true,
+      "steps": 100,
+      "simulated_seconds": 10.0,
+      "goal_distance": 0.0036844506743399785,
+      "min_true_clearance": null,
+      "max_speed": 0.15347273549701584,
+      "max_control_change_rates": [
+        0.30000000000000004,
+        3.0000000000000004
+      ],
+      "max_yaw_drift": 0.0,
+      "solved_cycles": 95,
+      "elapsed_seconds": 0.2135224459998426
+    },
+    {
+      "case": "reverse",
+      "kinematics": "omni",
+      "passed": true,
+      "arrived": true,
+      "steps": 99,
+      "simulated_seconds": 9.9,
+      "goal_distance": 0.027460656446954626,
+      "min_true_clearance": null,
+      "max_speed": 0.1838153596867733,
+      "max_control_change_rates": [
+        0.3000000000000001,
+        3.0000000000000004
+      ],
+      "max_yaw_drift": 0.0,
+      "solved_cycles": 98,
+      "elapsed_seconds": 0.6246457719998944
+    },
+    {
+      "case": "right_angle",
+      "kinematics": "omni",
+      "passed": true,
+      "arrived": true,
+      "steps": 139,
+      "simulated_seconds": 13.9,
+      "goal_distance": 0.0024781899035473715,
+      "min_true_clearance": null,
+      "max_speed": 0.15318049093583155,
+      "max_control_change_rates": [
+        0.3,
+        3.0000000000000013
+      ],
+      "max_yaw_drift": 0.0,
+      "solved_cycles": 134,
+      "elapsed_seconds": 0.14213030000064464
+    },
+    {
+      "case": "narrow_corridor",
+      "kinematics": "omni",
+      "passed": true,
+      "arrived": true,
+      "steps": 106,
+      "simulated_seconds": 10.600000000000001,
+      "goal_distance": 0.004438457678226371,
+      "min_true_clearance": 0.27,
+      "max_speed": 0.15000000000000446,
+      "max_control_change_rates": [
+        0.3,
+        0.0
+      ],
+      "max_yaw_drift": 0.0,
+      "solved_cycles": 101,
+      "elapsed_seconds": 2.2896860509999897
+    },
+    {
+      "case": "rviz_corridor_astar",
+      "kinematics": "omni",
+      "passed": true,
+      "arrived": true,
+      "steps": 773,
+      "simulated_seconds": 77.30000000000001,
+      "goal_distance": 0.0067375758312193754,
+      "min_true_clearance": 0.08815385069509252,
+      "max_speed": 0.2,
+      "max_control_change_rates": [
+        0.3,
+        3.0000000000000013
+      ],
+      "max_yaw_drift": 0.0,
+      "solved_cycles": 768,
+      "elapsed_seconds": 22.744703655000194
+    }
+  ],
+  "passed": 6,
+  "total": 6
+}

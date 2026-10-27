@@ -1,0 +1,14 @@
+Consolidate compiler generated dependencies of target neupan_ros1_core
+[ 42%] Built target neupan_ros1_core
+Consolidate compiler generated dependencies of target neupan_ros1_sim_backend
+[ 52%] Built target ros1_test_dune
+[ 61%] Built target neupan_ros1_sim_backend
+Consolidate compiler generated dependencies of target ros1_test_replay
+[ 71%] Built target ros1_test_nrmp
+[ 80%] Built target ros1_test_replay
+Consolidate compiler generated dependencies of target ros1_test_command_limits
+Consolidate compiler generated dependencies of target ros1_test_omni
+[ 90%] Built target ros1_test_command_limits
+[ 95%] Building CXX object CMakeFiles/ros1_test_omni.dir/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/core/test_omni.cpp.o
+[100%] Linking CXX executable ros1_test_omni
+[100%] Built target ros1_test_omni

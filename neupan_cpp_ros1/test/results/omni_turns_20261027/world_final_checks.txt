@@ -1,0 +1,11 @@
+test_clearance_margin_for_fixed_heading_omni (test_rviz_world.FixedHeadingPlanning) ... ok
+test_exact_ros2_map_is_not_silently_widened (test_rviz_world.RVizWorld) ... ok
+test_global_path_clears_full_body_at_multiple_orientations (test_rviz_world.RVizWorld) ... ok
+test_reject_goal_in_obstacle (test_rviz_world.RVizWorld) ... ok
+test_scan_and_solid_obstacle_interior (test_rviz_world.RVizWorld) ... ok
+test_hard_corner_is_preserved_and_unsafe_fixture_is_rejected (test_rviz_world.ReferenceFixtures) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 5.311s
+
+OK

@@ -1,0 +1,10 @@
+{
+  "backend": "ros_rviz",
+  "kinematics": "omni",
+  "model": "/tmp/neupan_omni_smooth/ws/src/neupan_cpp_ros1/models/fw_mini.bin",
+  "model_sha256": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8",
+  "config_sha256": "d2e406ff8e80a86071bd39e218d33ba345ff88831d55275abd75561ed6f6f12e",
+  "scenario_file": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/final_core/maps/bar_auto_180_scenario.yaml",
+  "output": "/home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/ros1_bar_auto/world",
+  "command_topic": "/neupan_sim/cmd_vel"
+}
