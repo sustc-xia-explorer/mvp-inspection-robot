@@ -1,0 +1,32 @@
+[
+  {
+    "case": "random_6619",
+    "source_free": true,
+    "target_free": true,
+    "target_reachable": false,
+    "reachable_cells": 7782,
+    "blocked_cells": 13515,
+    "total_cells": 24000,
+    "note": "No path in this conservative inflated grid; not a proof of physical impossibility."
+  },
+  {
+    "case": "random_10427",
+    "source_free": true,
+    "target_free": true,
+    "target_reachable": false,
+    "reachable_cells": 7504,
+    "blocked_cells": 16086,
+    "total_cells": 25600,
+    "note": "No path in this conservative inflated grid; not a proof of physical impossibility."
+  },
+  {
+    "case": "random_14891",
+    "source_free": true,
+    "target_free": true,
+    "target_reachable": false,
+    "reachable_cells": 2796,
+    "blocked_cells": 16906,
+    "total_cells": 25600,
+    "note": "No path in this conservative inflated grid; not a proof of physical impossibility."
+  }
+]

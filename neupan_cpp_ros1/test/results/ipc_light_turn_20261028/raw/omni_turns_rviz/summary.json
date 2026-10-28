@@ -1,0 +1,106 @@
+{
+  "collision_count": 0,
+  "min_true_clearance": 0.19340362024714425,
+  "goals": [
+    {
+      "goal": [
+        2.7312142848968506,
+        0.8322259783744812
+      ],
+      "wall_seconds": 12.18123343300249,
+      "status": "arrived",
+      "final_pose": [
+        2.7466025737115527,
+        0.8285982804917252,
+        0.0
+      ],
+      "goal_error": 0.015810111466186386,
+      "arrived_wall_seconds": 66.84404264600016
+    },
+    {
+      "goal": [
+        -1.3879977464675903,
+        0.8564486503601074
+      ],
+      "wall_seconds": 70.60198773999582,
+      "status": "arrived",
+      "final_pose": [
+        -1.3860554741163407,
+        0.8499542572699983,
+        0.0
+      ],
+      "goal_error": 0.006778610734898862,
+      "arrived_wall_seconds": 112.83583116199588
+    },
+    {
+      "goal": [
+        0.18649950623512268,
+        0.7834036350250244
+      ],
+      "wall_seconds": 117.8359848770051,
+      "status": "arrived",
+      "final_pose": [
+        0.18643163981640437,
+        0.7777504867130608,
+        0.0
+      ],
+      "goal_error": 0.0056535556677056575,
+      "arrived_wall_seconds": 147.05713397100044
+    },
+    {
+      "goal": [
+        -1.1798522472381592,
+        0.8068651556968689
+      ],
+      "wall_seconds": 151.00290924700676,
+      "status": "arrived",
+      "final_pose": [
+        -1.1798059511059513,
+        0.7976803444682702,
+        0.0
+      ],
+      "goal_error": 0.009184927905914688,
+      "arrived_wall_seconds": 182.23746861799737
+    },
+    {
+      "goal": [
+        3.5536274909973145,
+        -0.6837981939315796
+      ],
+      "wall_seconds": 189.98016802899656,
+      "status": "arrived",
+      "final_pose": [
+        3.560358839281669,
+        -0.7004260213577261,
+        0.0
+      ],
+      "goal_error": 0.01793866479532392,
+      "arrived_wall_seconds": 242.8529815410002
+    },
+    {
+      "goal": [
+        -4.3284759521484375,
+        0.7289702892303467
+      ],
+      "wall_seconds": 246.26199277800333,
+      "status": "arrived",
+      "final_pose": [
+        -4.336744281405969,
+        0.7546266149257372,
+        0.0
+      ],
+      "goal_error": 0.026955747381568022,
+      "arrived_wall_seconds": 316.4408924370073
+    }
+  ],
+  "final_pose": [
+    -4.336763597514113,
+    0.7546194019419398,
+    0.0
+  ],
+  "arrived": true,
+  "max_normal_acceleration": 0.2000000000000011,
+  "max_normal_direction_rate": 0.8000000000000078,
+  "kinematics": "omni",
+  "note": "Ideal kinematic plant. Collision is latched and requires a pose reset."
+}

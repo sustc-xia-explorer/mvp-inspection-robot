@@ -1,0 +1,16 @@
+{
+  "profile": "FW-OMNI-LIGHT-TURN-V2",
+  "passed": true,
+  "total_maps": 22,
+  "feasible": 19,
+  "arrived": 19,
+  "target_pass": 19,
+  "low_speed_threshold_seconds": 1.5,
+  "max_continuous_low_speed_seconds": 0.7,
+  "no_route": [
+    "random_6619",
+    "random_10427",
+    "random_14891"
+  ],
+  "failures": []
+}

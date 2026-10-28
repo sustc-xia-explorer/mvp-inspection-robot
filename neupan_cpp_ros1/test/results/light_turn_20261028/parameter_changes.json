@@ -1,0 +1,13 @@
+[
+  {
+    "parameter": "adjust.control_change_weight",
+    "before": [
+      12.0,
+      1.0
+    ],
+    "after": [
+      16.0,
+      0.5
+    ]
+  }
+]

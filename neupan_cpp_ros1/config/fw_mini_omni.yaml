@@ -1,4 +1,7 @@
-# Omni turn-aware profile, frozen before the holdout maps (2026-10-27).
+# Profile: FW-OMNI-LIGHT-TURN-V2
+# Name: 本地全向小计算急弯调优版
+# Engine: ros1; status: validated_current
+# Frozen copy. See config/profiles/README.md and index.yaml.
 adjust:
   bk: 0.05
   d_max: 0.26
@@ -11,8 +14,8 @@ adjust:
   - 1.0
   ro_obs: 600.0
   control_change_weight:
-  - 12.0
-  - 1.0
+  - 16.0
+  - 0.5
 collision_threshold: 0.08
 ipath:
   arrive_index_threshold: 1
@@ -28,10 +31,10 @@ ipath:
   minimum_turn_speed: 0.035
 pan:
   dune_max_num: 100
-  iter_num: 4
-  iter_threshold: 0.005
-  nrmp_max_num: 12
-receding: 15
+  iter_num: 2
+  iter_threshold: 0.1
+  nrmp_max_num: 10
+receding: 10
 ref_speed: 0.15
 robot:
   kinematics: omni

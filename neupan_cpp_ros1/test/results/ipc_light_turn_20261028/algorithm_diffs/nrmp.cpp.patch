@@ -1,0 +1,166 @@
+--- /home/xiapilang/work/neupan_cpp/libneupan/src/nrmp.cpp	2026-10-27 23:57:06.080713827 +0800
++++ /home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/core/src/nrmp.cpp	2026-10-27 12:06:40.093940438 +0800
+@@ -30,9 +30,9 @@
+   off_e_ = off_d_ + T_;
+   nz_ = off_e_ + M_ * T_;
+ 
+-  // rows: init eq (3) | dynamics (3T) | speed (2T) | acce (2(T-1)) |
++  // rows: init eq (3) | dynamics (3T) | speed (2T) | first step (2) | acce (2(T-1)) |
+   //       d box (T) | avoidance (M*T) | e >= 0 (M*T)
+-  nc_ = 3 + 3 * T_ + 2 * T_ + 2 * (T_ - 1) + T_ + 2 * M_ * T_;
++  nc_ = 3 + 3 * T_ + 2 * T_ + 2 * T_ + T_ + 2 * M_ * T_;
+ 
+   P_.resize(nz_, nz_);
+   A_.resize(nc_, nz_);
+@@ -42,8 +42,8 @@
+ }
+ 
+ NRMP::~NRMP() = default;
+-NRMP::NRMP(NRMP&&) noexcept = default;
+-NRMP& NRMP::operator=(NRMP&&) noexcept = default;
++NRMP::NRMP(NRMP&&) = default;
++NRMP& NRMP::operator=(NRMP&&) = default;
+ 
+ void NRMP::buildFaFb(const std::vector<Mat>& mu_list,
+                      const std::vector<Mat2X>& lam_list,
+@@ -75,7 +75,11 @@
+ void NRMP::assemble(const Mat3X& nom_s, const Mat2X& nom_u, const Mat3X& ref_s,
+                     const Vec& ref_us, const std::vector<Mat>& fa_list,
+                     const std::vector<Vec>& fb_list,
+-                    const std::optional<Box>& first) {
++                    const Vec2* applied_command, double command_dt) {
++  Vec3 qs = p_.q_s;
++  // Python Robot.C0_cost for omni tracks position only, not body yaw.
++  if (robot_.kinematics == Kinematics::Omni) qs(2) = 0.0;
++
+   // ---- Hessian P (diagonal) and gradient q ----
+   // cvxpy objective J(z) = z' Q z + c' z; OSQP form 0.5 z' P z + q' z with
+   // P = 2 Q. Terms: ||q_s .* s - q_s .* ref_s||^2, ||p_u u_v - p_u ref_us||^2,
+@@ -87,10 +91,9 @@
+   for (int t = 0; t <= T_; ++t) {
+     for (int r = 0; r < 3; ++r) {
+       const int j = 3 * t + r;
+-      const double w = stateWeight(r);
+-      pTrip.emplace_back(j, j, 2.0 * w * w + p_.bk);
+-      const double gamma_a = w * ref_s(r, t);
+-      q_(j) = -2.0 * w * gamma_a - p_.bk * nom_s(r, t);
++      pTrip.emplace_back(j, j, 2.0 * qs(r) * qs(r) + p_.bk);
++      const double gamma_a = qs(r) * ref_s(r, t);
++      q_(j) = -2.0 * qs(r) * gamma_a - p_.bk * nom_s(r, t);
+     }
+   }
+   for (int t = 0; t < T_; ++t) {
+@@ -106,6 +109,22 @@
+   }
+   for (int j = off_e_; j < nz_; ++j) pTrip.emplace_back(j, j, p_.ro_obs);
+ 
++  // Penalize control changes, including the first command relative to actual
++  // execution. Only upper-triangular Hessian entries are passed to OSQP.
++  for (int r = 0; r < 2; ++r) {
++    const double weight = p_.control_change_weight(r);
++    if (weight <= 0.0) continue;
++    const int first = off_u_+r;
++    pTrip.emplace_back(first, first, weight);
++    q_(first) -= weight*(applied_command ? (*applied_command)(r) : 0.0);
++    for (int t = 1; t < T_; ++t) {
++      const int now = off_u_+2*t+r, before = now-2;
++      pTrip.emplace_back(now, now, weight);
++      pTrip.emplace_back(before, before, weight);
++      pTrip.emplace_back(before, now, -weight);
++    }
++  }
++
+   P_.setZero();
+   P_.setFromTriplets(pTrip.begin(), pTrip.end());
+ 
+@@ -129,8 +148,8 @@
+     robot_.linearize(nom_s.col(t), nom_u.col(t), A, B, C);
+ 
+     for (int r = 0; r < 3; ++r) {
+-      // Keep a fixed sparsity pattern: insert every entry that any model can
+-      // make nonzero, even when it is zero now (OSQP is updated in place).
++      // Keep a fixed sparsity pattern: insert all entries that can ever be
++      // nonzero for either model, even when currently zero.
+       aTrip.emplace_back(row, 3 * t + r, A(r, r));
+       if (r < 2) aTrip.emplace_back(row, 3 * t + 2, A(r, 2));
+       aTrip.emplace_back(row, off_u_ + 2 * t, B(r, 0));
+@@ -141,16 +160,28 @@
+     }
+   }
+ 
+-  // speed box: |u| <= max_speed, or the given box for the first input
++  // speed box: |u| <= max_speed
+   for (int t = 0; t < T_; ++t) {
+     for (int r = 0; r < 2; ++r) {
+       aTrip.emplace_back(row, off_u_ + 2 * t + r, 1.0);
+-      lb_(row) = t == 0 && first ? first->lo(r) : -robot_.max_speed(r);
+-      ub_(row) = t == 0 && first ? first->hi(r) : robot_.max_speed(r);
++      lb_(row) = -robot_.max_speed(r);
++      ub_(row) = robot_.max_speed(r);
+       ++row;
+     }
+   }
+ 
++  // Anchor the first control to the last applied command, not the nominal's
++  // first column (which changes during PAN iterations). Keep two rows present
++  // in legacy reference solves too, with inactive bounds.
++  for (int r = 0; r < 2; ++r) {
++    aTrip.emplace_back(row, off_u_ + r, 1.0);
++    const double delta = (robot_.acce_bound(r) / robot_.dt) *
++        (command_dt > 0.0 ? command_dt : robot_.dt);
++    lb_(row) = applied_command ? (*applied_command)(r) - delta : -kInf;
++    ub_(row) = applied_command ? (*applied_command)(r) + delta : kInf;
++    ++row;
++  }
++
+   // acceleration box: |u_{t+1} - u_t| <= max_acce * dt
+   for (int t = 0; t + 1 < T_; ++t) {
+     for (int r = 0; r < 2; ++r) {
+@@ -204,8 +235,9 @@
+                          const Mat3X& ref_s, const Vec& ref_us,
+                          const std::vector<Mat>& fa_list,
+                          const std::vector<Vec>& fb_list,
+-                         const std::optional<Box>& first) {
+-  assemble(nom_s, nom_u, ref_s, ref_us, fa_list, fb_list, first);
++                         const Vec2* applied_command, double command_dt) {
++  assemble(nom_s, nom_u, ref_s, ref_us, fa_list, fb_list,
++           applied_command, command_dt);
+ 
+   if (!initialized_) {
+     solver_ = std::make_unique<OsqpEigen::Solver>();
+@@ -242,23 +274,32 @@
+   res.u = Eigen::Map<const Mat>(z.data() + off_u_, 2, T_);
+   res.d = z.segment(off_d_, T_);
+   res.objective =
+-      objective(res.s, res.u, res.d, nom_s, ref_s, ref_us, fa_list, fb_list);
++      objective(res.s, res.u, res.d, nom_s, ref_s, ref_us, fa_list, fb_list, applied_command);
+   return res;
+ }
+ 
+ double NRMP::objective(const Mat3X& s, const Mat2X& u, const Vec& d,
+                        const Mat3X& nom_s, const Mat3X& ref_s,
+                        const Vec& ref_us, const std::vector<Mat>& fa_list,
+-                       const std::vector<Vec>& fb_list) const {
++                       const std::vector<Vec>& fb_list,
++                       const Vec2* applied_command) const {
+   double J = 0.0;
+   for (int t = 0; t <= T_; ++t)
+     for (int r = 0; r < 3; ++r) {
+-      const double diff = stateWeight(r) * (s(r, t) - ref_s(r, t));
++      if (r == 2 && robot_.kinematics == Kinematics::Omni) continue;
++      const double diff = p_.q_s(r) * s(r, t) - p_.q_s(r) * ref_s(r, t);
+       J += diff * diff;
+     }
+   for (int t = 0; t < T_; ++t) {
+     const double diff = p_.p_u * u(0, t) - p_.p_u * ref_us(t);
+     J += diff * diff;
++    if (t > 0) {
++      J += 0.5*(p_.control_change_weight.array()*(u.col(t)-u.col(t-1)).array().square()).sum();
++    } else if (applied_command) {
++      J += 0.5*(p_.control_change_weight.array()*(u.col(0)-*applied_command).array().square()).sum();
++    } else {
++      J += 0.5*(p_.control_change_weight.array()*u.col(0).array().square()).sum();
++    }
+   }
+   J += 0.5 * p_.bk * (s - nom_s).squaredNorm();
+   J -= p_.eta * d.sum();

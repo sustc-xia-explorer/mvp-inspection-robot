@@ -1,3 +1,5 @@
+> 历史2026-10-27导入说明。当前V2版本请使用 [IPC_LIGHT_TURN_V2_CN.md](IPC_LIGHT_TURN_V2_CN.md)，其默认参数、构建目录及验收门限与本文不同。
+
 # 工控机导入与 omni 复测
 
 此包适用于已有 Ubuntu 20.04 / ROS Noetic 的工控机。包含当前 omni/diff ROS1 源码、FW-mini DUNE `.bin` 权重、RViz 地图与显示配置、核心/ROS1 验证脚本、之前的结果，以及 OSQP、OsqpEigen、QDLDL 依赖源码。

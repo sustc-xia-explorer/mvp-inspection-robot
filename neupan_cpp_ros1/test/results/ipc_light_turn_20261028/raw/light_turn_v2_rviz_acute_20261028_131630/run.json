@@ -1,0 +1,10 @@
+{
+  "backend": "ros_rviz",
+  "kinematics": "omni",
+  "model": "/home/xxz/neupan_omni_light_turn_ws/src/neupan_cpp_ros1/models/fw_mini.bin",
+  "model_sha256": "dd98ab315040042e52ddb8405552e7e6e681ddf2088f7793b25b2de27445f2d8",
+  "config_sha256": "91fc404437a518d63928f12ba57688e38ee17420c40834017a0b8926e00bf41c",
+  "scenario_file": "/home/xxz/neupan_omni_light_turn_ws/src/neupan_cpp_ros1/config/stress/short_acute_zigzag_scenario.yaml",
+  "output": "/home/xxz/neupan_sim_results/light_turn_v2_rviz_acute_20261028_131630",
+  "command_topic": "/neupan_sim/cmd_vel"
+}

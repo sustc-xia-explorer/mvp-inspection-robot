@@ -1,0 +1,59 @@
+{
+  "upstream_commit": "074718d4a75c5ce83a4b436d6136500124f5782f",
+  "local_core_sha256": {
+    "tools/sim_backend.cpp": "e5cc7017662b82b438b5cac8b5fcb2591b0f7c101060e638cb8b1ae1fd556649",
+    "include/neupan/tensor_io.hpp": "81bab2bc46a05c46f29e9dbe8a486cb0dcde0cdc3016eb44f6148a774f08ec5b",
+    "include/neupan/command_limiter.hpp": "6e9199ddf0174e7bab87b1a5928457bbb3d0f8114ecb55cb02f172adc312144a",
+    "include/neupan/robot.hpp": "62070242a50c10a01380b4ebc1c195958812f834d6f2a316399313d405aa5796",
+    "include/neupan/pan.hpp": "123934999fff27d9b774949544b90167ef0d44f8404fd4ded7337a1b0ecf5167",
+    "include/neupan/types.hpp": "3a11eac9fe2055aab7ef4da30f19b4ac4084ea2a69b84c25fb895dbc66980140",
+    "include/neupan/neupan_planner.hpp": "c1f428c87378a745236e1272c734c1e7bacfe5bd4ee4c5eef7bdaa1a6e9eed57",
+    "include/neupan/initial_path.hpp": "f6118fce858ad09b9650d3d85aecda617092d2fc5a537c1a1b828522985003b7",
+    "include/neupan/dune.hpp": "c547c3197f7e5cbe36c7c64d35e5083a020825300cf37771b8aeaad0ac184754",
+    "include/neupan/nrmp.hpp": "6866788404db9a44b11258a68406209556f686a58e82df364aedea578328deea",
+    "include/neupan/mlp.hpp": "090afe6aa568da179180d4df074a5101df16e91c6355b721cc2c80e05512494c",
+    "src/robot.cpp": "498533ff3804520d61584e8c07d425dce5721b4bf2cfa2f01945020c6118c3d5",
+    "src/tensor_io.cpp": "4caa4f8d1219bf43ce5722ffcbe956a126699d70b0c4f16741743230103f1334",
+    "src/initial_path.cpp": "94606537bd8da7aaaadd524ee7147d9b878db037d99e21ba5f9e734e5ddce153",
+    "src/dune.cpp": "39c53b76ba346f0b8331709449fa9a8c0acdda5ae25354e1719ca40ccaa587ce",
+    "src/neupan_planner.cpp": "e72e59f051db5b540af65be19edf117f619e484dad81f7bb6bbc0fca7a7a0f99",
+    "src/nrmp.cpp": "d2f529a1f60001c278a9895815e78afbfb997a902c88026fc73014ec207fc494",
+    "src/pan.cpp": "736f4755948da957739f47b009d0822085b40dad85b6846237d8ccfb7692aaad",
+    "src/mlp.cpp": "ecd6ae1b8120922347243f9b1756c7f4a1f4cb58365e8fbf41d5e52551d034f5"
+  },
+  "upstream_core_sha256": {
+    "tools/bench.cpp": "bfb244a86f0e1317677fa5d0e91719245583a0cabf2bfaab3fef470028c37303",
+    "include/neupan/tensor_io.hpp": "81bab2bc46a05c46f29e9dbe8a486cb0dcde0cdc3016eb44f6148a774f08ec5b",
+    "include/neupan/robot.hpp": "6ccce6d5b2c2e73bb6564a59f5c6090652f187420f65c393a1112489391aefa9",
+    "include/neupan/pan.hpp": "0644cda8ba23b6d73127643acd20315ca736a36e3092a9515bfae90f1bdd74f3",
+    "include/neupan/types.hpp": "3a11eac9fe2055aab7ef4da30f19b4ac4084ea2a69b84c25fb895dbc66980140",
+    "include/neupan/neupan_planner.hpp": "0cd59764d4650a20b3b30e6e8af4734adc1ca689584a862af91ea4453b7aeac1",
+    "include/neupan/initial_path.hpp": "adf9a023168cb3a31dc364d778d1ec441757432675a8a0aa356052023f319928",
+    "include/neupan/dune.hpp": "c547c3197f7e5cbe36c7c64d35e5083a020825300cf37771b8aeaad0ac184754",
+    "include/neupan/nrmp.hpp": "2a4eefcdc0f561d70aac0a9a851528dd622e741afd358e53f00a84b8f156beea",
+    "include/neupan/mlp.hpp": "8e3e2e392cbd7bd0849b052507ed2c7ea1916918b82b02f60b477f184422b1b0",
+    "src/robot.cpp": "0fb37eaee05c5beb5cff9dcc119e88968e6e89030561be7a33027cfef7b2530b",
+    "src/tensor_io.cpp": "4caa4f8d1219bf43ce5722ffcbe956a126699d70b0c4f16741743230103f1334",
+    "src/initial_path.cpp": "cd4e9808fa82a25f51859d0539b9b50d250a258a0b294f7de865ed4f92c0eeee",
+    "src/dune.cpp": "eaef7416ed33a03cba037451cf326c1e166af847ed07d1f2c52172715991f024",
+    "src/neupan_planner.cpp": "4c43bbc274b5884cc623358bd832078d50e9deaadf4b7cc988c5fe69a6c62113",
+    "src/nrmp.cpp": "f1715d3119c18c5d351086e4f5291103debd96dacb40a9fa44ed7e52cada7b4b",
+    "src/pan.cpp": "f5d6b701688526a7aba0b03b872dfc15f32daf80a4eca86c016282a89250a1da",
+    "src/mlp.cpp": "9636f0233f30a7dba70bbc28165845eba99ca1ac7948bb029155f038f339a17b",
+    "tests/test_nrmp.cpp": "e4d19e77f034042585e47fb8534e2ee58920bcc893dc05103939c62421ee55dc",
+    "tests/test_replay.cpp": "67e072c866790011dd5d325b145dbd7e2cc28e6cee06d6668f9d50e6ed4e0667",
+    "tests/test_config.cpp": "d12aa1e2b0b27fa989b7df3b66e2d4c918e74af0073757152ad24c81b2f60167",
+    "tests/test_dune.cpp": "c11a58db16a1bb533cebd228b4e2126159e768d927fdc39e9d9ae1f1cea3a625",
+    "tests/test_omni.cpp": "b88435cf4c41db8dc0472f2a68d9faaf5d6886cb2dac6c70c4d43b6430b0330b"
+  },
+  "map_checks": {
+    "omni_turns_ipc/stress_core": {
+      "count": 22,
+      "all_equal_to_committed_fixtures": true
+    },
+    "light_turn_v2_core_20261028_131807/core": {
+      "count": 22,
+      "all_equal_to_committed_fixtures": true
+    }
+  }
+}

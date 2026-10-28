@@ -1,0 +1,286 @@
+--- /home/xiapilang/work/neupan_cpp/libneupan/src/neupan_planner.cpp	2026-10-27 23:57:06.080713827 +0800
++++ /home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/core/src/neupan_planner.cpp	2026-10-27 13:38:49.080326557 +0800
+@@ -11,52 +11,80 @@
+  */
+ 
+ #include "neupan/neupan_planner.hpp"
++#include "neupan/command_limiter.hpp"
+ 
+ #include <yaml-cpp/yaml.h>
+ 
+-#include <algorithm>
+-#include <cmath>
+ #include <stdexcept>
++#include <cmath>
+ 
+ namespace neupan {
+ 
+ namespace {
+ 
+ Robot makeRobot(const NeuPANPlanner::Config& c) {
+-  if (c.vertices.cols() > 0)
+-    return Robot(c.kinematics, c.receding, c.step_time, c.max_speed,
+-                 c.max_acce, c.vertices);
+   return Robot::rectangle(c.kinematics, c.receding, c.step_time, c.max_speed,
+-                          c.max_acce, c.length, c.width, c.wheelbase);
++                              c.max_acce, c.length, c.width, c.wheelbase);
++}
++
++// cfg_ is the first member, so this runs before the robot and the blocks.
++const NeuPANPlanner::Config& validated(const NeuPANPlanner::Config& c) {
++  NeuPANPlanner::validate(c);
++  return c;
+ }
+ 
+ }  // namespace
+ 
+ void NeuPANPlanner::validate(const Config& c) {
++  const auto fail = [](const std::string& what) {
++    throw std::runtime_error("neupan config: " + what);
++  };
+   const NRMPParams& a = c.adjust;
+-  const char* bad = nullptr;
+-  if (c.receding < 1 || c.step_time <= 0.0)
+-    bad = "receding must be >= 1 and step_time > 0";
+-  else if (a.d_min < 0.0)
+-    bad = "d_min < 0 lets the plan into obstacles";
+-  else if (a.d_max < a.d_min)
+-    bad = "d_max < d_min";
+-  else if (a.eta > 0.0 && a.d_max <= 0.0)
+-    bad = "d_max <= 0 pins the clearance to zero, so eta has no effect";
+-  else if (c.collision_threshold <= 0.0)
+-    bad = "collision_threshold must be > 0";
+-  if (bad) throw std::runtime_error(std::string("neupan config: ") + bad);
++
++  if (c.receding < 1 || !std::isfinite(c.step_time) || c.step_time <= 0.0)
++    fail("receding must be >= 1 and step_time > 0");
++  if (!c.max_speed.allFinite() || !c.max_acce.allFinite() ||
++      (c.max_speed.array() <= 0).any() || (c.max_acce.array() <= 0).any())
++    fail("max_speed and max_acce must be finite and positive");
++  if (!a.control_change_weight.allFinite() || (a.control_change_weight.array() < 0).any())
++    fail("control_change_weight must be finite and nonnegative");
++  if (c.periodic_direction && (c.kinematics != Kinematics::Omni || c.max_speed(1) < 2.*std::acos(-1.)-1e-8))
++    fail("periodic_direction requires omni and an angle bound of at least 2*pi");
++  if (!std::isfinite(c.ipath.turn_rate) || c.ipath.turn_rate < 0.0 ||
++      !std::isfinite(c.ipath.turn_window) || c.ipath.turn_window <= 0.0 ||
++      !std::isfinite(c.ipath.reference_acceleration) || c.ipath.reference_acceleration <= 0.0 ||
++      !std::isfinite(c.ipath.minimum_turn_speed) || c.ipath.minimum_turn_speed <= 0.0)
++    fail("invalid turn speed envelope parameters");
++  if (c.ipath.turn_rate > 0.0 && (!c.ipath.arc_length_sampling || c.kinematics != Kinematics::Omni))
++    fail("turn_rate requires omni and arc_length_sampling");
++
++  if (a.d_min < 0.0)
++    fail("d_min is negative (" + std::to_string(a.d_min) +
++         "); a negative clearance lets the plan penetrate obstacles");
++
++  if (a.d_max < a.d_min)
++    fail("d_max (" + std::to_string(a.d_max) + ") is below d_min (" +
++         std::to_string(a.d_min) + "), leaving the clearance box empty");
++
++  // Shipped as d = 0 with eta = 15 for a whole season, silently.
++  if (a.eta > 0.0 && a.d_max <= 0.0)
++    fail("eta > 0 rewards clearance but d_max is " + std::to_string(a.d_max) +
++         "; the clearance variable is pinned to zero and avoidance has no "
++         "gradient (upstream uses d_min 0.1, d_max 1.0)");
++
++  if (c.collision_threshold <= 0.0)
++    fail("collision_threshold is " + std::to_string(c.collision_threshold) +
++         "; stop would then require min_distance < 0, i.e. the footprint "
++         "already overlapping, which is unrecoverable");
+ }
+ 
+ NeuPANPlanner::NeuPANPlanner(const Config& config)
+-    : cfg_(config),
++    : cfg_(validated(config)),
+       robot_(makeRobot(config)),
+       ipath_(robot_, config.ref_speed, config.ipath),
+       pan_(robot_, config.dune_checkpoint, config.adjust, config.pan),
+       ref_speed_(config.ref_speed),
+-      cur_vel_array_(Mat2X::Zero(2, config.receding)) {
+-  validate(config);
+-}
++      cur_vel_array_(Mat2X::Zero(2, config.receding)) {}
+ 
+ NeuPANPlanner NeuPANPlanner::fromYaml(const std::string& yaml_path,
+                                       const std::string& checkpoint_override) {
+@@ -70,14 +98,8 @@
+       y["collision_threshold"].as<double>(c.collision_threshold);
+ 
+   if (const auto r = y["robot"]) {
+-    const auto kin = r["kinematics"].as<std::string>("diff");
+-    if (kin == "diff")
+-      c.kinematics = Kinematics::Diff;
+-    else if (kin == "omni")
+-      c.kinematics = Kinematics::Omni;
+-    else
+-      throw std::runtime_error("neupan_cpp supports 'diff' and 'omni' "
+-                               "kinematics (got '" + kin + "')");
++    c.kinematics = parseKinematics(r["kinematics"].as<std::string>("diff"));
++    c.periodic_direction = r["periodic_direction"].as<bool>(false);
+     if (r["max_speed"]) {
+       const auto v = r["max_speed"].as<std::vector<double>>();
+       c.max_speed = Vec2(v.at(0), v.at(1));
+@@ -89,12 +111,6 @@
+     c.length = r["length"].as<double>(c.length);
+     c.width = r["width"].as<double>(c.width);
+     c.wheelbase = r["wheelbase"].as<double>(0.0);
+-    if (r["vertices"]) {
+-      const auto v = r["vertices"].as<std::vector<std::vector<double>>>();
+-      c.vertices.resize(2, static_cast<int>(v.size()));
+-      for (size_t i = 0; i < v.size(); ++i)
+-        c.vertices.col(static_cast<int>(i)) = Vec2(v[i].at(0), v[i].at(1));
+-    }
+   }
+ 
+   if (const auto ip = y["ipath"]) {
+@@ -116,8 +132,11 @@
+     c.ipath.ind_range = ip["ind_range"].as<int>(c.ipath.ind_range);
+     c.ipath.arrive_index_threshold =
+         ip["arrive_index_threshold"].as<int>(c.ipath.arrive_index_threshold);
+-    c.ipath.projected_reference =
+-        ip["projected_reference"].as<bool>(c.ipath.projected_reference);
++    c.ipath.arc_length_sampling = ip["arc_length_sampling"].as<bool>(false);
++    c.ipath.turn_rate = ip["turn_rate"].as<double>(0.0);
++    c.ipath.turn_window = ip["turn_window"].as<double>(0.16);
++    c.ipath.reference_acceleration = ip["reference_acceleration"].as<double>(0.10);
++    c.ipath.minimum_turn_speed = ip["minimum_turn_speed"].as<double>(0.035);
+   }
+ 
+   if (const auto p = y["pan"]) {
+@@ -143,6 +162,10 @@
+     c.adjust.d_min = a["d_min"].as<double>(c.adjust.d_min);
+     c.adjust.ro_obs = a["ro_obs"].as<double>(c.adjust.ro_obs);
+     c.adjust.bk = a["bk"].as<double>(c.adjust.bk);
++    if (a["control_change_weight"]) {
++      const auto v = a["control_change_weight"].as<std::vector<double>>();
++      c.adjust.control_change_weight = Vec2(v.at(0),v.at(1));
++    }
+   }
+ 
+   if (!checkpoint_override.empty()) c.dune_checkpoint = checkpoint_override;
+@@ -153,21 +176,23 @@
+ }
+ 
+ Vec2 NeuPANPlanner::forward(const Vec3& state, const Mat2X& points,
+-                            Info& info, const std::optional<Command>& command) {
++                            Info& info) {
+   info = Info{};
+ 
+   if (ipath_.checkArrive(state)) {
+-    info.arrive = true;
+-    return Vec2::Zero();
++    const Vec2 action = emitCommand(robot_.stoppingControl(last_command_), info);
++    info.arrive = action.cwiseAbs().maxCoeff() < 1e-10;
++    info.braking = !info.arrive;
++    return action;
+   }
+ 
+   const InitialPath::NomRef nom =
+       ipath_.generateNomRefState(state, cur_vel_array_, ref_speed_);
+ 
+-  std::optional<NRMP::Box> first;
+-  if (command) first = firstInputBox(*command, nom.nom_u(1, 0));
+-  const PAN::Output out = pan_.forward(nom.nom_s, nom.nom_u, nom.ref_s,
+-                                       nom.ref_us, points, first);
++  const PAN::Output out =
++      pan_.forward(nom.nom_s, nom.nom_u, nom.ref_s, nom.ref_us, points,
++          cfg_.enforce_command_acceleration ? &last_command_ : nullptr,
++          command_dt_ > 0 ? command_dt_ : cfg_.step_time);
+ 
+   cur_vel_array_ = out.opt_u;
+ 
+@@ -181,45 +206,64 @@
+   info.nrmp_points = out.nrmp_points;
+ 
+   if (out.min_distance < cfg_.collision_threshold) {
++    info.raw_action = robot_.controlToAction(out.opt_u.col(0));
+     info.stop = true;
++    // Collision stop is an explicitly reported emergency, not a normal ramp.
++    last_command_ = robot_.stoppingControl(last_command_);
+     return Vec2::Zero();
+   }
+ 
+-  // An unsolved cycle returns the nominal, which the box does not bound (the
+-  // omni nominal can be seeded at ref_speed).
+-  const Vec2 u = out.opt_u.col(0)
+-                     .cwiseMax(-robot_.max_speed)
+-                     .cwiseMin(robot_.max_speed);
+-  if (robot_.kinematics == Kinematics::Omni)
+-    return Vec2(u(0) * std::cos(u(1)), u(0) * std::sin(u(1)));
+-  return u;
+-}
+-
+-NRMP::Box NeuPANPlanner::firstInputBox(const Command& command,
+-                                       double nom_dir) const {
+-  const Vec2 b = robot_.acce_bound *
+-                 std::clamp(command.elapsed / robot_.dt, 0.0, 1.0);
+-  const Vec2& a = command.action;
+-  if (robot_.kinematics != Kinematics::Omni)
+-    return {(a - b).cwiseMax(-robot_.max_speed),
+-            (a + b).cwiseMin(robot_.max_speed)};
+-
+-  // The omni input is (speed, direction): bound it round the disk of
+-  // velocities within b(0) of the action, with the direction taken on the
+-  // nominal's side of the wrap. Slower than b(0), any direction will do.
+-  const double speed = a.norm();
+-  if (speed <= b(0))
+-    return {Vec2(-b(0), -robot_.max_speed(1)), Vec2(b(0), robot_.max_speed(1))};
+-  const double dir = nom_dir + wrapToPi(std::atan2(a.y(), a.x()) - nom_dir);
+-  const double half = std::asin(b(0) / speed);
+-  return {Vec2(speed - b(0), dir - half),
+-          Vec2(std::min(speed + b(0), robot_.max_speed(0)), dir + half)};
++  if (!out.solved && cfg_.enforce_command_acceleration) {
++    info.braking = true;
++    return emitCommand(robot_.stoppingControl(last_command_), info);
++  }
++
++  // it only bounds a command that a degraded solve might otherwise let slip through to the robot.
++  return emitCommand(out.opt_u.col(0), info);
++}
++
++Vec2 NeuPANPlanner::emitCommand(const Vec2& requested, Info& info) {
++  info.raw_action = robot_.controlToAction(requested);
++  last_command_ = cfg_.enforce_command_acceleration
++      ? limitCommand(requested, last_command_, robot_.max_speed,
++                     (robot_.acce_bound / robot_.dt).eval(), command_dt_ > 0 ? command_dt_ : cfg_.step_time)
++      : requested.cwiseMax(-robot_.max_speed).cwiseMin(robot_.max_speed);
++  normalizeDirection();
++  return robot_.controlToAction(last_command_);
++}
++
++void NeuPANPlanner::normalizeDirection() {
++  if (!cfg_.periodic_direction || std::abs(last_command_(1)) <= std::acos(-1.)) return;
++  const double period = 2.*std::acos(-1.);
++  last_command_(1) = std::remainder(last_command_(1),period);
++  double previous = last_command_(1);
++  for (int t = 0; t < cur_vel_array_.cols(); ++t) {
++    cur_vel_array_(1,t) = previous + std::remainder(cur_vel_array_(1,t)-previous,period);
++    previous = cur_vel_array_(1,t);
++  }
++  pan_.reset();
++}
++
++void NeuPANPlanner::setAppliedCommand(const Vec2& command) {
++  if (!command.allFinite() ||
++      (isOmni() ? command.norm() > robot_.max_speed(0) + 1e-6 :
++       (command.cwiseAbs().array() > robot_.max_speed.array() + 1e-6).any()))
++    throw std::invalid_argument("invalid applied command feedback");
++  last_command_ = robot_.actionToControl(command, last_command_);
++  normalizeDirection();
++}
++
++void NeuPANPlanner::setCommandInterval(double seconds) {
++  if (!std::isfinite(seconds) || seconds <= 0)
++    throw std::invalid_argument("command interval must be positive");
++  command_dt_ = std::min(seconds, cfg_.step_time);
+ }
+ 
+-void NeuPANPlanner::reset() {
++void NeuPANPlanner::reset(bool reset_command) {
+   ipath_.reset();
+   pan_.reset();
+   cur_vel_array_.setZero();
++  if (reset_command) last_command_.setZero();
+ }
+ 
+ }  // namespace neupan

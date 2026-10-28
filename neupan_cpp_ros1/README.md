@@ -1,9 +1,26 @@
 # NeuPAN C++ ROS1：diff / omni 可配置运动学
 
-本包在原有 ROS1 差速版的基础上，移植了 Python NeuPAN 的 `omni` 运动学、轨迹预测和优化目标，并完成 ROS1 速度接口与虚拟底盘的适配。所有新增实现、配置、验证脚本和结果均放在本包内。仓库外层 `libneupan/` 保留差速归档版本；本包编译时链接的是 `core/` 中的 `neupan_ros1_core`，不再链接外层库。
+本包包含实际链接的 `core/`、ROS1接口、配置、地图和验证工具；外层 `libneupan/` 保留差速归档版本。omni移植自Python NeuPAN，保持车身朝向，通过二维平移绕障。
 
-2026-10-27 已加入急弯预减速及跨地图验证，当前 `fw_mini_omni.yaml` 使用统一的新参数。绕同一障碍物、硬直角和随机室内地图的结果、绘图与工控机操作见 [TURN_AND_RANDOM_VALIDATION_CN.md](TURN_AND_RANDOM_VALIDATION_CN.md)。上一轮走廊配置保存在 `config/fw_mini_omni_corridor_20261027.yaml`，报告为 [SMOOTH_CORRIDOR_CN.md](SMOOTH_CORRIDOR_CN.md)；初始移植参数保留在 `fw_mini_omni_legacy.yaml`。
+## 当前默认与工控机对照（2026-10-28）
 
+当前默认为 **FW-OMNI-LIGHT-TURN-V2**，`config/fw_mini_omni.yaml` 与冻结快照一致；`sim_complete.launch` 默认也读取这份参数。19/19有路场景通过，三张无路图保留；RViz五次走廊目标和一次连续急弯全部到达，零碰撞。核心最长低速0.7 s，RViz最长1.28 s。
+
+工控机核心平均规划时间由历史FULL的31.64 ms降到17.04 ms；最大路径偏差均值由1.966 cm变为2.043 cm，jerk RMS均值由0.18633降到0.17115。开发机与上游调参版对照时，V2的路径偏差和jerk更小，总行驶时间约增加4.4%；不混用开发机与工控机耗时。
+
+- [完整历史工控机、上游调参版及算法差异对照](IPC_OMNI_COMPARISON_20261028_CN.md)
+- [仓库README中的全部表格与图](../README.md)
+- [参数命名、字段含义和修改位置](CONFIG_PROFILES_CN.md) / [全部配置索引](config/profiles/README.md)
+- [工控机V2导入与复测](IPC_LIGHT_TURN_V2_CN.md) / [开发机参数筛选过程](LIGHT_TURN_TUNING_CN.md)
+
+```bash
+roslaunch neupan_cpp_ros1 sim_complete.launch
+# 显式选择冻结参数也可以：
+roslaunch neupan_cpp_ros1 sim_complete.launch \
+  config_file:="$(rospack find neupan_cpp_ros1)/config/profiles/ros1/fw_mini_omni_light_turn_v2.yaml"
+```
+
+原FULL、旧走廊、初版及diff参数继续保留在 `config/profiles/`。下面2026-10-27的工控机图表属于历史FULL版本。
 
 ## 工控机复测与图表（2026-10-27）
 
@@ -109,7 +126,7 @@ roslaunch neupan_cpp_ros1 sim_complete.launch \
 
 虚拟底盘会读取相同的模型配置，omni 反馈包含 `linear.y`，里程计也包含横向速度。omni CSV 使用 `raw_vx/raw_vy/applied_vx/applied_vy` 和 `direction_rate`，避免将横向速度误记为角速度。收到的 Twist 与里程计速度都采用车体坐标。
 
-`sim_complete.launch` 默认配置仍为原 diff 配置，必须显式传入上述 omni YAML 才会使用全向模型。两种模式的消息话题不变。
+`sim_complete.launch` 默认读取 V2 全向配置；其他命名快照可通过 config_file 显式选择。两种模式的消息话题不变。
 
 ## 4. 验证
 

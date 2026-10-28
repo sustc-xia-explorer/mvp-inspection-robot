@@ -1,0 +1,51 @@
+# Profile: TRIAL-ROS1-732c5736ef
+# Name: 参数试验：rv8_rd1 / configs
+# Engine: ros1; status: experiment
+# Frozen copy. See config/profiles/README.md and index.yaml.
+adjust:
+  bk: 0.05
+  d_max: 0.26
+  d_min: 0.16
+  eta: 1.0
+  p_u: 0.7
+  q_s:
+  - 6.0
+  - 6.0
+  - 1.0
+  ro_obs: 600.0
+  control_change_weight:
+  - 8.0
+  - 1.0
+collision_threshold: 0.08
+ipath:
+  arrive_index_threshold: 1
+  arrive_threshold: 0.1
+  close_threshold: 0.0
+  curve_style: line
+  ind_range: 30
+  loop: false
+  arc_length_sampling: true
+  turn_rate: 0.4
+  turn_window: 0.16
+  reference_acceleration: 0.1
+  minimum_turn_speed: 0.035
+pan:
+  dune_max_num: 100
+  iter_num: 2
+  iter_threshold: 0.1
+  nrmp_max_num: 10
+receding: 10
+ref_speed: 0.15
+robot:
+  kinematics: omni
+  length: 0.495
+  max_acce:
+  - 0.2
+  - 0.8
+  max_speed:
+  - 0.18
+  - 6.283185307179586
+  wheelbase: 0.0
+  width: 0.36
+  periodic_direction: true
+step_time: 0.1

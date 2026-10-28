@@ -1,0 +1,91 @@
+{
+  "collision_count": 0,
+  "min_true_clearance": 0.1899331807837019,
+  "goals": [
+    {
+      "goal": [
+        3.516260862350464,
+        -0.6634452939033508
+      ],
+      "wall_seconds": 16.961139832994377,
+      "status": "arrived",
+      "final_pose": [
+        3.5148034710748104,
+        -0.6595772319137204,
+        0.0
+      ],
+      "goal_error": 0.004133508544320967,
+      "arrived_wall_seconds": 80.97184683299565
+    },
+    {
+      "goal": [
+        -1.3332557678222656,
+        0.7253422737121582
+      ],
+      "wall_seconds": 88.81371092399786,
+      "status": "arrived",
+      "final_pose": [
+        -1.3322546170820668,
+        0.7199628845377541,
+        0.0
+      ],
+      "goal_error": 0.005471757550759736,
+      "arrived_wall_seconds": 138.38447496799927
+    },
+    {
+      "goal": [
+        0.15967649221420288,
+        0.7374735474586487
+      ],
+      "wall_seconds": 146.670935604001,
+      "status": "arrived",
+      "final_pose": [
+        0.15982934574736166,
+        0.7288700939095452,
+        0.0
+      ],
+      "goal_error": 0.008604811280567467,
+      "arrived_wall_seconds": 172.37256521199743
+    },
+    {
+      "goal": [
+        -1.5267157554626465,
+        0.9350283741950989
+      ],
+      "wall_seconds": 177.19267468500038,
+      "status": "arrived",
+      "final_pose": [
+        -1.5239713794970855,
+        0.9277658178115655,
+        0.0
+      ],
+      "goal_error": 0.007763782883643112,
+      "arrived_wall_seconds": 204.15980294199835
+    },
+    {
+      "goal": [
+        -4.197291374206543,
+        -0.7320981621742249
+      ],
+      "wall_seconds": 208.5890223940005,
+      "status": "arrived",
+      "final_pose": [
+        -4.192847774330253,
+        -0.7222111533449611,
+        0.0
+      ],
+      "goal_error": 0.010839673585975974,
+      "arrived_wall_seconds": 237.46075390099577
+    }
+  ],
+  "final_pose": [
+    -4.193066077334251,
+    -0.7226968774849131,
+    0.0
+  ],
+  "arrived": true,
+  "max_normal_acceleration": 0.20000000000000087,
+  "max_normal_direction_rate": 0.800000000000012,
+  "kinematics": "omni",
+  "note": "Ideal kinematic plant. Collision is latched and requires a pose reset."
+}

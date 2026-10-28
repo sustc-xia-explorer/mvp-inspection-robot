@@ -1,0 +1,72 @@
+world:
+  width: 8.0
+  height: 8.0
+obstacles:
+- shape:
+    type: rectangle
+    length: 8.2
+    width: 0.2
+  pose:
+    x: 0.0
+    y: -4.0
+    yaw: 0.0
+- shape:
+    type: rectangle
+    length: 8.2
+    width: 0.2
+  pose:
+    x: 0.0
+    y: 4.0
+    yaw: 0.0
+- shape:
+    type: rectangle
+    length: 0.2
+    width: 8.0
+  pose:
+    x: -4.0
+    y: 0.0
+    yaw: 0.0
+- shape:
+    type: rectangle
+    length: 0.2
+    width: 8.0
+  pose:
+    x: 4.0
+    y: 0.0
+    yaw: 0.0
+- shape:
+    type: rectangle
+    length: 0.8818778923656685
+    width: 0.3344740251412243
+  pose:
+    x: 1.631010975138354
+    y: 2.693544558822378
+    yaw: -1.51533219215733
+- shape:
+    type: circle
+    radius: 0.2300860377560925
+  pose:
+    x: -1.4908947257127594
+    y: -1.3443577551617167
+- shape:
+    type: rectangle
+    length: 0.8618476511462216
+    width: 0.5386901553367566
+  pose:
+    x: 0.37031867527609563
+    y: -2.2517884421346603
+    yaw: -2.177594272559583
+- shape:
+    type: circle
+    radius: 0.23569121525115755
+  pose:
+    x: 2.6821958435212636
+    y: -2.8259240745297776
+- shape:
+    type: rectangle
+    length: 0.4891810264013109
+    width: 0.37334283687906156
+  pose:
+    x: -0.5644107362644419
+    y: -0.27367762267285034
+    yaw: 0.06971302990836215

@@ -1,0 +1,1680 @@
+schema: 1
+description: Planner profiles, deduplicated by engine + normalized YAML. Maps/scenarios
+  and duplicate export bundles are not planner profiles.
+default_omni_entry: config/fw_mini_omni.yaml
+default_omni_profile: FW-OMNI-LIGHT-TURN-V2
+recommended_candidate: FW-OMNI-LIGHT-TURN-V2
+engines:
+  ros1: package core/; standard current neupan_cpp_ros1
+  upstream: zhangkaiyuan007/neupan_cpp 074718d4; supports projected_reference
+  reference_port: isolated experimental candidate_core; not standard ROS1
+  archived_diff_core: outer archived legacy C++ core
+profiles:
+- id: FW-OMNI-FULL-V1
+  name: 本地全向完整平滑版
+  engine: ros1
+  status: validated_previous
+  file: config/profiles/ros1/fw_mini_omni_full_v1.yaml
+  semantic_sha256: f5c1a01faf491fb492cb2f800af59cbe11ceb99deb053b3527a2178fe7c8c318
+  notes: 历史完整平滑快照；T15/PAN4
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/config/profiles/ros1/fw_mini_omni_full_v1.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_light_turn_20261028/raw/omni_turns_rviz_bar/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_light_turn_20261028/raw/omni_turns_rviz/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_light_turn_20261028/raw/omni_turns_ipc/stress_core/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_light_turn_20261028/raw/omni_turns_rviz_90/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_light_turn_20261028/raw/omni_turns_ros1_90/world/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/candidate_v3.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v3/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/ros1_hard90/world/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/final_tool_check/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/ros1_bar_auto/world/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/final_core/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_omni_20261027/raw/omni_turns_rviz_bar/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_omni_20261027/raw/omni_turns_rviz/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_omni_20261027/raw/omni_turns_ipc/stress_core/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_omni_20261027/raw/omni_turns_rviz_90/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_omni_20261027/raw/omni_turns_ros1_90/world/planner.yaml
+  - neupan_omni_diff_budget_validation_20261027/configs/current.yaml
+  - neupan_runtime_comparison_20261027/configs/omni_current.yaml
+  kinematics: omni
+  receding: 15
+  pan_iterations: 4
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: FW-OMNI-LIGHT-V1
+  name: 本地全向小计算基准
+  engine: ros1
+  status: baseline
+  file: config/profiles/ros1/fw_mini_omni_light_v1.yaml
+  semantic_sha256: fe66b221807582e90bd5296a0f6d22f4072f62417b7bf6e2f216f9d6fd4fdf1a
+  notes: T10/PAN2；连续急弯低速 3.1 s
+  source_files:
+  - neupan_omni_diff_budget_validation_20261027/configs/small_budget.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_light_turn_20261028/developer_comparison/local_v1/planner.yaml
+  - neupan_runtime_comparison_20261027/configs/omni_small_budget.yaml
+  - neupan_upstream_omni_comparison_20261028/configs/small_budget.yaml
+  - neupan_upstream_omni_tuning_20261028/configs/small_budget.yaml
+  - neupan_local_light_turn_tuning_20261028/configs/light_v1.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: FW-OMNI-LIGHT-TURN-V2
+  name: 本地全向小计算急弯调优版
+  engine: ros1
+  status: validated_current
+  file: config/profiles/ros1/fw_mini_omni_light_turn_v2.yaml
+  semantic_sha256: 15ddaf053ffe85f1aa21e4104169cf498896df2dd541ebe91045c14324cc5216
+  notes: 当前推荐默认；原 ROS1 核心，已完成工控机复测
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/fw_mini_omni_light_turn_v2.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_light_turn_20261028/developer_comparison/local_v2/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_light_turn_20261028/raw/light_turn_v2_rviz_20261028_131155/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_light_turn_20261028/raw/light_turn_v2_rviz_acute_20261028_131630/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_light_turn_20261028/raw/light_turn_v2_core_20261028_131807/core/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/config/fw_mini_omni.yaml
+  - neupan_local_light_turn_tuning_20261028/configs/rv16_rd0p5.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 16.0
+  - 0.5
+  max_acce:
+  - 0.2
+  - 0.8
+- id: FW-OMNI-CORRIDOR-V1
+  name: 本地全向旧走廊平滑版
+  engine: ros1
+  status: archive
+  file: config/profiles/ros1/fw_mini_omni_corridor_v1.yaml
+  semantic_sha256: 3556282b097e933139a49bc220287842852f2fb8bd2f483c04b8e9d3a0a978c6
+  notes: 加入完整转弯速度包络之前的版本
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_smooth_20261027/ros1_periodic_sequence/world/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/baseline/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/baseline/extra/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/baseline/targeted/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/config/fw_mini_omni_corridor_20261027.yaml
+  kinematics: omni
+  receding: 15
+  pan_iterations: 4
+  ref_speed: 0.15
+  control_change_weight:
+  - 2.0
+  - 0.3
+  max_acce:
+  - 0.2
+  - 0.8
+- id: FW-OMNI-LEGACY-V0
+  name: 本地全向初版
+  engine: ros1
+  status: archive
+  file: config/profiles/ros1/fw_mini_omni_legacy_v0.yaml
+  semantic_sha256: 23f3e1e0bc4fea2dd978e27606237ed6615236fa92777ffc8de05512a12b25f5
+  notes: 早期 omni 参数，供回溯
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_smooth_20261027/baseline_planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ros1_final/rviz_corridor/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/config/fw_mini_omni_legacy.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 3
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.3
+  - 3.0
+- id: FW-DIFF-BALANCED-ARCHIVE
+  name: FW 差速均衡归档版
+  engine: ros1
+  status: archive
+  file: config/profiles/archive/fw_mini_diff_balanced_archive.yaml
+  semantic_sha256: 3e5e9be66769653c4f3cc5b22c8b1c31c0bd94cad7f5b17c478f2abc2463d7f4
+  notes: 旧 diff 基准；厂商已确认当前车不按锁后轮 diff 使用
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/config/fw_mini_balanced.yaml
+  - neupan_runtime_comparison_20261027/configs/diff_original_budget.yaml
+  kinematics: diff
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.3
+  - 0.6
+- id: FW-DIFF-INITIAL-ARCHIVE
+  name: FW 差速初始归档版
+  engine: ros1
+  status: archive
+  file: config/profiles/archive/fw_mini_diff_initial_archive.yaml
+  semantic_sha256: a8197f6691c713edc0e93975cc0ecbd17b38e795e6f6c0c30652df3f4171f75c
+  notes: 旧 diff 初始参数
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/config/fw_mini.yaml
+  kinematics: diff
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.3
+  - 0.6
+- id: FW-DIFF-SIM-ARCHIVE
+  name: FW 差速早期仿真版
+  engine: ros1
+  status: archive
+  file: config/profiles/archive/fw_mini_diff_sim_archive.yaml
+  semantic_sha256: 54a223c7077e9b99896125a0dddaceb8536ee2dc28c3ae6889ebc72b73a9e156
+  notes: 早期 RViz diff 配置
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/config/fw_mini_sim.yaml
+  kinematics: diff
+  receding: 15
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.3
+  - 0.6
+- id: UP-FW-OMNI-BASE-V1
+  name: 上游全向 FW 初适配版
+  engine: upstream
+  status: comparison
+  file: config/profiles/upstream/fw_mini_omni_base_v1.yaml
+  semantic_sha256: 2d0b660c60ee88315653f60b203796d259305c64d4b06379992b34c588f570f5
+  notes: 上游原核心，FW 车身/速度与 close_threshold 适配
+  source_files:
+  - neupan_upstream_omni_comparison_20261028/configs/upstream_fw_scaled.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: UP-FW-OMNI-TUNED-V2
+  name: 上游全向 FW 调参版
+  engine: upstream
+  status: validated_upstream
+  file: config/profiles/upstream/fw_mini_omni_tuned_v2.yaml
+  semantic_sha256: 429ca4e65279d2f0267f147e560ffc999d4e2bdb43bbb2f92a9cc07b495cacaa
+  notes: 上游原核心专用；不能等价加载于当前 ROS1 核心
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/fw_mini_upstream_tuned.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_light_turn_20261028/upstream_fw_mini_upstream_tuned.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/ipc_light_turn_20261028/developer_comparison/upstream_tuned/planner.yaml
+  - neupan_cpp/neupan_cpp_ros/config/fw_mini_omni_tuned.yaml
+  - neupan_upstream_omni_tuning_20261028/configs/q6_a012_w04.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.12
+  - 0.4
+- id: UP-SENTRY-OMNI-REFERENCE
+  name: 上游哨兵实车参考版
+  engine: upstream
+  status: other_robot
+  file: config/profiles/upstream/sentry_omni_reference.yaml
+  semantic_sha256: f23bf28908d236450de16a00c26e3e69dcffd98270540513061b6ed561b1835f
+  notes: 八边形哨兵、ref_speed 1.5 m/s，非 FW 模型
+  source_files:
+  - neupan_cpp/neupan_cpp_ros/config/sentry_omni.yaml
+  - neupan_upstream_omni_comparison_20261028/configs/upstream_sentry_original.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 1.5
+  control_change_weight: null
+  max_acce:
+  - 3.0
+  - 3.0
+- id: EXP-REFERENCE-PORT
+  name: 上游参考逻辑移植实验
+  engine: reference_port
+  status: experiment
+  file: config/profiles/experiments/reference_port/fw_reference_port.yaml
+  semantic_sha256: 2d0b660c60ee88315653f60b203796d259305c64d4b06379992b34c588f570f5
+  notes: 仅配合隔离 candidate_core；并非当前正式 ROS1 核心
+  source_files:
+  - neupan_upstream_omni_comparison_20261028/configs/ported_reference_fw_scaled.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: EXP-OMNI-DIFF-COSTS
+  name: 全向套用 diff 规划代价对照
+  engine: ros1
+  status: comparison
+  file: config/profiles/experiments/ros1/fw_omni_diff_costs.yaml
+  semantic_sha256: bba8d451ef9b76237bdf2469a25847050e81d2b5b92eb73770414bb077afa406
+  notes: omni 机器人段 + diff 规划代价，保留历史对照
+  source_files:
+  - neupan_omni_diff_budget_validation_20261027/configs/diff_planner_omni_robot.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: DIAG-OMNI-DIFF-UNITS
+  name: 只改模型名的单位诊断
+  engine: ros1
+  status: diagnostic
+  file: config/profiles/experiments/ros1/omni_diff_units_diagnostic.yaml
+  semantic_sha256: d1976a5dc89c726be7fef13257b5feae86442212b258b5cdedc0fbc85a259f6a
+  notes: 方向角界限仍为 0.4 rad，不能当作通用 FW 全向配置
+  source_files:
+  - neupan_omni_diff_budget_validation_20261027/configs/literal_diff_switch_only.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.3
+  - 0.6
+- id: EXAMPLE-GENERIC-DIFF
+  name: 原仓库通用差速示例
+  engine: ros1
+  status: other_robot
+  file: config/profiles/examples/generic_diff.yaml
+  semantic_sha256: 1b34c31c2968e59c7f447a2001be1289eddac8e36565787df1ce3af9be7b0ee1
+  notes: 1.6×2.0 m，非 FW-mini 几何
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/config/planner.yaml
+  kinematics: diff
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 4.0
+  control_change_weight: null
+  max_acce:
+  - 8.0
+  - 3.0
+- id: SELFTEST-SMOKE
+  name: ROS1 冒烟自测配置
+  engine: ros1
+  status: selftest
+  file: config/profiles/examples/smoke_selftest.yaml
+  semantic_sha256: f5579ae0ccb19aeccede737f8fa65cc8249c2fa67e9a8b736aaccdc3311bc8cc
+  notes: 虚拟自测，非 FW 实车参数
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/config/smoke.yaml
+  kinematics: diff
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.2
+  control_change_weight: null
+  max_acce:
+  - 0.5
+  - 1.0
+- id: TRIAL-ARCHIVED-DIFF-CORE-8648e5e3c5
+  name: 参数试验：season_d0 / ab_configs
+  engine: archived_diff_core
+  status: experiment
+  file: config/profiles/experiments/archived_diff_core/trial-archived-diff-core-8648e5e3c5.yaml
+  semantic_sha256: 8648e5e3c521b6bb1a347be1254595a7e14b9ff3700adeb479cbe48c475fa08f
+  notes: ''
+  source_files:
+  - mvp_ws/src/neupan_cpp/libneupan/tools/ab_configs/season_d0.yaml
+  kinematics: diff
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 1.0
+  control_change_weight: null
+  max_acce:
+  - 2.0
+  - 2.0
+- id: TRIAL-ARCHIVED-DIFF-CORE-b429684546
+  name: 参数试验：upstream_margins / ab_configs
+  engine: archived_diff_core
+  status: experiment
+  file: config/profiles/experiments/archived_diff_core/trial-archived-diff-core-b429684546.yaml
+  semantic_sha256: b42968454661dcf7cb72ac9345c891f1ebde401629f2a4cb725fdae468fb8b45
+  notes: ''
+  source_files:
+  - mvp_ws/src/neupan_cpp/libneupan/tools/ab_configs/upstream_margins.yaml
+  kinematics: diff
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 1.0
+  control_change_weight: null
+  max_acce:
+  - 2.0
+  - 2.0
+- id: TRIAL-ARCHIVED-DIFF-CORE-f3f75ecf43
+  name: 参数试验：replay_planner / data
+  engine: archived_diff_core
+  status: experiment
+  file: config/profiles/experiments/archived_diff_core/trial-archived-diff-core-f3f75ecf43.yaml
+  semantic_sha256: f3f75ecf4306a988cf32b3177efc3bbb7235b2575896ce2698a034adbffda976
+  notes: ''
+  source_files:
+  - mvp_ws/src/neupan_cpp/libneupan/tests/data/replay_planner.yaml
+  kinematics: diff
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 4
+  control_change_weight: null
+  max_acce:
+  - 8
+  - 3
+- id: TRIAL-REFERENCE-PORT-83f5baace3
+  name: 参数试验：ported_reference_fw / configs
+  engine: reference_port
+  status: experiment
+  file: config/profiles/experiments/reference_port/trial-reference-port-83f5baace3.yaml
+  semantic_sha256: 83f5baace37714a851bb50b624dae10cea59907babd37953c6b0b9ae11270b6c
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_comparison_20261028/configs/ported_reference_fw.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-08ddb333eb
+  name: 参数试验：rv8_rd4 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-08ddb333eb.yaml
+  semantic_sha256: 08ddb333ebc24f44897d6322195d8fe7145546c07d666bc6c75e5e8bba3cc91b
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/rv8_rd4.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 8.0
+  - 4.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-0d3841dbf8
+  name: 参数试验：planner / smooth_a_angle2pi
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-0d3841dbf8.yaml
+  semantic_sha256: 0d3841dbf806ca488d25658e64c0c65d6712efa087abdbad45be28d97198953b
+  notes: ''
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_smooth_20261027/smooth_a_angle2pi/planner.yaml
+  kinematics: omni
+  receding: 15
+  pan_iterations: 4
+  ref_speed: 0.15
+  control_change_weight:
+  - 2.0
+  - 0.3
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-0e663aed08
+  name: 参数试验：mix_r12_d0p5 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-0e663aed08.yaml
+  semantic_sha256: 0e663aed0821259d710473e4d162244eaa0abc10bf470d701e69e7f0da7afe33
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/mix_r12_d0p5.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 0.5
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-140706aa79
+  name: 参数试验：window0p24 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-140706aa79.yaml
+  semantic_sha256: 140706aa7975a096bba10da5bbb64c830c3056fc43c2c46e8a3cae681766ed9a
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/window0p24.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-15e8c2e5ef
+  name: 参数试验：floor0p06 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-15e8c2e5ef.yaml
+  semantic_sha256: 15e8c2e5ef6de0a9952cad777e71ded2a47e0bb463fc8b06d49d39671b35bbc2
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/floor0p06.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-43a4271d89
+  name: 参数试验：rv8_rd0p5 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-43a4271d89.yaml
+  semantic_sha256: 43a4271d89d2b0e99c1fe0cfd1e0c28ab41f34fec4476491ed96279670a0ac7f
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/rv8_rd0p5.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 8.0
+  - 0.5
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-44c14d140d
+  name: 参数试验：planner / smooth_a
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-44c14d140d.yaml
+  semantic_sha256: 44c14d140d9d8988f5ce0a0be9a3b68353c43f19ad48245d60bd1dc8ef1d291c
+  notes: ''
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_smooth_20261027/smooth_a/planner.yaml
+  kinematics: omni
+  receding: 15
+  pan_iterations: 4
+  ref_speed: 0.15
+  control_change_weight:
+  - 2.0
+  - 0.3
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-4916c0787c
+  name: 参数试验：candidate_v2 / omni_turns_20261027
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-4916c0787c.yaml
+  semantic_sha256: 4916c0787caeacd067817d7ecd4cfdf45b9e962df43d0a1c1f93de868131d34f
+  notes: ''
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/candidate_v2.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v2/planner.yaml
+  kinematics: omni
+  receding: 15
+  pan_iterations: 4
+  ref_speed: 0.15
+  control_change_weight:
+  - 8.0
+  - 3.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-593ba655d5
+  name: 参数试验：rv16_rd2 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-593ba655d5.yaml
+  semantic_sha256: 593ba655d5a697520c9b51409c847bd04917371e7e27f04feca73e0850b977b7
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/rv16_rd2.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 16.0
+  - 2.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-6b22cb8dc4
+  name: 参数试验：omni_loose_pan_threshold / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-6b22cb8dc4.yaml
+  semantic_sha256: 6b22cb8dc4121497adb77b9ab326ffd1adacc08da21fa7cc3f66cf8600d85131
+  notes: ''
+  source_files:
+  - neupan_runtime_comparison_20261027/configs/omni_loose_pan_threshold.yaml
+  kinematics: omni
+  receding: 15
+  pan_iterations: 4
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-6d67bedf08
+  name: 参数试验：planner / world
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-6d67bedf08.yaml
+  semantic_sha256: 6d67bedf08615a081e8d9ae96373ae2c53337fbd8fa4236b0486a5217c6cd16d
+  notes: ''
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_smooth_20261027/ros1_sequence_20261027_122522/world/planner.yaml
+  kinematics: omni
+  receding: 15
+  pan_iterations: 4
+  ref_speed: 0.15
+  control_change_weight:
+  - 2.0
+  - 0.3
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-732c5736ef
+  name: 参数试验：rv8_rd1 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-732c5736ef.yaml
+  semantic_sha256: 732c5736ef95c5f29b696592d96dbd1ff90acd34bda0a780c9b24964b3b07e3b
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/rv8_rd1.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 8.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-8d32d9b69f
+  name: 参数试验：rv12_rd4 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-8d32d9b69f.yaml
+  semantic_sha256: 8d32d9b69fedfda0614015db1c5a401fef08da262738b868cb44c124aec699c9
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/rv12_rd4.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 4.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-8f04e02654
+  name: 参数试验：floor0p05 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-8f04e02654.yaml
+  semantic_sha256: 8f04e02654deb2863830fa09e8304ceea3640bf5b6e336294f408bcb6d71b0a3
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/floor0p05.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-8f0544487b
+  name: 参数试验：strict_pan / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-8f0544487b.yaml
+  semantic_sha256: 8f0544487bce72859f91f9b9ef0882e245c3a624523933dfa4fc0174a1577e78
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/strict_pan.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-9b3553e816
+  name: 参数试验：rv12_rd2 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-9b3553e816.yaml
+  semantic_sha256: 9b3553e816ff0b6b0833781da835271e2bdf69d9a3326363a62763ad7e56ce8e
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/rv12_rd2.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 2.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-9c5d9ae110
+  name: 参数试验：rv12_rd0p25 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-9c5d9ae110.yaml
+  semantic_sha256: 9c5d9ae110017da6b51800f6e3746330ffcf68ea55ff450f5656b0498e3c37cf
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/rv12_rd0p25.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 0.25
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-9f56bcfc5e
+  name: 参数试验：mix_r12_d2 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-9f56bcfc5e.yaml
+  semantic_sha256: 9f56bcfc5e5c5068dcea630c93288f5d704e8547530a1d625ef2a459ba0bf74d
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/mix_r12_d2.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 2.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-a656d07745
+  name: 参数试验：floor0p045 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-a656d07745.yaml
+  semantic_sha256: a656d07745c386ccc24865ea0e548d5885e1c324bbc6e78e31c2a2a75f97770c
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/floor0p045.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-ad9e58e2f2
+  name: 参数试验：window0p2 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-ad9e58e2f2.yaml
+  semantic_sha256: ad9e58e2f23a66921b11807bb4c27d0bf1a0d5c4ed865f4fc31d450c0f33822b
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/window0p2.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-b38f1aa8c9
+  name: 参数试验：diff_large_budget / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-b38f1aa8c9.yaml
+  semantic_sha256: b38f1aa8c96c50bffa4f28685d1eacf9c76aabbaf7e1db69663ea7228d2b7978
+  notes: ''
+  source_files:
+  - neupan_runtime_comparison_20261027/configs/diff_large_budget.yaml
+  kinematics: diff
+  receding: 15
+  pan_iterations: 4
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.3
+  - 0.6
+- id: TRIAL-ROS1-b429684546
+  name: 参数试验：sentry_diff / config
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-b429684546.yaml
+  semantic_sha256: b42968454661dcf7cb72ac9345c891f1ebde401629f2a4cb725fdae468fb8b45
+  notes: ''
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/config/sentry_diff.yaml
+  kinematics: diff
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 1.0
+  control_change_weight: null
+  max_acce:
+  - 2.0
+  - 2.0
+- id: TRIAL-ROS1-b6f72a395c
+  name: 参数试验：mix_r16_d2 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-b6f72a395c.yaml
+  semantic_sha256: b6f72a395c7da3b3ff4a1ad8b9f9cb548260afddcabf3dace264acfacaf42568
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/mix_r16_d2.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 16.0
+  - 2.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-bc60237d14
+  name: 参数试验：window0p3 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-bc60237d14.yaml
+  semantic_sha256: bc60237d14c517a522b4eab22de01509207bc445749bc03046b9c9922cc7fdbf
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/window0p3.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-c3827ecfa1
+  name: 参数试验：turn0p6 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-c3827ecfa1.yaml
+  semantic_sha256: c3827ecfa1b6349a065a089a2953ce36ebbe9059478d1970accb8469e8279150
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/turn0p6.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-c4470e70fc
+  name: 参数试验：q5 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-c4470e70fc.yaml
+  semantic_sha256: c4470e70fc41f85a5531ae991bd7eb0634ee2fc1f05cf25664da301a14acf107
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/q5.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-c625e31fc5
+  name: 参数试验：omni_no_turn_profile / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-c625e31fc5.yaml
+  semantic_sha256: c625e31fc5a421830aa76b47e8f5cc1578dd730111664857144440d8dee9ed65
+  notes: ''
+  source_files:
+  - neupan_runtime_comparison_20261027/configs/omni_no_turn_profile.yaml
+  kinematics: omni
+  receding: 15
+  pan_iterations: 4
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-c7ea5bd9f8
+  name: 参数试验：rv8_rd2 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-c7ea5bd9f8.yaml
+  semantic_sha256: c7ea5bd9f8e1afdcbea9a1d2b1ce63c5b5050bba8c350b65c15230976824527f
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/rv8_rd2.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 8.0
+  - 2.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-c8823dcd16
+  name: 参数试验：planner / smooth_b
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-c8823dcd16.yaml
+  semantic_sha256: c8823dcd16967758e141b283b0dd4dfe27cbdbb56c9e4cc0206ca27edf8a81b9
+  notes: ''
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_smooth_20261027/smooth_b/planner.yaml
+  kinematics: omni
+  receding: 20
+  pan_iterations: 4
+  ref_speed: 0.15
+  control_change_weight:
+  - 4.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.6
+- id: TRIAL-ROS1-ce2e212abe
+  name: 参数试验：q4 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-ce2e212abe.yaml
+  semantic_sha256: ce2e212abe1fef5bc6517e89c68a30d52f1298b7653132f14d55216367f92524
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/q4.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-d6595269af
+  name: 参数试验：mix_r8_d2 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-d6595269af.yaml
+  semantic_sha256: d6595269afd7db8663977557e0a2eb27e1aa710d4c3cfa10165d42dac14845a1
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/mix_r8_d2.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 8.0
+  - 2.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-ddb50cb081
+  name: 参数试验：planner / arc_only
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-ddb50cb081.yaml
+  semantic_sha256: ddb50cb0819152461dc33fec1f9385af31a7a95108dee97e81458e3f92455230
+  notes: ''
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_smooth_20261027/arc_only/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_smooth_20261027/clearance_only/planner.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 3
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.3
+  - 3.0
+- id: TRIAL-ROS1-e0b553457d
+  name: 参数试验：rv12_rd0p5 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-e0b553457d.yaml
+  semantic_sha256: e0b553457d7b76778502a00b975765166d1dac2eb54ecce0a333e38d934eb37c
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/rv12_rd0p5.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 0.5
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-ee8f820770
+  name: 参数试验：turn0p5 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-ee8f820770.yaml
+  semantic_sha256: ee8f8207706f7543796193b2dd9838099cf774068b598cc6f476b97be3bc2890
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/turn0p5.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-f3f75ecf43
+  name: 参数试验：replay_planner / data
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-f3f75ecf43.yaml
+  semantic_sha256: f3f75ecf4306a988cf32b3177efc3bbb7235b2575896ce2698a034adbffda976
+  notes: ''
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/data/replay_planner.yaml
+  kinematics: diff
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 4
+  control_change_weight: null
+  max_acce:
+  - 8
+  - 3
+- id: TRIAL-ROS1-f509e503bd
+  name: 参数试验：omni_no_change_penalty / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-f509e503bd.yaml
+  semantic_sha256: f509e503bdaf3afe92aaaddcfd7472228d45e7b80446482307f119983bdef544
+  notes: ''
+  source_files:
+  - neupan_runtime_comparison_20261027/configs/omni_no_change_penalty.yaml
+  kinematics: omni
+  receding: 15
+  pan_iterations: 4
+  ref_speed: 0.15
+  control_change_weight:
+  - 0.0
+  - 0.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-f62bc0e25e
+  name: 参数试验：turn0p45 / configs
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-f62bc0e25e.yaml
+  semantic_sha256: f62bc0e25e1538cf5d77346f76cdc41514ffc1e228b2d66b531e15ee952e8d70
+  notes: ''
+  source_files:
+  - neupan_local_light_turn_tuning_20261028/configs/turn0p45.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight:
+  - 12.0
+  - 1.0
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-ROS1-f95d2f94e5
+  name: 参数试验：candidate_v1 / omni_turns_20261027
+  engine: ros1
+  status: experiment
+  file: config/profiles/experiments/ros1/trial-ros1-f95d2f94e5.yaml
+  semantic_sha256: f95d2f94e56da3c2d160386c020de0925610add10105be56f0ace3b22ae87b07
+  notes: ''
+  source_files:
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/candidate_v1.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/random_trial_v1/planner.yaml
+  - mvp_ws/src/neupan_cpp/neupan_cpp_ros1/test/results/omni_turns_20261027/trial_v1/planner.yaml
+  kinematics: omni
+  receding: 15
+  pan_iterations: 4
+  ref_speed: 0.15
+  control_change_weight:
+  - 2.0
+  - 0.3
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-03cd2df828
+  name: 参数试验：q6_bk200 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-03cd2df828.yaml
+  semantic_sha256: 03cd2df828d7c5bccebf2b8dd7cdcc73981bca2d46e025d31d92cb950b34dd31
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_bk200.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-0c0e5af0bd
+  name: 参数试验：q12_p03 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-0c0e5af0bd.yaml
+  semantic_sha256: 0c0e5af0bd2e65f5d458fbca9812a3082a5d21ee91b0c62e1ff1ce48fad16a96
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q12_p03.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-12a09b32fc
+  name: 参数试验：q6_plan_a015_bk5 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-12a09b32fc.yaml
+  semantic_sha256: 12a09b32fc98405aac30768b3ecce9a7b1bcbab886044c9238f5b8ff99f78a75
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_plan_a015_bk5.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.15
+  - 0.6
+- id: TRIAL-UPSTREAM-1b34c31c29
+  name: 参数试验：planner / config
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-1b34c31c29.yaml
+  semantic_sha256: 1b34c31c2968e59c7f447a2001be1289eddac8e36565787df1ce3af9be7b0ee1
+  notes: ''
+  source_files:
+  - neupan_cpp/neupan_cpp_ros/config/planner.yaml
+  kinematics: diff
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 4.0
+  control_change_weight: null
+  max_acce:
+  - 8.0
+  - 3.0
+- id: TRIAL-UPSTREAM-3add6858ba
+  name: 参数试验：q6_a008_w04 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-3add6858ba.yaml
+  semantic_sha256: 3add6858ba9c11194c352e4438d94c805863554d6c9c579eac5a489b9a6f1e21
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_a008_w04.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.08
+  - 0.4
+- id: TRIAL-UPSTREAM-3e633fd173
+  name: 参数试验：q6_eta0 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-3e633fd173.yaml
+  semantic_sha256: 3e633fd1732643590007d7c3c8be83279acf4d94b17162178243d3167ef4a8e3
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_eta0.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-4bd4739598
+  name: 参数试验：q6_strict / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-4bd4739598.yaml
+  semantic_sha256: 4bd4739598f3ee81c2524b754f8be6fa38835fc8fe5690b505da42b436e5a743
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_strict.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-4e07f05678
+  name: 参数试验：q6_p03 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-4e07f05678.yaml
+  semantic_sha256: 4e07f056781e5840b8b67b75aed7839ec0d4f3ec6514a8f20cc43320ae53293e
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_p03.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-4e5b824952
+  name: 参数试验：original_nearest / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-4e5b824952.yaml
+  semantic_sha256: 4e5b8249529920007097e70cefb89b00e4632369aa5d157a614cc4fb55eb490a
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/original_nearest.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-5fcb7733ce
+  name: 参数试验：q6_T15 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-5fcb7733ce.yaml
+  semantic_sha256: 5fcb7733ce8234d5088692fb34ab635d803f19af36eaa8dd2c924e2eed827978
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_T15.yaml
+  kinematics: omni
+  receding: 15
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-6cbe7ae3dd
+  name: 参数试验：q6_plan_a010_w04 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-6cbe7ae3dd.yaml
+  semantic_sha256: 6cbe7ae3dd4fa6ac99603cdf647f88dec5b55dc10783b0d0524f98bfae4b7f49
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_plan_a010_w04.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.1
+  - 0.4
+- id: TRIAL-UPSTREAM-754185aba4
+  name: 参数试验：q6_a006_w08 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-754185aba4.yaml
+  semantic_sha256: 754185aba4e4bb766db65deac480600efdb7114e0239bf79e2a3ab98f7753f63
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_a006_w08.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.06
+  - 0.8
+- id: TRIAL-UPSTREAM-77ccbd5526
+  name: 参数试验：q6_bk5 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-77ccbd5526.yaml
+  semantic_sha256: 77ccbd55267d233f1732d71009c38f1657a93199602f0eba37400091ff610efb
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_bk5.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-7aaf1dc430
+  name: 参数试验：q6_a012_w06 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-7aaf1dc430.yaml
+  semantic_sha256: 7aaf1dc430853d4de6cc55f9f0880e9647617d6cae89faf3b332d87c2f055731
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_a012_w06.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.12
+  - 0.6
+- id: TRIAL-UPSTREAM-826b8c8f9f
+  name: 参数试验：q6_bk50 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-826b8c8f9f.yaml
+  semantic_sha256: 826b8c8f9f422b3b90dcd45ab112ecdd2aaa53e09da303da41a7dbca14959530
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_bk50.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-83f5baace3
+  name: 参数试验：upstream_fw / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-83f5baace3.yaml
+  semantic_sha256: 83f5baace37714a851bb50b624dae10cea59907babd37953c6b0b9ae11270b6c
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_comparison_20261028/configs/upstream_fw.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-8e7b92a878
+  name: 参数试验：q6_v010_safe / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-8e7b92a878.yaml
+  semantic_sha256: 8e7b92a87866d028ff1043d2015f2badd847185656054cb6a86cd2d345536432
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_v010_safe.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.1
+  control_change_weight: null
+  max_acce:
+  - 0.06
+  - 0.4
+- id: TRIAL-UPSTREAM-94174ad0bd
+  name: 参数试验：q6 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-94174ad0bd.yaml
+  semantic_sha256: 94174ad0bd641ba4ce17d657cfbbb8c9db9603f941776c6811812d8f3304268f
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-98ace4096d
+  name: 参数试验：q6_plan_a010_bk5 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-98ace4096d.yaml
+  semantic_sha256: 98ace4096df0899181957fc77acf620b932691f928965353f64f1ba07ef15389
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_plan_a010_bk5.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.1
+  - 0.6
+- id: TRIAL-UPSTREAM-9f155bb542
+  name: 参数试验：q6_v012 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-9f155bb542.yaml
+  semantic_sha256: 9f155bb542a0774a0111ecdb573b9119c2cfe0a088b4ab91b3f10df6f0723d5b
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_v012.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.12
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-a70bf5a6ee
+  name: 参数试验：q6_a006_w04 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-a70bf5a6ee.yaml
+  semantic_sha256: a70bf5a6eeb0222da7b4c8cfbf658766fe4020ef4da409ae9a6a66a2dbb10835
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_a006_w04.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.06
+  - 0.4
+- id: TRIAL-UPSTREAM-b429684546
+  name: 参数试验：sentry_diff / config
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-b429684546.yaml
+  semantic_sha256: b42968454661dcf7cb72ac9345c891f1ebde401629f2a4cb725fdae468fb8b45
+  notes: ''
+  source_files:
+  - neupan_cpp/neupan_cpp_ros/config/sentry_diff.yaml
+  kinematics: diff
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 1.0
+  control_change_weight: null
+  max_acce:
+  - 2.0
+  - 2.0
+- id: TRIAL-UPSTREAM-b45a280a97
+  name: 参数试验：q6_plan_a010 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-b45a280a97.yaml
+  semantic_sha256: b45a280a970e1711a370eccc61cbd7215f8156ab9405380a86dd7f04a5909815
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_plan_a010.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.1
+  - 0.8
+- id: TRIAL-UPSTREAM-b7edcfeb77
+  name: 参数试验：q6_v010 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-b7edcfeb77.yaml
+  semantic_sha256: b7edcfeb77cd1fde3fdd15aed4f2cc701b9751c41369c8b5102c31907feaf527
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_v010.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.1
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-ba61ea1f12
+  name: 参数试验：replay_omni_planner / data
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-ba61ea1f12.yaml
+  semantic_sha256: ba61ea1f120a65f2910d6af3a27e031f5e5931224a15825b5d9f84b5c3048399
+  notes: ''
+  source_files:
+  - neupan_cpp/libneupan/tests/data/replay_omni_planner.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 4
+  control_change_weight: null
+  max_acce:
+  - 8
+  - 3
+- id: TRIAL-UPSTREAM-bb4fbdfcac
+  name: 参数试验：q12 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-bb4fbdfcac.yaml
+  semantic_sha256: bb4fbdfcacd1742e7c429020db58b3ef630a2f5298598390e543d1f6283adbf9
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q12.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-c0c96c289a
+  name: 参数试验：q12_bk50 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-c0c96c289a.yaml
+  semantic_sha256: c0c96c289a57d95ab7ebc6c10d086ca1d3697b52884bbf2ef916c5445178c7b2
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q12_bk50.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-ca23dc65c6
+  name: 参数试验：q6_a014_w04 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-ca23dc65c6.yaml
+  semantic_sha256: ca23dc65c640b841675beba0b8bb7231ab0a62b5bace5e7b8dc25b2601ae490d
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_a014_w04.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.14
+  - 0.4
+- id: TRIAL-UPSTREAM-daaf2c9e5b
+  name: 参数试验：q12_p1 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-daaf2c9e5b.yaml
+  semantic_sha256: daaf2c9e5bba38745645b8224cc8b0f9b450bf5968f8903c19c75852d390a339
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q12_p1.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-e41ec29cf6
+  name: 参数试验：q6_v012_safe / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-e41ec29cf6.yaml
+  semantic_sha256: e41ec29cf6ca7ae6ba46ccdfa3d77ae82c76e6b87ee90a8ba5b7f97db3785186
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_v012_safe.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.12
+  control_change_weight: null
+  max_acce:
+  - 0.08
+  - 0.4
+- id: TRIAL-UPSTREAM-f1b27d6ba1
+  name: 参数试验：q20 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-f1b27d6ba1.yaml
+  semantic_sha256: f1b27d6ba1014720bd264d8d2ae9a70924df5b1940524f080ca85edd62a3ff77
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q20.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8
+- id: TRIAL-UPSTREAM-f3f75ecf43
+  name: 参数试验：replay_planner / data
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-f3f75ecf43.yaml
+  semantic_sha256: f3f75ecf4306a988cf32b3177efc3bbb7235b2575896ce2698a034adbffda976
+  notes: ''
+  source_files:
+  - neupan_cpp/libneupan/tests/data/replay_planner.yaml
+  kinematics: diff
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 4
+  control_change_weight: null
+  max_acce:
+  - 8
+  - 3
+- id: TRIAL-UPSTREAM-f6744de297
+  name: 参数试验：q6_eta3 / configs
+  engine: upstream
+  status: experiment
+  file: config/profiles/experiments/upstream/trial-upstream-f6744de297.yaml
+  semantic_sha256: f6744de2978f32fa31247bb68d633d2ff113eac1ffc9e18216a34b6965d8ff31
+  notes: ''
+  source_files:
+  - neupan_upstream_omni_tuning_20261028/configs/q6_eta3.yaml
+  kinematics: omni
+  receding: 10
+  pan_iterations: 2
+  ref_speed: 0.15
+  control_change_weight: null
+  max_acce:
+  - 0.2
+  - 0.8

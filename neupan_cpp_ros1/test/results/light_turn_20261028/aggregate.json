@@ -1,0 +1,143 @@
+{
+  "selected": "rv16_rd0p5",
+  "validation": {
+    "light_v1": {
+      "total_maps": 22,
+      "feasible": 19,
+      "arrived": 19,
+      "strict_pass": 18,
+      "no_route": [
+        "random_6619",
+        "random_10427",
+        "random_14891"
+      ],
+      "failures": [
+        {
+          "case": "short_acute_zigzag",
+          "reasons": [
+            "stall_above_2s"
+          ]
+        }
+      ],
+      "collisions": 0,
+      "unsolved": 0,
+      "min_clearance_m": 0.17802133673191406,
+      "worst_max_path_error_m": 0.04277798298654208,
+      "mean_case_max_path_error_m": 0.02026869396480867,
+      "mean_case_rms_path_error_m": 0.0040785724284963494,
+      "mean_goal_error_m": 0.01125191372222625,
+      "max_goal_error_m": 0.013603811325469284,
+      "max_stall_s": 3.1000000000000014,
+      "sum_low_speed_s": 8.299999999999994,
+      "sum_sim_time_s": 1115.8,
+      "mean_case_jerk_rms": 0.16879956442981808,
+      "planner_samples": 11067,
+      "planner_mean_ms": 15.906289549652117,
+      "planner_p95_ms": 21.8075471,
+      "planner_max_ms": 40.76898,
+      "planner_above_100ms": 0,
+      "audited_csv_rows": 11158,
+      "target_pass": 18,
+      "max_speed_at_arrival": 0.0
+    },
+    "rv16_rd0p5": {
+      "total_maps": 22,
+      "feasible": 19,
+      "arrived": 19,
+      "strict_pass": 19,
+      "no_route": [
+        "random_6619",
+        "random_10427",
+        "random_14891"
+      ],
+      "failures": [],
+      "collisions": 0,
+      "unsolved": 0,
+      "min_clearance_m": 0.1788927473967954,
+      "worst_max_path_error_m": 0.042885553555136326,
+      "mean_case_max_path_error_m": 0.02043492493924723,
+      "mean_case_rms_path_error_m": 0.0041611107389331135,
+      "mean_goal_error_m": 0.011357173118609622,
+      "max_goal_error_m": 0.015257858145721226,
+      "max_stall_s": 0.7,
+      "sum_low_speed_s": 2.8000000000000007,
+      "sum_sim_time_s": 1111.0,
+      "mean_case_jerk_rms": 0.17114516462375692,
+      "planner_samples": 11022,
+      "planner_mean_ms": 15.929714501814553,
+      "planner_p95_ms": 21.8297477,
+      "planner_max_ms": 48.782436,
+      "planner_above_100ms": 0,
+      "audited_csv_rows": 11110,
+      "target_pass": 19,
+      "max_speed_at_arrival": 0.0
+    }
+  },
+  "corridor": {
+    "light_v1": {
+      "total_maps": 3,
+      "feasible": 3,
+      "arrived": 3,
+      "strict_pass": 3,
+      "no_route": [],
+      "failures": [],
+      "collisions": 0,
+      "unsolved": 0,
+      "min_clearance_m": 0.18728454445295614,
+      "worst_max_path_error_m": 0.041759216859950266,
+      "mean_case_max_path_error_m": 0.029538041575770068,
+      "mean_case_rms_path_error_m": 0.007256050668852712,
+      "mean_goal_error_m": 0.014306761303545149,
+      "max_goal_error_m": 0.019794568941720627,
+      "max_stall_s": 0.0,
+      "sum_low_speed_s": 0.0,
+      "sum_sim_time_s": 159.0,
+      "mean_case_jerk_rms": 0.19532957638361767,
+      "planner_samples": 1576,
+      "planner_mean_ms": 16.57845547779188,
+      "planner_p95_ms": 21.81923625,
+      "planner_max_ms": 24.66987,
+      "planner_above_100ms": 0,
+      "audited_csv_rows": 1590,
+      "target_pass": 3
+    },
+    "rv16_rd0p5": {
+      "total_maps": 3,
+      "feasible": 3,
+      "arrived": 3,
+      "strict_pass": 3,
+      "no_route": [],
+      "failures": [],
+      "collisions": 0,
+      "unsolved": 0,
+      "min_clearance_m": 0.18767548813140383,
+      "worst_max_path_error_m": 0.0419178947581002,
+      "mean_case_max_path_error_m": 0.029661918037124858,
+      "mean_case_rms_path_error_m": 0.007359733770380986,
+      "mean_goal_error_m": 0.014557006369877426,
+      "max_goal_error_m": 0.019745549808368415,
+      "max_stall_s": 0.0,
+      "sum_low_speed_s": 0.0,
+      "sum_sim_time_s": 159.0,
+      "mean_case_jerk_rms": 0.20607354440626593,
+      "planner_samples": 1576,
+      "planner_mean_ms": 16.63116780393401,
+      "planner_p95_ms": 21.73282425,
+      "planner_max_ms": 40.31143,
+      "planner_above_100ms": 0,
+      "audited_csv_rows": 1590,
+      "target_pass": 3
+    }
+  },
+  "source_unchanged": true,
+  "old_default_unchanged": true,
+  "baseline_reproduction_delta": {
+    "goal_error": 0.0,
+    "max_path_error": 0.0,
+    "min_clearance": 0.0,
+    "seconds": 0.0
+  },
+  "jerk_ratio": 1.013895771602622,
+  "jerk_within_preferred_5_percent": true,
+  "all_feasible_meet_new_low_speed_target": true
+}

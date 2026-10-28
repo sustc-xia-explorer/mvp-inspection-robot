@@ -1,0 +1,193 @@
+--- /home/xiapilang/work/neupan_cpp/libneupan/src/initial_path.cpp	2026-10-27 23:57:06.079714219 +0800
++++ /home/xiapilang/work/mvp_ws/src/neupan_cpp/neupan_cpp_ros1/core/src/initial_path.cpp	2026-10-27 15:14:36.881922172 +0800
+@@ -12,7 +12,6 @@
+ 
+ #include "neupan/initial_path.hpp"
+ 
+-#include <algorithm>
+ #include <cmath>
+ #include <limits>
+ #include <stdexcept>
+@@ -110,7 +109,7 @@
+   if (path.size() < 2)
+     throw std::invalid_argument(
+         "initial_path: an external path needs at least 2 points");
+-  // Densify the external path to interval_, exactly like generateLineCurve. 
++  // Densify the external path to interval_, exactly like generateLineCurve.
+   std::vector<Vec3> waypoints;
+   waypoints.reserve(path.size());
+   for (const auto& p : path) waypoints.emplace_back(p.head<3>());
+@@ -246,30 +245,7 @@
+ }
+ 
+ Vec3 InitialPath::motionPredict(const Vec3& state, const Vec2& vel) const {
+-  switch (robot_.kinematics) {
+-    case Kinematics::Diff: {
+-      const double phi = state(2);
+-      return state + dt_ * Vec3(vel(0) * std::cos(phi),
+-                                vel(0) * std::sin(phi), vel(1));
+-    }
+-    case Kinematics::Omni:  // omni_model
+-      return state + dt_ * Vec3(vel(0) * std::cos(vel(1)),
+-                                vel(0) * std::sin(vel(1)), 0.0);
+-  }
+-  return state;
+-}
+-
+-Vec2 InitialPath::seedOmni(const Vec2& u, double path_dir, double ref_v,
+-                           double prev_dir) const {
+-  double v = u(0), dir = u(1);
+-  if (v < 0.0) {  // the same motion, with a positive speed
+-    v = -v;
+-    dir += M_PI;
+-  }
+-  const bool still = v < 0.01 * robot_.max_speed(0);
+-  if (still || std::cos(dir - path_dir) <= 0.0) dir = path_dir;
+-  if (still) v = ref_v;
+-  return Vec2(v, prev_dir + wrapToPi(dir - prev_dir));
++  return robot_.predict(state, vel);
+ }
+ 
+ InitialPath::NomRef InitialPath::generateNomRefState(
+@@ -279,24 +255,6 @@
+ 
+   Vec3 ref_state = curve[point_index_].head<3>();
+   int ref_index = point_index_;
+-  if (opts_.projected_reference) {
+-    double best = std::numeric_limits<double>::infinity();
+-    const int last = std::min(point_index_ + opts_.ind_range, n - 1);
+-    for (int i = std::max(point_index_ - 1, 0); i < last; ++i) {
+-      const Vec2 a = curve[i].head<2>(), d = curve[i + 1].head<2>() - a;
+-      const double u =
+-          d.squaredNorm() > 0.0
+-              ? std::clamp((state.head<2>() - a).dot(d) / d.squaredNorm(), 0.0, 1.0)
+-              : 0.0;
+-      const Vec2 p = a + u * d;
+-      const double dist = (state.head<2>() - p).norm();
+-      if (dist < best) {
+-        best = dist;
+-        ref_state << p, curve[i](2);
+-        ref_index = i;
+-      }
+-    }
+-  }
+   Vec3 pre_state = state;
+ 
+   NomRef out;
+@@ -308,15 +266,96 @@
+   out.nom_s.col(0) = pre_state;
+   out.ref_s.col(0) = ref_state;
+ 
++  if (opts_.arc_length_sampling) {
++    std::vector<double> arc(n, 0.0);
++    for (int i = 1; i < n; ++i)
++      arc[i] = arc[i-1] + (curve[i]-curve[i-1]).head<2>().norm();
++    std::vector<double> speeds(n, ref_speed);
++    if (opts_.turn_rate > 0.0) {
++      std::vector<double> turn(n,0.0);
++      for (int i=1; i<n; ++i)
++        turn[i] = turn[i-1] + std::abs(wrapToPi(curve[i](2)-curve[i-1](2)));
++      int left=0,right=0;
++      for (int i=0; i<n; ++i) {
++        while (left+1<i && arc[left+1]<arc[i]-opts_.turn_window/2.) ++left;
++        right=std::max(right,i);
++        while (right+1<n && arc[right]<arc[i]+opts_.turn_window/2.) ++right;
++        const double curvature=(turn[right]-turn[left])/std::max(1e-9,arc[right]-arc[left]);
++        speeds[i]=std::min(ref_speed,std::max(opts_.minimum_turn_speed,
++                           opts_.turn_rate/std::max(1e-9,curvature)));
++      }
++      speeds.back()=0.0;
++      // Braking before a corner, acceleration after it. The reference must be
++      // dynamically attainable; clamping only the output reacts too late.
++      const double accel=std::min(opts_.reference_acceleration,robot_.acce_bound(0)/dt_);
++      for (int i=n-2; i>=0; --i)
++        speeds[i]=std::min(speeds[i],std::sqrt(speeds[i+1]*speeds[i+1]+2.*accel*(arc[i+1]-arc[i])));
++      for (int i=1; i<n; ++i)
++        speeds[i]=std::min(speeds[i],std::sqrt(speeds[i-1]*speeds[i-1]+2.*accel*(arc[i]-arc[i-1])));
++    }
++    double start_arc = arc[point_index_];
++    double best = std::numeric_limits<double>::infinity();
++    // Continuous projection prevents reference jumps at the nearest point.
++    for (int i = std::max(0, point_index_-1); i < std::min(n-1, point_index_+2); ++i) {
++      const Vec2 a = curve[i].head<2>(), d = curve[i+1].head<2>()-a;
++      const double fraction = d.squaredNorm() > 1e-16 ?
++          std::max(0.0, std::min(1.0, (state.head<2>()-a).dot(d)/d.squaredNorm())) : 0.0;
++      const double distance = (state.head<2>()-a-fraction*d).squaredNorm();
++      if (distance < best) {
++        best = distance;
++        start_arc = arc[i] + fraction*(arc[i+1]-arc[i]);
++      }
++    }
++    int index = std::max(0, point_index_-1);
++    const auto sample = [&](double distance, int& j) -> Vec3 {
++      while (j+1 < n-1 && arc[j+1] < distance) ++j;
++      const double span = arc[j+1]-arc[j];
++      const double fraction = span > 1e-12 ?
++          std::max(0.0, std::min(1.0, (distance-arc[j])/span)) : 0.0;
++      Vec3 value = curve[j].head<3>() + fraction*(curve[j+1]-curve[j]).head<3>();
++      value(2) = curve[j](2) + fraction*wrapToPi(curve[j+1](2)-curve[j](2));
++      return value;
++    };
++    out.ref_s.col(0) = sample(start_arc, index);
++    double target_arc=start_arc;
++    const auto speedAt = [&](double distance, int j) {
++      while (j+1<n-1 && arc[j+1]<distance) ++j;
++      const double fraction=std::max(0.,std::min(1.,(distance-arc[j])/std::max(1e-12,arc[j+1]-arc[j])));
++      return speeds[j]+fraction*(speeds[j+1]-speeds[j]);
++    };
++    for (int t = 0; t < T_; ++t) {
++      pre_state = motionPredict(pre_state, cur_vel_array.col(t));
++      out.nom_s.col(t+1) = pre_state;
++      const double speed=opts_.turn_rate>0.0 ? speedAt(target_arc,index) : ref_speed;
++      target_arc = std::min(arc.back(),target_arc+speed*dt_);
++      Vec3 reference = sample(target_arc, index);
++      reference(2) = pre_state(2) + wrapToPi(reference(2)-pre_state(2));
++      out.ref_s.col(t+1) = reference;
++      out.ref_us(t) = target_arc < arc.back()-1e-9 ? speed*curve[index](3) : 0.0;
++      if (robot_.kinematics == Kinematics::Omni && out.ref_us(t) != 0.0) {
++        // Signed-speed and travel-angle pairs describe the same XY velocity.
++        // A positive-only speed target fights legitimate reverse motion and
++        // creates a nonzero steady-state position error near a reverse goal.
++        Vec2 tangent = curve[index+1].head<2>()-curve[index].head<2>();
++        if (tangent.norm() > 1e-10) tangent.normalize();
++        const Vec2 direction(std::cos(cur_vel_array(1,t)),std::sin(cur_vel_array(1,t)));
++        const double alignment = tangent.dot(direction);
++        const double sign = alignment < -.05 ? -1.0 : alignment > .05 ? 1.0 :
++                            (cur_vel_array(0,t) < 0.0 ? -1.0 : 1.0);
++        out.ref_us(t) *= sign;
++      }
++    }
++    return out;
++  }
++
+   Vec gear = Vec::Constant(T_, curve[point_index_](3));
+   const double ref_speed_forward = ref_speed * dt_;
+ 
+   for (int t = 0; t < T_; ++t) {
+-    if (opts_.projected_reference) {
+-      ref_state = findInteractionPoint(ref_state, ref_index,
+-                                       ref_speed_forward);
+-      if (ref_index > n - 2) gear(t) = 0.0;  // at the end of the path
+-    } else if (ref_speed_forward >= interval_) {
++    pre_state = motionPredict(pre_state, cur_vel_array.col(t));
++    out.nom_s.col(t + 1) = pre_state;
++
++    if (ref_speed_forward >= interval_) {
+       const int inc = static_cast<int>(ref_speed_forward / interval_);
+       ref_index += inc;
+       if (ref_index > n - 1) {
+@@ -330,14 +369,6 @@
+       if (ref_index > n - 1) gear(t) = 0.0;
+     }
+ 
+-    if (robot_.kinematics == Kinematics::Omni)
+-      out.nom_u.col(t) =
+-          seedOmni(out.nom_u.col(t), ref_state(2), gear(t) * ref_speed,
+-                   t > 0 ? out.nom_u(1, t - 1)
+-                         : wrapToPi(cur_vel_array(1, 0)));
+-    pre_state = motionPredict(pre_state, out.nom_u.col(t));
+-    out.nom_s.col(t + 1) = pre_state;
+-
+     ref_state(2) = pre_state(2) + wrapToPi(ref_state(2) - pre_state(2));
+     out.ref_s.col(t + 1) = ref_state;
+   }

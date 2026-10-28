@@ -1,0 +1,48 @@
+# Profile: TRIAL-ROS1-6d67bedf08
+# Name: 参数试验：planner / world
+# Engine: ros1; status: experiment
+# Frozen copy. See config/profiles/README.md and index.yaml.
+# 2026-10-27: validated smooth omni profile; legacy is fw_mini_omni_legacy.yaml.
+# max_acce = signed-speed acceleration and WORLD travel-direction rate.
+adjust:
+  bk: 0.05
+  d_max: 0.26
+  d_min: 0.16
+  eta: 1.0
+  p_u: 1.5
+  q_s:
+  - 4.0
+  - 4.0
+  - 1.0
+  ro_obs: 600.0
+  control_change_weight:
+  - 2.0
+  - 0.3
+collision_threshold: 0.08
+ipath:
+  arrive_index_threshold: 1
+  arrive_threshold: 0.1
+  close_threshold: 0.0
+  curve_style: line
+  ind_range: 30
+  loop: false
+  arc_length_sampling: true
+pan:
+  dune_max_num: 100
+  iter_num: 4
+  iter_threshold: 0.005
+  nrmp_max_num: 12
+receding: 15
+ref_speed: 0.15
+robot:
+  kinematics: omni
+  length: 0.495
+  max_acce:
+  - 0.2
+  - 0.8
+  max_speed:
+  - 0.18
+  - 3.141592653589793
+  wheelbase: 0.0
+  width: 0.36
+step_time: 0.1

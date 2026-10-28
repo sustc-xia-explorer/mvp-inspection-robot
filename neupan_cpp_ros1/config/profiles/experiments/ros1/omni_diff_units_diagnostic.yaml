@@ -1,0 +1,42 @@
+# Profile: DIAG-OMNI-DIFF-UNITS
+# Name: 只改模型名的单位诊断
+# Engine: ros1; status: diagnostic
+# Frozen copy. See config/profiles/README.md and index.yaml.
+receding: 10
+step_time: 0.1
+ref_speed: 0.15
+collision_threshold: 0.03
+robot:
+  kinematics: omni
+  length: 0.495
+  width: 0.36
+  wheelbase: 0.0
+  max_speed:
+  - 0.2
+  - 0.4
+  max_acce:
+  - 0.3
+  - 0.6
+ipath:
+  curve_style: line
+  loop: false
+  arrive_threshold: 0.1
+  close_threshold: 0.0
+  ind_range: 30
+  arrive_index_threshold: 1
+pan:
+  iter_num: 2
+  dune_max_num: 100
+  nrmp_max_num: 10
+  iter_threshold: 0.1
+adjust:
+  q_s:
+  - 4.0
+  - 4.0
+  - 1.0
+  p_u: 1.0
+  eta: 1.0
+  d_max: 0.2
+  d_min: 0.1
+  ro_obs: 200.0
+  bk: 0.0

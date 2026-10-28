@@ -1,7 +1,7 @@
 <launch>
   <arg name="sim_env_config" default="scenario_corridor.yaml" />
   <arg name="scenario_file" default="$(find neupan_cpp_ros1)/config/$(arg sim_env_config)" />
-  <arg name="config_file" default="$(find neupan_cpp_ros1)/config/fw_mini_balanced.yaml" />
+  <arg name="config_file" default="$(find neupan_cpp_ros1)/config/fw_mini_omni.yaml" />
   <arg name="dune_checkpoint" default="$(find neupan_cpp_ros1)/models/fw_mini.bin" />
   <arg name="use_rviz" default="true" />
   <arg name="auto_goal" default="false" />

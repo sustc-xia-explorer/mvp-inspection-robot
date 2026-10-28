@@ -1,0 +1,41 @@
+# Profile: TRIAL-REFERENCE-PORT-83f5baace3
+# Name: 参数试验：ported_reference_fw / configs
+# Engine: reference_port; status: experiment
+# Frozen copy. See config/profiles/README.md and index.yaml.
+receding: 10
+step_time: 0.1
+ref_speed: 0.15
+collision_threshold: 0.05
+robot:
+  kinematics: omni
+  length: 0.495
+  max_acce:
+  - 0.2
+  - 0.8
+  max_speed:
+  - 0.18
+  - 6.283185307179586
+  wheelbase: 0.0
+  width: 0.36
+  periodic_direction: true
+ipath:
+  curve_style: line
+  loop: false
+  arrive_threshold: 0.1
+  close_threshold: 0.1
+  ind_range: 10
+  arrive_index_threshold: 1
+  projected_reference: true
+pan:
+  iter_num: 2
+  dune_max_num: 100
+  nrmp_max_num: 10
+  iter_threshold: 0.1
+adjust:
+  q_s: 1.0
+  p_u: 1.0
+  eta: 15.0
+  d_max: 0.3
+  d_min: 0.05
+  ro_obs: 10.0
+  bk: 0.0

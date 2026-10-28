@@ -2,3 +2,5 @@
 neupan_cpp_ros1/test/results/** -text
 neupan_cpp_ros1/test/data/** -text
 *.csv -text whitespace=cr-at-eol
+# Unified diff evidence retains mandatory context prefixes and source spacing.
+neupan_cpp_ros1/test/results/**/algorithm_diffs/*.patch -whitespace
